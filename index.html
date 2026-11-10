@@ -69,6 +69,18 @@ nav.open{transform:none}nav a{padding:16px;font-size:1.1rem}.hero .btn{flex:1 1 
 #map .lb .n{fill:var(--c1);font-weight:700}
 .zoom{position:absolute;right:14px;top:14px;display:grid;gap:8px}.zoom .btn{width:48px;padding:0;font-size:1.3rem}
 .sub{margin:26px 0 14px;font-size:1.2rem}
+a.shop{display:block;transition:transform .2s,border-color .2s}a.shop:hover{transform:translateY(-3px);border-color:rgba(34,211,238,.5)}
+.shop .cv{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--bg2)}
+.fh{display:flex;gap:16px;align-items:center;margin:18px 0 22px}.fh img{width:64px;height:64px;border-radius:16px;object-fit:cover}.fh h2{margin:0}
+#gMain{width:100%;max-height:520px;aspect-ratio:16/10;object-fit:cover;border-radius:var(--r);background:var(--bg2);display:block}
+.ths{display:flex;gap:10px;margin-top:10px;overflow-x:auto;padding-bottom:6px}
+.th{flex:0 0 84px;height:64px;padding:0;border:2px solid transparent;border-radius:12px;overflow:hidden;background:none;cursor:pointer}.th img{width:100%;height:100%;object-fit:cover;display:block}.th.on{border-color:var(--c1)}
+.fcols{display:grid;gap:18px;margin-top:22px;grid-template-columns:1.4fr 1fr;align-items:start}
+@media(max-width:760px){.fcols{grid-template-columns:1fr}}
+.fcols h3{font-size:1.1rem;margin:0 0 8px}.fcols p{white-space:pre-line;margin-bottom:14px}
+.hrs{width:100%;border-collapse:collapse;margin-bottom:14px}.hrs td{padding:7px 0;border-bottom:1px solid var(--line)}.hrs td:last-child{text-align:right;color:var(--mut)}
+.tag{display:inline-block;padding:4px 12px;margin:0 6px 6px 0;border-radius:99px;border:1px solid var(--line);color:var(--c1);font-size:.9rem}
+.acts{display:grid;gap:10px;margin:14px 0}.warn{color:#fbbf24}.legal{margin-top:22px;color:var(--mut);font-size:.88rem}
 </style>
 </head>
 <body>
@@ -93,6 +105,7 @@ nav.open{transform:none}nav a{padding:16px;font-size:1.1rem}.hero .btn{flex:1 1 
 <div class="card empty"><b>Demande de publicité : phase 6</b>Le formulaire de réservation sera ajouté sans aucun paiement dans l’application.</div></div></section>
 <section class="view" id="v-admin"><div class="wrap page"><h2>Espace administrateur</h2>
 <div class="card" id="adminBox"><form id="loginForm"><input id="em" type="email" placeholder="E-mail" autocomplete="username" required><input id="pw" type="password" placeholder="Mot de passe" autocomplete="current-password" required><button class="btn p" type="submit">Se connecter</button><p class="msg" id="loginMsg" role="status"></p></form></div></div></section>
+<section class="view" id="v-fiche"><div class="wrap page"><p><a class="btn" href="#/boutiques">Retour aux boutiques</a></p><div id="shopBox"></div></div></section>
 </main>
 <footer><div class="wrap">Plug 2 France – annuaire exclusivement consacré aux boutiques physiques spécialisées dans le CBD. Les produits CBD ne sont pas des médicaments.</div></footer>
 
@@ -109,11 +122,11 @@ const sb = configured ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) :
 /* Navigation (routes par #) */
 function route(){
   const v = (location.hash.replace(/^#\/?/, "") || "home");
-  const id = ["carte","boutiques","partenaire","admin"].includes(v) ? v : "home";
+  const id = v.startsWith("boutique/") ? "fiche" : ["carte","boutiques","partenaire","admin"].includes(v) ? v : "home";
   document.querySelectorAll(".view").forEach(s => s.classList.toggle("on", s.id === "v-" + id));
   document.querySelectorAll("nav a").forEach(a => a.classList.toggle("on", a.dataset.v === id || (id==="home" && a.dataset.v==="home")));
   $("nav").classList.remove("open"); $("burger").setAttribute("aria-expanded","false");
-  scrollTo(0,0);if(id==="boutiques"&&loaded)renderList();if(id==="carte"&&GEO)setVB();
+  scrollTo(0,0);if(id==="boutiques"&&loaded)renderList();if(id==="carte"&&GEO)setVB();if(id==="fiche")setTimeout(()=>openShop(decodeURIComponent(v.slice(9))),0);else setMeta();
 }
 addEventListener("hashchange", route); route();
 $("burger").onclick = () => { const o = $("nav").classList.toggle("open"); $("burger").setAttribute("aria-expanded", o); };
@@ -135,7 +148,7 @@ const esc=s=>(s==null?"":String(s)).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt
 const regName=c=>(REGIONS.find(r=>r.code===c)||{}).name||"";
 const matches=(b,q)=>{const h=norm([b.name,b.city,b.postal_code,b.department_code,depName(b.department_code),regName(b.region_code)].join(" "));return norm(q).split(/\s+/).filter(Boolean).every(t=>h.includes(t));};
 const emptyHTML=(t,s)=>'<div class="card empty"><b>'+t+'</b>'+(s||"")+'</div>';
-const card=b=>'<article class="card shop"><h3>'+esc(b.name)+'</h3><p class="meta">'+esc([b.city,b.postal_code].filter(Boolean).join(" "))+(regName(b.region_code)?'<br>'+esc(regName(b.region_code)):'')+'</p>'+(b.short_description?'<p>'+esc(b.short_description)+'</p>':'')+'</article>';
+const card=b=>'<a class="card shop" href="#/boutique/'+encodeURIComponent(b.slug)+'">'+(safe(b.cover_url)?'<img class="cv" loading="lazy" alt="" src="'+esc(b.cover_url)+'">':'')+'<h3>'+esc(b.name)+'</h3><p class="meta">'+esc([b.city,b.postal_code].filter(Boolean).join(" "))+(regName(b.region_code)?'<br>'+esc(regName(b.region_code)):'')+'</p>'+(b.short_description?'<p>'+esc(b.short_description)+'</p>':'')+'</a>';
 const grid=l=>'<div class="grid">'+l.map(card).join("")+'</div>';
 const chips=a=>'<div class="chips">'+a.map(x=>'<button class="btn chip" '+x[0]+'>'+esc(x[1])+'<span class="cnt">'+x[2]+'</span></button>').join("")+'</div>';
 const SEC_DEF={
@@ -180,7 +193,7 @@ function near(){
   const a=p.coords.latitude,b=p.coords.longitude,R=Math.PI/180;
   const d=(x,y)=>12742*Math.asin(Math.sqrt(Math.sin((x-a)*R/2)**2+Math.cos(a*R)*Math.cos(x*R)*Math.sin((y-b)*R/2)**2));
   const l=DATA.filter(x=>x.latitude!=null&&x.longitude!=null).map(x=>({x,k:d(x.latitude,x.longitude)})).sort((m,n)=>m.k-n.k).slice(0,6);
-  o.innerHTML=l.length?'<div class="grid">'+l.map(m=>card(m.x).replace("</article>",'<p class="meta">à '+Math.round(m.k)+' km</p></article>')).join("")+'</div>':emptyHTML("Aucune boutique localisée","Aucune boutique publiée n’a encore de coordonnées.");
+  o.innerHTML=l.length?'<div class="grid">'+l.map(m=>card(m.x).replace("</a>",'<p class="meta">à '+Math.round(m.k)+' km</p></a>')).join("")+'</div>':emptyHTML("Aucune boutique localisée","Aucune boutique publiée n’a encore de coordonnées.");
  },()=>{o.innerHTML=emptyHTML("Localisation refusée","Autorisez-la dans votre navigateur ou utilisez la recherche.");},{timeout:10000});
 }
 $("q").addEventListener("input",suggest);
@@ -275,6 +288,58 @@ function renderZone(){
  document.addEventListener("click",e=>{const t=e.target.closest("#v-carte [data-pick]");if(t)pick(t.dataset.pick,t.dataset.dep);});
  addEventListener("resize",()=>{if(GEO)setVB();});
 })();
+/* ===== Phase 4 : fiches boutiques ===== */
+const DAYS=["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
+const LK={website:"Site Internet",instagram:"Instagram",facebook:"Facebook",tiktok:"TikTok",whatsapp:"WhatsApp",phone:"Téléphone",other:"Lien"};
+const safe=u=>/^https:\/\/\S+$/i.test(u||"")||/^tel:\+?[0-9 ]{6,20}$/.test(u||"")?u:"";
+const hhmm=t=>(t||"").slice(0,5);
+function setMeta(t,d){
+ const m=document.querySelector('meta[name=description]');setMeta.t=setMeta.t||document.title;setMeta.d=setMeta.d||m.content;
+ document.title=t||setMeta.t;m.content=d||setMeta.d;const o=$("ld");if(o)o.remove();
+}
+async function openShop(slug){
+ const box=$("shopBox");box.innerHTML='<p class="msg">Chargement de la fiche…</p>';
+ if(!sb){box.innerHTML=emptyHTML("Supabase non configuré");return;}
+ try{
+  const {data:b,error}=await sb.from("businesses").select("id,name,slug,short_description,description,address,postal_code,city,department_code,region_code,latitude,longitude,phone,email,website,status,logo_url,cover_url,specialties,services,extra_info").eq("slug",slug).maybeSingle();
+  if(error)throw error;
+  if(!b){setMeta();box.innerHTML=emptyHTML("Boutique introuvable","Elle n’existe pas ou n’est pas publiée.");return;}
+  const [im,lk,hr,bc]=await Promise.all([
+   sb.from("business_images").select("url,kind,alt,is_main").eq("business_id",b.id).order("sort_order"),
+   sb.from("business_links").select("kind,label,url").eq("business_id",b.id).order("sort_order"),
+   sb.from("business_hours").select("weekday,opens,closes,closed").eq("business_id",b.id).order("weekday"),
+   sb.from("business_categories").select("categories(name)").eq("business_id",b.id)]);
+  box.innerHTML=shopHTML(b,im.data||[],lk.data||[],hr.data||[],(bc.data||[]).map(x=>x.categories&&x.categories.name).filter(Boolean));
+  setMeta(b.name+" – boutique CBD"+(b.city?" à "+b.city:"")+" | Plug 2 France",b.short_description);
+  const ld={"@context":"https://schema.org","@type":"Store",name:b.name,telephone:b.phone||undefined,url:safe(b.website)||undefined,image:safe(b.cover_url)||undefined,address:{"@type":"PostalAddress",streetAddress:b.address,postalCode:b.postal_code,addressLocality:b.city,addressCountry:"FR"}};
+  const s=document.createElement("script");s.type="application/ld+json";s.id="ld";s.textContent=JSON.stringify(ld).replace(/</g,"\\u003c");document.head.appendChild(s);
+ }catch(e){box.innerHTML=emptyHTML("Fiche indisponible",esc(e.message||"Erreur de chargement")+" (supabase.sql à jour ?)");}
+}
+function shopHTML(b,im,lk,hr,cats){
+ const imgs=im.filter(i=>i.kind!=="logo"&&safe(i.url).startsWith("https"));
+ const main=imgs.find(i=>i.is_main)||imgs[0]||(safe(b.cover_url)?{url:b.cover_url}:null);
+ const alt=i=>esc(i.alt||b.name);
+ const gal=main?'<div><img id="gMain" src="'+esc(main.url)+'" alt="'+alt(main)+'">'+(imgs.length>1?'<div class="ths">'+imgs.map(i=>'<button class="th'+(i===main?' on':'')+'" data-src="'+esc(i.url)+'" data-alt="'+alt(i)+'" aria-label="Voir la photo"><img loading="lazy" src="'+esc(i.url)+'" alt=""></button>').join("")+'</div>':'')+'</div>':'';
+ const logo=safe(b.logo_url)?'<img src="'+esc(b.logo_url)+'" alt="Logo '+esc(b.name)+'">':'';
+ const blk=(t,v)=>v?'<h3>'+t+'</h3><p>'+esc(v)+'</p>':'';
+ const links=lk.filter(l=>safe(l.url)).map(l=>[l.label||LK[l.kind]||"Lien",l.url]);
+ if(safe(b.website)&&!links.some(l=>l[1]===b.website))links.unshift([LK.website,b.website]);
+ const tel=b.phone&&safe("tel:"+b.phone.replace(/[^\d+]/g,"")),mail=b.email&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(b.email)?b.email:"";
+ const a=(h,t,p)=>'<a class="btn'+(p?' p':'')+'" href="'+esc(h)+'"'+(h.startsWith("https")?' target="_blank" rel="noopener noreferrer"':'')+'>'+esc(t)+'</a>';
+ const acts=(tel?a(tel,"Appeler "+b.phone,true):"")+(mail?a("mailto:"+mail,"Écrire un e-mail"):"")+links.filter(l=>!l[1].startsWith("tel:")).map(l=>a(l[1],l[0])).join("")+(b.latitude!=null&&b.longitude!=null?a("https://www.openstreetmap.org/?mlat="+(+b.latitude)+"&mlon="+(+b.longitude)+"#map=17/"+(+b.latitude)+"/"+(+b.longitude),"Voir sur la carte"):"");
+ const where=[b.address,[b.postal_code,b.city].filter(Boolean).join(" "),depName(b.department_code),regName(b.region_code)].filter(Boolean).map(esc).join("<br>");
+ const hrs=hr.length?'<h3>Horaires</h3><table class="hrs">'+hr.map(h=>'<tr><td>'+(DAYS[h.weekday-1]||"")+'</td><td>'+(h.closed?"Fermé":hhmm(h.opens)+" – "+hhmm(h.closes))+'</td></tr>').join("")+'</table>':'';
+ return (b.status!=="published"?'<p class="warn">Aperçu administrateur : cette fiche n’est pas publiée.</p>':'')+
+ '<div class="fh">'+logo+'<div><h2>'+esc(b.name)+'</h2><p class="meta">'+esc([b.city,b.postal_code].filter(Boolean).join(" "))+'</p></div></div>'+gal+
+ '<div class="fcols"><div class="card">'+blk("Présentation",b.description||b.short_description)+(cats.length?'<h3>Produits</h3><p>'+cats.map(c=>'<span class="tag">'+esc(c)+'</span>').join("")+'</p>':'')+blk("Spécialités",b.specialties)+blk("Services",b.services)+blk("À savoir",b.extra_info)+'</div>'+
+ '<div class="card"><h3>Adresse</h3><p>'+(where||"Non renseignée")+'</p>'+hrs+'<div class="acts">'+acts+'</div></div></div>'+
+ '<p class="legal">Les produits CBD ne sont pas des médicaments et aucune propriété thérapeutique n’est revendiquée par Plug 2 France.</p>';
+}
+document.addEventListener("click",e=>{
+ const t=e.target.closest(".th");if(!t)return;
+ const g=$("gMain");g.src=t.dataset.src;g.alt=t.dataset.alt;
+ document.querySelectorAll(".th").forEach(x=>x.classList.toggle("on",x===t));
+});
 async function init(){
  renderHome();renderList();
  if(!sb){$("dot").className="dot ko";$("status").textContent="Supabase non configuré : renseignez l’URL et la clé dans index.html.";return;}
@@ -284,14 +349,14 @@ async function init(){
   applySettings(Object.fromEntries(data.map(r=>[r.key,r.value])));
   const [r,b,h,dp]=await Promise.all([
    sb.from("regions").select("code,name").order("name"),
-   sb.from("businesses").select("id,name,city,postal_code,department_code,region_code,short_description,featured,created_at,latitude,longitude").eq("status","published").order("created_at",{ascending:false}).limit(2000),
+   sb.from("businesses").select("id,name,slug,cover_url,city,postal_code,department_code,region_code,short_description,featured,created_at,latitude,longitude").eq("status","published").order("created_at",{ascending:false}).limit(2000),
    sb.from("homepage_sections").select("key,title,enabled,sort_order"),
    sb.from("departments").select("code,name,region_code").order("code")]);
   if(r.error)throw r.error;if(b.error)throw b.error;
   REGIONS=r.data;DEPS=dp.error?[]:dp.data;DATA=b.data;SECS=h.error?[]:h.data;loaded=true;
   $("dot").className="dot ok";
   $("status").textContent=DATA.length?DATA.length+" boutique"+(DATA.length>1?"s":"")+" référencée"+(DATA.length>1?"s":""):"Connecté : aucune boutique publiée pour l’instant.";
-  renderHome();renderList();loadMap();
+  renderHome();renderList();loadMap();if(location.hash.startsWith("#/boutique/"))openShop(decodeURIComponent(location.hash.slice(11)));
  }catch(e){$("dot").className="dot ko";$("status").textContent="Erreur Supabase : "+(e.message||"connexion impossible")+" (supabase.sql exécuté ?)";}
 }
 init();
