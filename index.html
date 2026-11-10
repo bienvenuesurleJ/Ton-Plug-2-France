@@ -109,7 +109,14 @@ form.wide{max-width:none}.fg{display:grid;gap:12px;grid-template-columns:repeat(
 <section class="view" id="v-carte"><div class="wrap page"><h2>Carte de France</h2><div class="head" id="crumb"></div><div class="card mapcard"><p class="msg" id="mapMsg">Chargement de la carte…</p><svg id="map" role="group" aria-label="Carte interactive de la France : régions puis départements"></svg><div class="zoom" id="zoomBox"><button class="btn" data-z="1.4" aria-label="Zoom avant">+</button><button class="btn" data-z="0.7" aria-label="Zoom arrière">−</button><button class="btn" data-z="0" aria-label="Recentrer">⟲</button></div></div><h3 class="sub" id="zTitle"></h3><div id="zoneList"></div><div id="mapShops"></div></div></section>
 <section class="view" id="v-boutiques"><div class="wrap page"><h2>Boutiques CBD</h2><div class="head" id="listHead"></div><div id="list"></div></div></section>
 <section class="view" id="v-partenaire"><div class="wrap page"><h2>Devenir partenaire</h2>
-<div class="card empty"><b>Demande de publicité : phase 6</b>Le formulaire de réservation sera ajouté sans aucun paiement dans l’application.</div></div></section>
+<p class="meta" style="max-width:60ch;margin-bottom:18px">Demandez la mise en avant de votre boutique CBD. Aucun paiement n’est demandé ici : votre demande est étudiée, puis nous vous contactons.</p>
+<form id="adf" class="card wide"><label>Boutique référencée<select id="adBiz" name="business"><option value="">Ma boutique n’est pas encore référencée</option></select></label>
+<div class="fg"><label>Nom de la boutique<input name="shop" required maxlength="120"></label><label>Nom du responsable<input name="contact" required maxlength="120"></label><label>E-mail<input name="email" type="email" required maxlength="200"></label><label>Téléphone<input name="phone" type="tel" required minlength="6" maxlength="30"></label></div>
+<div class="fg"><label>Durée souhaitée<select name="dur" id="adDur"><option value="3d">3 jours</option><option value="1w">1 semaine</option><option value="2w">2 semaines</option><option value="1m">1 mois</option><option value="custom">Durée personnalisée</option></select></label><label id="adCus" style="display:none">Nombre de jours<input name="days" type="number" min="1" max="365"></label></div>
+<label>Message complémentaire<textarea name="msg" rows="4" maxlength="1000"></textarea></label>
+<input name="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+<label style="grid-auto-flow:column;align-items:start;justify-content:start;gap:8px"><input type="checkbox" required> J’accepte que ces informations soient utilisées pour traiter ma demande (RGPD).</label>
+<button class="btn p" type="submit">Envoyer ma demande</button><p class="msg" id="adMsg" role="status"></p></form></div></section>
 <section class="view" id="v-admin"><div class="wrap page"><h2>Espace administrateur</h2>
 <div class="card" id="adminBox"><form id="loginForm"><input id="em" type="email" placeholder="E-mail" autocomplete="username" required><input id="pw" type="password" placeholder="Mot de passe" autocomplete="current-password" required><button class="btn p" type="submit">Se connecter</button><p class="msg" id="loginMsg" role="status"></p></form></div></div></section>
 <section class="view" id="v-fiche"><div class="wrap page"><p><a class="btn" href="#/boutiques">Retour aux boutiques</a></p><div id="shopBox"></div></div></section>
@@ -156,12 +163,12 @@ const regName=c=>(REGIONS.find(r=>r.code===c)||{}).name||"";
 const matches=(b,q)=>{const h=norm([b.name,b.city,b.postal_code,b.department_code,depName(b.department_code),regName(b.region_code)].join(" "));return norm(q).split(/\s+/).filter(Boolean).every(t=>h.includes(t));};
 const emptyHTML=(t,s)=>'<div class="card empty"><b>'+t+'</b>'+(s||"")+'</div>';
 const card=b=>'<a class="card shop" href="#/boutique/'+encodeURIComponent(b.slug)+'">'+(safe(b.cover_url)?'<img class="cv" loading="lazy" alt="" src="'+esc(b.cover_url)+'">':'')+'<h3>'+esc(b.name)+'</h3><p class="meta">'+esc([b.city,b.postal_code].filter(Boolean).join(" "))+(regName(b.region_code)?'<br>'+esc(regName(b.region_code)):'')+'</p>'+(b.short_description?'<p>'+esc(b.short_description)+'</p>':'')+'</a>';
-const grid=l=>'<div class="grid">'+l.map(card).join("")+'</div>';
+const grid=(l,sp)=>'<div class="grid">'+l.map(b=>sp?card(b).replace('<h3>','<span class="tag">Sponsorisé</span><h3>'):card(b)).join("")+'</div>';
 const chips=a=>'<div class="chips">'+a.map(x=>'<button class="btn chip" '+x[0]+'>'+esc(x[1])+'<span class="cnt">'+x[2]+'</span></button>').join("")+'</div>';
 const SEC_DEF={
  featured:{t:"Boutiques CBD à la une",f:()=>DATA.filter(b=>b.featured).slice(0,6),e:"Aucune boutique à la une pour le moment."},
  recent:{t:"Boutiques récemment ajoutées",f:()=>DATA.slice(0,6),e:"Aucune boutique publiée pour le moment."},
- sponsored:{t:"Boutiques sponsorisées",f:()=>[],e:"Aucune boutique sponsorisée actuellement."},
+ sponsored:{t:"Boutiques sponsorisées",f:()=>adsFor("home"),e:"Aucune boutique sponsorisée actuellement."},
  regions:{t:"Explorer par région"},departments:{t:"Explorer par département"},nearby:{t:"Près de chez moi"}};
 function count(k){const c={};DATA.forEach(b=>{if(b[k])c[b[k]]=(c[b[k]]||0)+1;});return c;}
 function body(k){
@@ -169,7 +176,7 @@ function body(k){
  if(k==="regions"){const c=count("region_code"),l=REGIONS.filter(r=>c[r.code]);return l.length?chips(l.map(r=>['data-region="'+esc(r.code)+'"',r.name,c[r.code]])):emptyHTML("Aucune région couverte pour le moment.");}
  if(k==="departments"){const c=count("department_code"),l=Object.keys(c).sort();return l.length?chips(l.map(x=>['data-dept="'+esc(x)+'"',(depName(x)||"Département")+" ("+x+")",c[x]])):emptyHTML("Aucun département couvert pour le moment.");}
  if(k==="nearby")return '<button class="btn" id="geo">Trouver les boutiques proches</button><div id="nearRes" style="margin-top:14px"></div>';
- const l=d.f();return l.length?grid(l):emptyHTML(d.e);
+ const l=d.f();return l.length?grid(l,k==="sponsored"):emptyHTML(d.e);
 }
 function renderHome(){
  const def=Object.keys(SEC_DEF).map((k,i)=>({key:k,enabled:true,sort_order:i}));
@@ -180,7 +187,7 @@ function renderList(){
  const l=DATA.filter(b=>(!filter.region||b.region_code===filter.region)&&(!filter.dept||b.department_code===filter.dept)&&(!filter.q||matches(b,filter.q)));
  const lab=[filter.q&&"« "+filter.q+" »",filter.region&&regName(filter.region),filter.dept&&(depName(filter.dept)||"département "+filter.dept)].filter(Boolean).join(", ");
  $("listHead").innerHTML=lab?'<span>'+l.length+' résultat(s) pour '+esc(lab)+'</span><button class="btn" id="reset">Tout afficher</button>':'<span>'+l.length+' boutique(s) publiée(s)</span>';
- $("list").innerHTML=l.length?grid(l):lab?emptyHTML("Aucune boutique trouvée","Essayez une autre ville, un autre code postal ou une autre région."):emptyHTML("Aucune boutique publiée","Les boutiques apparaîtront ici dès leur publication.");
+ $("list").innerHTML=spBlock()+(l.length?grid(l):lab?emptyHTML("Aucune boutique trouvée","Essayez une autre ville, un autre code postal ou une autre région."):emptyHTML("Aucune boutique publiée","Les boutiques apparaîtront ici dès leur publication."));
 }
 function go(f){filter=Object.assign({q:"",region:"",dept:""},f);$("q").value=filter.q;$("sug").hidden=true;if(location.hash==="#/boutiques")renderList();else location.hash="#/boutiques";}
 function suggest(){
@@ -276,6 +283,7 @@ function renderZone(){
  $("zoneList").innerHTML=l.length?chips(l):emptyHTML("Aucune zone disponible","Exécutez supabase.sql pour créer les départements.");
  const s=DATA.filter(b=>dep?b.department_code===dep.code:reg?b.region_code===reg.code:false),nm=esc(dep?dep.name:reg?reg.name:"");
  $("mapShops").innerHTML=!reg?emptyHTML("Sélectionnez une région","Touchez la carte ou la liste pour voir les boutiques."):s.length?'<h3 class="sub">'+s.length+' boutique(s) – '+nm+'</h3>'+grid(s):emptyHTML("Aucune boutique pour le moment",dep?"Aucune boutique publiée dans ce département.":"Aucune boutique publiée dans cette région.");
+ if(reg&&!dep){const sp=adsFor("region",reg.code);if(sp.length)$("mapShops").insertAdjacentHTML("afterbegin",'<h3 class="sub">Boutiques sponsorisées</h3>'+grid(sp,true));}
 }
 (function(){
  const s=$("map"),P=new Map();let moved=0;
@@ -337,7 +345,7 @@ function shopHTML(b,im,lk,hr,cats){
  const where=[b.address,[b.postal_code,b.city].filter(Boolean).join(" "),depName(b.department_code),regName(b.region_code)].filter(Boolean).map(esc).join("<br>");
  const hrs=hr.length?'<h3>Horaires</h3><table class="hrs">'+hr.map(h=>'<tr><td>'+(DAYS[h.weekday-1]||"")+'</td><td>'+(h.closed?"Fermé":hhmm(h.opens)+" – "+hhmm(h.closes))+'</td></tr>').join("")+'</table>':'';
  return (b.status!=="published"?'<p class="warn">Aperçu administrateur : cette fiche n’est pas publiée.</p>':'')+
- '<div class="fh">'+logo+'<div><h2>'+esc(b.name)+'</h2><p class="meta">'+esc([b.city,b.postal_code].filter(Boolean).join(" "))+'</p></div></div>'+gal+
+ '<div class="fh">'+logo+'<div>'+(ADS.some(a=>a.business_id===b.id&&a.positions.includes("fiche"))?'<span class="tag">Sponsorisé</span>':'')+'<h2>'+esc(b.name)+'</h2><p class="meta">'+esc([b.city,b.postal_code].filter(Boolean).join(" "))+'</p></div></div>'+gal+
  '<div class="fcols"><div class="card">'+blk("Présentation",b.description||b.short_description)+(cats.length?'<h3>Produits</h3><p>'+cats.map(c=>'<span class="tag">'+esc(c)+'</span>').join("")+'</p>':'')+blk("Spécialités",b.specialties)+blk("Services",b.services)+blk("À savoir",b.extra_info)+'</div>'+
  '<div class="card"><h3>Adresse</h3><p>'+(where||"Non renseignée")+'</p>'+hrs+'<div class="acts">'+acts+'</div></div></div>'+
  '<p class="legal">Les produits CBD ne sont pas des médicaments et aucune propriété thérapeutique n’est revendiquée par Plug 2 France.</p>';
@@ -360,17 +368,18 @@ async function audit(action,entity,id,detail){try{await sb.from("audit_logs").in
 function refreshPublic(){init();}
 async function autoAdmin(){if(!sb)return;const {data}=await sb.auth.getSession();if(!data.session)return;const {data:ok}=await sb.rpc("is_admin");if(ok)showAdmin();}
 function showAdmin(){
- const T=[["dash","Tableau de bord"],["biz","Boutiques"],["sec","Accueil"],["site","Site & identité"],["cat","Catégories"],["med","Médias"]];
+ const T=[["dash","Tableau de bord"],["biz","Boutiques"],["ads","Publicités"],["sec","Accueil"],["site","Site & identité"],["cat","Catégories"],["med","Médias"]];
  $("adminBox").innerHTML='<div class="tabs">'+T.map(t=>'<button class="btn tb" data-tab="'+t[0]+'">'+t[1]+'</button>').join("")+'<button class="btn" data-a="out">Déconnexion</button></div><p class="msg" id="aNote" role="status"></p><div id="aPane"></div>';
  openTab(TAB);
 }
-function openTab(t){TAB=t;document.querySelectorAll(".tb").forEach(b=>b.classList.toggle("p",b.dataset.tab===t));note("");({dash:tDash,biz:tBiz,sec:tSec,site:tSite,cat:tCat,med:tMed})[t]().catch(e=>note(e.message||"Erreur",1));}
+function openTab(t){TAB=t;document.querySelectorAll(".tb").forEach(b=>b.classList.toggle("p",b.dataset.tab===t));note("");({dash:tDash,biz:tBiz,sec:tSec,site:tSite,cat:tCat,med:tMed,ads:tAds})[t]().catch(e=>note(e.message||"Erreur",1));}
 async function loadBiz(){const {data,error}=await sb.from("businesses").select("id,name,slug,city,postal_code,region_code,department_code,status,featured,latitude,longitude,created_at").order("created_at",{ascending:false});if(error)throw error;ADM=data;}
 async function tDash(){
  await loadBiz();
+ await sb.rpc("sync_campaigns");const rq=(await sb.from("advertising_requests").select("status")).data||[],cp=(await sb.from("advertising_campaigns").select("status")).data||[],pend=rq.filter(r=>["new","review","accepted","link_sent","awaiting_payment","paid"].includes(r.status)).length,act=cp.filter(c=>c.status==="active").length;
  const n=s=>ADM.filter(b=>b.status===s).length,nc=ADM.filter(b=>b.latitude==null||b.longitude==null).length;
  const g=(k,f)=>{const c={};ADM.forEach(b=>{const v=b[k]||"";c[v]=(c[v]||0)+1;});return Object.entries(c).sort((a,b)=>b[1]-a[1]).map(([v,k])=>'<span class="tag">'+esc(f(v))+' : '+k+'</span>').join("")||"Aucune donnée";};
- $("aPane").innerHTML='<div class="grid">'+[["Boutiques",ADM.length],["Publiées",n("published")],["En attente",n("pending")],["Sans coordonnées (à corriger)",nc]].map(x=>'<div class="card sc"><h3>'+x[1]+'</h3><p class="meta">'+x[0]+'</p></div>').join("")+'</div><div class="card"><h3>Par région</h3><p>'+g("region_code",c=>regName(c)||"Non renseignée")+'</p><h3>Par département</h3><p>'+g("department_code",c=>depName(c)||c||"Non renseigné")+'</p></div>'+emptyHTML("Publicités, visites et clics","Disponibles aux phases 6 et 7 : aucun chiffre fictif n’est affiché.");
+ $("aPane").innerHTML='<div class="grid">'+[["Boutiques",ADM.length],["Publiées",n("published")],["En attente",n("pending")],["Sans coordonnées (à corriger)",nc],["Demandes publicitaires",rq.length],["Réservations en attente",pend],["Publicités actives",act]].map(x=>'<div class="card sc"><h3>'+x[1]+'</h3><p class="meta">'+x[0]+'</p></div>').join("")+'</div><div class="card"><h3>Par région</h3><p>'+g("region_code",c=>regName(c)||"Non renseignée")+'</p><h3>Par département</h3><p>'+g("department_code",c=>depName(c)||c||"Non renseigné")+'</p></div>'+emptyHTML("Visites, consultations et clics","Disponibles en phase 7 : aucun chiffre fictif n’est affiché.");
 }
 async function tBiz(){
  await loadBiz();
@@ -515,6 +524,101 @@ document.addEventListener("submit",async e=>{
  const f=e.target;if(!f.closest("#adminBox")||f.id==="loginForm")return;e.preventDefault();
  try{if(f.id==="bf")await saveBiz(f);else if(f.id==="sf2")await saveSite(f);}catch(err){note(err.message||"Erreur",1);}
 });
+/* ===== Phase 6 : publicités (côté public) ===== */
+var ADS=[];
+function adsFor(pos,region){return ADS.filter(a=>a.positions.includes(pos)&&(pos!=="region"||a.region_code===region)).map(a=>DATA.find(b=>b.id===a.business_id)).filter(Boolean);}
+function spBlock(){const seen=new Set(),l=(filter.q?adsFor("search"):adsFor("list")).concat(filter.region?adsFor("region",filter.region):[]).filter(b=>!seen.has(b.id)&&seen.add(b.id));return l.length?'<h3 class="sub">Boutiques sponsorisées</h3>'+grid(l,true)+'<h3 class="sub">Résultats</h3>':"";}
+function fillPartner(){$("adBiz").innerHTML='<option value="">Ma boutique n’est pas encore référencée</option>'+DATA.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(b=>'<option value="'+esc(b.id)+'">'+esc(b.name)+(b.city?" – "+esc(b.city):"")+'</option>').join("");}
+$("adDur").addEventListener("change",e=>{$("adCus").style.display=e.target.value==="custom"?"grid":"none";});
+$("adf").addEventListener("submit",async e=>{
+ e.preventDefault();const f=e.target,m=$("adMsg"),d=new FormData(f);m.className="msg";
+ if(!sb){m.className="msg err";m.textContent="Supabase n’est pas configuré.";return;}
+ m.textContent="Envoi en cours…";
+ const {error}=await sb.rpc("submit_ad_request",{p_business_id:d.get("business")||null,p_shop_name:d.get("shop"),p_contact_name:d.get("contact"),p_email:d.get("email"),p_phone:d.get("phone"),p_duration:d.get("dur"),p_custom_days:d.get("dur")==="custom"?+d.get("days"):null,p_message:d.get("msg")||null,p_hp:d.get("hp")||""});
+ if(error){m.className="msg err";m.textContent=/rate_limit/.test(error.message)?"Trop de demandes récentes avec cet e-mail. Réessayez plus tard.":"Envoi impossible : vérifiez les champs ("+error.message+").";return;}
+ f.reset();$("adCus").style.display="none";m.textContent="Merci ! Votre demande a bien été reçue et sera étudiée. Aucun paiement n’est demandé à cette étape.";
+});
+/* ===== Phase 6 : publicités (administration) ===== */
+var RQ=[],CP=[],RQID="",INV=false;
+const RS={new:"Nouvelle demande",review:"En cours d’étude",accepted:"Acceptée",refused:"Refusée",link_sent:"Lien de paiement envoyé",awaiting_payment:"En attente de paiement",paid:"Paiement confirmé manuellement",scheduled:"Publicité programmée",active:"Publicité active",ended:"Publicité terminée",cancelled:"Publicité annulée"};
+const DUR={"3d":["3 jours",3],"1w":["1 semaine",7],"2w":["2 semaines",14],"1m":["1 mois",30],custom:["Durée personnalisée",0]};
+const POS={home:"Page d’accueil",search:"Résultats de recherche",list:"Liste des boutiques",region:"Région concernée",fiche:"Fiche de la boutique"};
+const CS={scheduled:"Programmée",active:"Active",paused:"Suspendue",stopped:"Arrêtée",ended:"Terminée"};
+const bn=id=>(ADM.find(b=>b.id===id)||{}).name||"—",fd=d=>new Date(d).toLocaleDateString("fr-FR"),nowL=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,16);
+const dayOf=r=>r.duration_code==="custom"?r.custom_days:DUR[r.duration_code][1];
+async function reloadAds(){
+ await sb.rpc("sync_campaigns");
+ const [r,c]=await Promise.all([sb.from("advertising_requests").select("*").order("created_at",{ascending:false}),sb.from("advertising_campaigns").select("*").order("starts_at",{ascending:false})]);
+ if(r.error)throw r.error;if(c.error)throw c.error;RQ=r.data;CP=c.data;if(!ADM.length)await loadBiz();
+}
+async function tAds(){await reloadAds();INV=false;drawAds();}
+const cpRow=c=>'<div class="card ar"><div><b>'+esc(bn(c.business_id))+'</b><div class="meta">'+esc(c.positions.map(p=>POS[p]).join(", "))+(c.region_code?" ("+esc(regName(c.region_code))+")":"")+'<br>Du '+fd(c.starts_at)+' au '+fd(c.ends_at)+' – '+CS[c.status]+'</div></div><div class="row"><button class="btn" data-ad="cact" data-id="'+c.id+'">Activer</button><button class="btn" data-ad="csus" data-id="'+c.id+'">Suspendre</button><button class="btn" data-ad="cstop" data-id="'+c.id+'">Arrêter</button><button class="btn" data-ad="cext" data-id="'+c.id+'">Prolonger</button></div></div>';
+function drawAds(){
+ const st=($("rs")||{}).value||"",l=RQ.filter(r=>!st||r.status===st);
+ $("aPane").innerHTML='<div class="row"><select id="rs"><option value="">Toutes les demandes</option>'+opt(Object.entries(RS),st)+'</select></div><h3 class="sub">Demandes ('+l.length+')</h3>'+(l.length?l.map(r=>'<div class="card ar"><div><b>'+esc(r.shop_name)+'</b><div class="meta">'+esc(r.contact_name)+' – '+DUR[r.duration_code][0]+' – '+RS[r.status]+' – '+fd(r.created_at)+'</div></div><button class="btn" data-ad="open" data-id="'+r.id+'">Ouvrir</button></div>').join(""):emptyHTML("Aucune demande","Les demandes envoyées depuis « Devenir partenaire » apparaîtront ici."))+'<h3 class="sub">Campagnes</h3>'+(CP.length?CP.map(cpRow).join(""):emptyHTML("Aucune campagne","Programmez une publicité depuis une demande payée."));
+}
+async function setRq(id,patch,why){
+ const o=RQ.find(r=>r.id===id),r=await sb.from("advertising_requests").update({...patch,updated_at:new Date().toISOString()}).eq("id",id);if(r.error)throw r.error;
+ if(patch.status&&patch.status!==o.status)await sb.from("advertising_request_events").insert({request_id:id,from_status:o.status,to_status:patch.status,note:why||null});
+ audit("update","ad_request",id,patch.status||"");
+}
+async function reqView(id){
+ RQID=id;INV=true;const r=RQ.find(x=>x.id===id),ev=(await sb.from("advertising_request_events").select("*").eq("request_id",id).order("created_at",{ascending:false})).data||[],ok=["paid","scheduled","active","ended"].includes(r.status);
+ $("aPane").innerHTML='<p><button class="btn" data-ad="list">← Retour aux demandes</button></p><div class="card"><h3>'+esc(r.shop_name)+'</h3><p>Reçue le '+fd(r.created_at)+' – durée demandée : '+DUR[r.duration_code][0]+(r.duration_code==="custom"?" ("+r.custom_days+" j)":"")+'</p>'+(r.message?'<p>'+esc(r.message)+'</p>':'')+'</div>'+
+ '<form id="rf" class="wide card"><div class="fg">'+FI("shop_name","Boutique",r.shop_name)+FI("contact_name","Responsable",r.contact_name)+FI("email","E-mail",r.email,"email")+FI("phone","Téléphone",r.phone,"tel")+'<label>Statut<select name="status">'+opt(Object.entries(RS),r.status)+'</select></label><label>Boutique référencée<select name="business"><option value="">—</option>'+opt(ADM.map(b=>[b.id,b.name]),r.business_id)+'</select></label>'+FI("days","Durée (jours)",dayOf(r),"number",'min="1" max="365"')+'</div>'+FI("payment_link","Lien de paiement externe (Stripe, PayPal… en https://)",r.payment_link,"url")+TA("admin_note","Note interne",r.admin_note)+
+ '<div class="row"><button class="btn p" type="submit">Enregistrer</button><button type="button" class="btn" data-ad="acc">Accepter</button><button type="button" class="btn" data-ad="ref">Refuser</button><button type="button" class="btn" data-ad="mail">Envoyer le lien (e-mail)</button><button type="button" class="btn" data-ad="sent">Marquer « lien envoyé »</button><button type="button" class="btn" data-ad="paid">Confirmer le paiement reçu</button></div><p class="meta">L’application ne traite aucun paiement : le lien s’envoie depuis votre messagerie et vous confirmez vous-même la réception.</p></form>'+
+ '<form id="cf" class="wide card"><h3>Programmer la publicité</h3>'+(ok?'':'<p class="warn">Confirmez d’abord le paiement reçu.</p>')+'<div class="fg">'+Object.entries(POS).map(p=>'<label style="grid-auto-flow:column;align-items:center;justify-content:start;gap:8px"><input type="checkbox" name="pos" value="'+p[0]+'">'+p[1]+'</label>').join("")+'</div><div class="fg" style="margin-top:12px"><label>Région (si « Région concernée »)<select name="region"><option value="">—</option>'+opt(REGIONS.map(x=>[x.code,x.name]),"")+'</select></label><label>Début<input type="datetime-local" name="start" value="'+nowL()+'"></label>'+FI("cdays","Durée (jours)",dayOf(r),"number",'min="1" max="365"')+'</div><button class="btn p" type="submit" style="margin-top:12px">Programmer</button></form>'+
+ '<h3 class="sub">Campagnes de cette demande</h3>'+(CP.filter(c=>c.request_id===id).map(cpRow).join("")||'<p class="msg">Aucune campagne.</p>')+
+ '<h3 class="sub">Historique</h3>'+(ev.length?ev.map(e=>'<p class="meta">'+new Date(e.created_at).toLocaleString("fr-FR")+' – '+(RS[e.from_status]||"")+' → '+RS[e.to_status]+(e.note?' ('+esc(e.note)+')':'')+'</p>').join(""):'<p class="msg">Aucun changement de statut.</p>');
+}
+async function saveReq(f){
+ const d=new FormData(f),g=n=>(d.get(n)||"").toString().trim(),days=+g("days"),pre=Object.entries(DUR).find(x=>x[1][1]===days&&x[0]!=="custom"),pl=g("payment_link")||null;
+ if(pl&&!/^https:\/\/\S+$/i.test(pl))return note("Le lien de paiement doit commencer par https://",1);
+ if(!(days>=1&&days<=365))return note("Durée invalide (1 à 365 jours).",1);
+ await setRq(RQID,{shop_name:g("shop_name"),contact_name:g("contact_name"),email:g("email"),phone:g("phone"),status:g("status"),business_id:g("business")||null,duration_code:pre?pre[0]:"custom",custom_days:pre?null:days,payment_link:pl,admin_note:g("admin_note")||null});
+ await reloadAds();await reqView(RQID);note("Demande enregistrée.");
+}
+async function saveCamp(f){
+ const r=RQ.find(x=>x.id===RQID),d=new FormData(f),pos=d.getAll("pos"),days=+d.get("cdays"),st=new Date(d.get("start"));
+ if(!r.business_id)return note("Associez d’abord une boutique référencée à cette demande (puis enregistrez).",1);
+ if(!["paid","scheduled","active","ended"].includes(r.status))return note("Confirmez d’abord la réception du paiement.",1);
+ if(!pos.length)return note("Choisissez au moins un emplacement.",1);
+ if(pos.includes("region")&&!d.get("region"))return note("Choisissez la région à cibler.",1);
+ if(isNaN(st)||!(days>=1&&days<=365))return note("Dates ou durée invalides.",1);
+ const e=await sb.from("advertising_campaigns").insert({request_id:RQID,business_id:r.business_id,positions:pos,region_code:pos.includes("region")?d.get("region"):null,starts_at:st.toISOString(),ends_at:new Date(+st+days*864e5).toISOString()});if(e.error)throw e.error;
+ await setRq(RQID,{status:"scheduled"},"Campagne programmée");await reloadAds();await reqView(RQID);refreshPublic();note("Publicité programmée : elle sera diffusée automatiquement aux dates choisies.");
+}
+async function cpAct(a,id){
+ const c=CP.find(x=>x.id===id),now=new Date();let p={},rs=null;
+ if(a==="cact"){if(new Date(c.ends_at)<=now)return note("Campagne expirée : prolongez-la d’abord.",1);p={status:"active"};if(new Date(c.starts_at)>now)p.starts_at=now.toISOString();rs="active";}
+ else if(a==="csus")p={status:"paused"};
+ else if(a==="cstop"){if(!confirm("Arrêter définitivement cette publicité ?"))return;p={status:"stopped"};rs="cancelled";}
+ else{const n=+prompt("Prolonger de combien de jours ?","7");if(!(n>0&&n<=365))return;p={ends_at:new Date(Math.max(+new Date(c.ends_at),+now)+n*864e5).toISOString()};if(["ended","stopped","paused"].includes(c.status)){p.status=new Date(c.starts_at)<=now?"active":"scheduled";rs=p.status==="active"?"active":"scheduled";}}
+ const r=await sb.from("advertising_campaigns").update(p).eq("id",id);if(r.error)throw r.error;
+ if(rs&&c.request_id)await setRq(c.request_id,{status:rs},"Campagne : "+a);
+ audit("update","ad_campaign",id,a);await reloadAds();INV?await reqView(RQID):drawAds();refreshPublic();note("Campagne mise à jour.");
+}
+document.addEventListener("click",async e=>{
+ const t=e.target.closest("#adminBox [data-ad]");if(!t)return;const a=t.dataset.ad,id=t.dataset.id;
+ try{
+  if(a==="open")await reqView(id);
+  else if(a==="list")await tAds();
+  else if(["cact","csus","cstop","cext"].includes(a))await cpAct(a,id);
+  else{
+   const r=RQ.find(x=>x.id===RQID),f=$("rf");
+   if(a==="acc"||a==="ref"){await setRq(RQID,{status:a==="acc"?"accepted":"refused"});}
+   else if(a==="mail"){if(!r.payment_link)return note("Enregistrez d’abord un lien de paiement.",1);open("mailto:"+r.email+"?subject="+encodeURIComponent("Votre publicité sur Plug 2 France")+"&body="+encodeURIComponent("Bonjour "+r.contact_name+",\n\nVotre demande de publicité pour "+r.shop_name+" a été acceptée. Vous pouvez régler via ce lien : "+r.payment_link+"\n\nUne fois le paiement effectué, nous programmerons votre publicité.\n\nCordialement"),"_self");return;}
+   else if(a==="sent"){if(!r.payment_link)return note("Enregistrez d’abord un lien de paiement.",1);await setRq(RQID,{status:"link_sent"},"Lien envoyé");}
+   else if(a==="paid"){if(!confirm("Confirmer que le paiement a bien été reçu ?"))return;await setRq(RQID,{status:"paid"},"Paiement confirmé manuellement");}
+   await reloadAds();await reqView(RQID);note("Statut mis à jour.");
+  }
+ }catch(err){note(err.message||"Erreur",1);}
+});
+document.addEventListener("change",e=>{if(e.target.id==="rs")drawAds();});
+document.addEventListener("submit",async e=>{
+ const f=e.target;if(f.id!=="rf"&&f.id!=="cf")return;e.preventDefault();
+ try{if(f.id==="rf")await saveReq(f);else await saveCamp(f);}catch(err){note(err.message||"Erreur",1);}
+});
 async function init(){
  renderHome();renderList();
  if(!sb){$("dot").className="dot ko";$("status").textContent="Supabase non configuré : renseignez l’URL et la clé dans index.html.";return;}
@@ -522,16 +626,17 @@ async function init(){
   const {data,error}=await sb.from("site_settings").select("key,value");
   if(error)throw error;
   applySettings(Object.fromEntries(data.map(r=>[r.key,r.value])));
-  const [r,b,h,dp]=await Promise.all([
+  const [r,b,h,dp,ad]=await Promise.all([
    sb.from("regions").select("code,name").order("name"),
    sb.from("businesses").select("id,name,slug,cover_url,city,postal_code,department_code,region_code,short_description,featured,created_at,latitude,longitude").eq("status","published").order("created_at",{ascending:false}).limit(2000),
    sb.from("homepage_sections").select("key,title,enabled,sort_order"),
-   sb.from("departments").select("code,name,region_code").order("code")]);
+   sb.from("departments").select("code,name,region_code").order("code"),
+   sb.rpc("active_ads")]);
   if(r.error)throw r.error;if(b.error)throw b.error;
-  REGIONS=r.data;DEPS=dp.error?[]:dp.data;DATA=b.data;SECS=h.error?[]:h.data;loaded=true;
+  REGIONS=r.data;DEPS=dp.error?[]:dp.data;ADS=ad.error?[]:ad.data;DATA=b.data;SECS=h.error?[]:h.data;loaded=true;
   $("dot").className="dot ok";
   $("status").textContent=DATA.length?DATA.length+" boutique"+(DATA.length>1?"s":"")+" référencée"+(DATA.length>1?"s":""):"Connecté : aucune boutique publiée pour l’instant.";
-  renderHome();renderList();loadMap();if(location.hash.startsWith("#/boutique/"))openShop(decodeURIComponent(location.hash.slice(11)));
+  fillPartner();renderHome();renderList();loadMap();if(location.hash.startsWith("#/boutique/"))openShop(decodeURIComponent(location.hash.slice(11)));
  }catch(e){$("dot").className="dot ko";$("status").textContent="Erreur Supabase : "+(e.message||"connexion impossible")+" (supabase.sql exécuté ?)";}
 }
 init().then(autoAdmin);
