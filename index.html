@@ -6,6 +6,7 @@
 <title>Plug 2 France – Annuaire national des boutiques CBD</title>
 <meta name="description" content="Plug 2 France : trouvez les boutiques physiques spécialisées dans le CBD, partout en France.">
 <meta name="theme-color" content="#070b16">
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Plug 2 France">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23070b16'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%2322d3ee'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
@@ -505,11 +506,11 @@ async function audit(action,entity,id,detail){try{await sb.from("audit_logs").in
 function refreshPublic(){init();}
 async function autoAdmin(){if(!sb)return;const {data}=await sb.auth.getSession();if(!data.session)return;const {data:ok}=await sb.rpc("is_admin");if(ok)showAdmin();}
 function showAdmin(){ADMON=true;
- const T=[["dash","Tableau de bord"],["biz","Boutiques clients"],["ads","Publicités"],["qual","Qualité des fiches"],["log","Journal"],["exp","Export"],["sec","Accueil"],["site","Site & identité"],["txt","Textes & pages"],["cat","Catégories"],["med","Médias"]];
- $("adminBox").innerHTML='<div class="tabs">'+T.map(t=>'<button class="btn tb" data-tab="'+t[0]+'">'+t[1]+'</button>').join("")+'<button class="btn" data-a="out">Déconnexion</button></div><p class="msg" id="aNote" role="status"></p><div id="aPane"></div>';
+ const T=[["dash","Tableau de bord"],["biz","Boutiques clients"],["bots","Bots"],["ads","Publicités"],["qual","Qualité des fiches"],["log","Journal"],["exp","Export"],["sec","Accueil"],["site","Site & identité"],["txt","Textes & pages"],["cat","Catégories"],["med","Médias"]];
+ $("adminBox").innerHTML='<div class="tabs">'+T.map(t=>'<button class="btn tb" data-tab="'+t[0]+'">'+t[1]+'</button>').join("")+'<button class="btn" data-a="push">🔔 Activer les alertes</button><button class="btn" data-a="out">Déconnexion</button></div><p class="msg" id="aNote" role="status"></p><div id="aPane"></div>';
  openTab(TAB);
 }
-function openTab(t){TAB=t;document.querySelectorAll(".tb").forEach(b=>b.classList.toggle("p",b.dataset.tab===t));note("");({qual:tQual,log:tLog,exp:tExp,dash:tDash,biz:tBiz,sec:tSec,site:tSite,cat:tCat,med:tMed,ads:tAds,txt:tTxt})[t]().catch(e=>note(e.message||"Erreur",1));}
+function openTab(t){TAB=t;document.querySelectorAll(".tb").forEach(b=>b.classList.toggle("p",b.dataset.tab===t));note("");({qual:tQual,log:tLog,exp:tExp,dash:tDash,biz:tBiz,sec:tSec,site:tSite,cat:tCat,med:tMed,ads:tAds,txt:tTxt,bots:tBots})[t]().catch(e=>note(e.message||"Erreur",1));}
 async function loadBiz(){const {data,error}=await sb.from("businesses").select("id,name,slug,city,postal_code,region_code,department_code,status,featured,latitude,longitude,created_at").order("created_at",{ascending:false});if(error)throw error;ADM=data;}
 async function tDash(){
  await loadBiz();
@@ -640,12 +641,135 @@ async function tMed(){
  const out=[];for(const f of ["brand","library"]){const {data}=await sb.storage.from("site-media").list(f,{limit:100,sortBy:{column:"created_at",order:"desc"}});(data||[]).filter(x=>x.id).forEach(x=>out.push(f+"/"+x.name));}
  $("aPane").innerHTML='<div class="card"><label>Importer une image dans la médiathèque<input id="upMed" type="file" accept="image/*"></label><div class="gridA">'+(out.map(p=>{const u=sb.storage.from("site-media").getPublicUrl(p).data.publicUrl;return '<div class="card"><img src="'+esc(u)+'" alt=""><div class="row"><button class="btn" data-a="mcopy" data-u="'+esc(u)+'">Copier le lien</button><button class="btn" data-a="mdel" data-id="'+esc(p)+'">Supprimer</button></div></div>';}).join("")||"")+'</div>'+(out.length?'':emptyHTML("Aucune image"))+'</div>';
 }
+/* ===== Espace Bots : analyse d’un texte ou d’un fichier (txt / csv / json) ===== */
+var BOT=[];
+const bNorm=s=>norm(s).replace(/[_\s]+/g," ").trim();
+const BAL={name:["nom","nom de la boutique","boutique","enseigne","name","shop","shop name","raison sociale","etablissement"],address:["adresse","rue","address","adresse du magasin"],postal_code:["cp","code postal","zip","postal code"],city:["ville","city","commune"],phone:["telephone","tel","phone","mobile","portable","numero"],email:["email","e-mail","mail","courriel"],website:["site","site web","site internet","website","web","url"],instagram:["instagram","insta","ig"],facebook:["facebook","fb"],tiktok:["tiktok","tik tok","tt"],snapchat:["snapchat","snap","sn"],telegram:["telegram","tg"],whatsapp:["whatsapp","wa"],short_description:["description","presentation","description courte","short description","a propos","about","resume"],services:["services","service"],specialties:["specialites","specialite","specialties"],hours:["horaires","horaire","heures","hours","ouverture"],zones:["livraison","zones de livraison","villes de livraison","zones","delivery","villes livrees"],categories:["categories","categorie","produits","gamme"],siret:["siret"],photos:["photos","photo","images","lien photos"],region:["region","region code"],department:["departement","department","department code","dept"],zinfo:["conditions de livraison","frais de livraison","conditions"]};
+const BMAP={};Object.entries(BAL).forEach(([k,a])=>a.forEach(x=>BMAP[bNorm(x)]=k));
+const BSO={instagram:"https://instagram.com/",tiktok:"https://tiktok.com/@",snapchat:"https://snapchat.com/add/",telegram:"https://t.me/"};
+const BHOST=[[/instagram\.com/i,"instagram"],[/facebook\.com|fb\.com|fb\.me/i,"facebook"],[/tiktok\.com/i,"tiktok"],[/snapchat\.com/i,"snapchat"],[/t\.me|telegram\./i,"telegram"],[/wa\.me|whatsapp\./i,"whatsapp"]];
+const bHttps=u=>{u=(u||"").trim();if(/^https:\/\/\S+$/i.test(u))return u;if(/^http:\/\/\S+$/i.test(u))return u.replace(/^http:/i,"https:");return /^(www\.)?[\w-]+(\.[\w-]+)+(\/\S*)?$/i.test(u)?"https://"+u:"";};
+const bList=v=>String(v||"").split(/[\n,;]+/).map(x=>x.trim()).filter(Boolean);
+const bDept=z=>!z?"":/^9[78]/.test(z)?z.slice(0,3):/^20/.test(z)?(+z<20200?"2A":"2B"):z.slice(0,2);
+function botFill(o,rest){
+ if(!o.name&&rest.length)o.name=rest.shift().replace(/^#+\s*/,"");
+ const all=rest.join("\n")+"\n"+Object.values(o).join("\n");
+ if(!o.email)o.email=(all.match(/[\w.+-]+@[\w-]+\.[\w.-]+/)||[])[0];
+ if(!o.phone)o.phone=(all.match(/(?:\+33\s?|0)[1-9](?:[\s.-]?\d{2}){4}/)||[])[0];
+ (rest.join("\n").match(/https?:\/\/[^\s,;)]+/g)||[]).forEach(u=>{const h=BHOST.find(x=>x[0].test(u));if(h){if(!o[h[1]])o[h[1]]=u;}else if(!o.website)o.website=u;});
+ if(o.address&&!o.postal_code){const m=o.address.match(/^(.*?)[,\s-]*\b(\d{5})\s+(.+)$/);if(m){o.address=m[1].trim();o.postal_code=m[2];if(!o.city)o.city=m[3].trim();}}
+ if(!o.address){const a=rest.find(l=>/^\d+[\w\s,'.-]*\b(rue|avenue|av\.|boulevard|bd|chemin|place|all[ée]e|impasse|route|cours|quai|zone|rond-point)\b/i.test(l));if(a){o.address=a;const m=a.match(/^(.*?)[,\s-]*\b(\d{5})\s+(.+)$/);if(m){o.address=m[1].trim();o.postal_code=o.postal_code||m[2];o.city=o.city||m[3].trim();}}}
+ if(!o.postal_code){const m=rest.join("\n").match(/\b(\d{5})\s+([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ' -]{1,40})/);if(m){o.postal_code=m[1];if(!o.city)o.city=m[2].trim();}}
+ const links=[];["instagram","facebook","tiktok","snapchat","telegram","whatsapp"].forEach(k=>{let u=(o[k]||"").trim();if(!u)return;if(/^@/.test(u)&&BSO[k])u=BSO[k]+u.slice(1);u=bHttps(u);if(u)links.push({kind:k,url:u});});
+ const zip=/^\d{5}$/.test((o.postal_code||"").trim())?o.postal_code.trim():"";
+ let dc=bDept(zip),dp=DEPS.find(d=>d.code===dc);
+ if(!dp&&o.department){const q=bNorm(o.department);dp=DEPS.find(d=>bNorm(d.name)===q||d.code===o.department.trim());}
+ let rg=dp?dp.region_code:"";
+ if(!rg&&o.region){const q=bNorm(o.region),r=REGIONS.find(r=>bNorm(r.name)===q||r.code===o.region.trim());if(r)rg=r.code;}
+ const em=(o.email||"").trim();
+ return{name:(o.name||"").trim().slice(0,120),address:(o.address||"").trim().slice(0,160),postal_code:zip,city:(o.city||"").trim().slice(0,80),phone:(o.phone||"").trim().slice(0,30),email:/^\S+@\S+\.\S+$/.test(em)?em:"",website:bHttps(o.website),short_description:(o.short_description||"").trim().slice(0,200),services:(o.services||"").trim(),specialties:(o.specialties||"").trim(),hours:(o.hours||"").trim(),zinfo:(o.zinfo||"").trim().slice(0,200),siret:(o.siret||"").trim(),photos:bHttps(o.photos),links,zones:bList(o.zones).filter(x=>x.length>=2&&x.length<=80).slice(0,60),categories:bList(o.categories),department_code:dp?dp.code:"",region_code:rg,lat:null,lon:null};
+}
+function botBlock(txt){
+ const o={},rest=[];
+ txt.split(/\r?\n/).map(l=>l.trim()).filter(Boolean).forEach(l=>{const m=l.match(/^[-*•\s]*([^:=]{2,32}?)\s*[:=]\s*(.+)$/),k=m&&BMAP[bNorm(m[1])];if(k)o[k]=(o[k]?o[k]+", ":"")+m[2].trim();else rest.push(l);});
+ return botFill(o,rest);
+}
+function botText(t){
+ const L=t.split(/\r?\n/),ix=[];L.forEach((l,i)=>{const m=l.match(/^[-*•\s]*([^:=]{2,32}?)\s*[:=]/);if(m&&BMAP[bNorm(m[1])]==="name")ix.push(i);});
+ const parts=ix.length>1?ix.map((s,k)=>L.slice(s,ix[k+1]).join("\n")):t.split(/\n\s*(?:-{3,}|={3,}|\*{3,})\s*\n|\n[ \t]*\n[ \t]*\n+/);
+ return parts.map(botBlock);
+}
+function botCSV(t){
+ t=t.replace(/^\ufeff/,"");const first=t.split(/\r?\n/)[0],dl=[";","\t",","].sort((a,b)=>first.split(b).length-first.split(a).length)[0],rows=[];let r=[],c="",q=false;
+ for(let i=0;i<t.length;i++){const ch=t[i];
+  if(q){if(ch==='"'){if(t[i+1]==='"'){c+='"';i++;}else q=false;}else c+=ch;}
+  else if(ch==='"')q=true;else if(ch===dl){r.push(c);c="";}else if(ch==="\n"||ch==="\r"){if(ch==="\r"&&t[i+1]==="\n")i++;r.push(c);c="";if(r.some(x=>x.trim()))rows.push(r);r=[];}else c+=ch;}
+ r.push(c);if(r.some(x=>x.trim()))rows.push(r);
+ if(!rows.length)return null;const H=rows.shift().map(h=>BMAP[bNorm(h)]||"");if(H.filter(Boolean).length<2)return null;
+ return rows.map(r=>{const o={};H.forEach((k,i)=>{if(k&&r[i]&&r[i].trim())o[k]=r[i].trim();});return botFill(o,[]);});
+}
+function botJSON(t){
+ const j=JSON.parse(t),a=Array.isArray(j)?j:(j.shops||j.boutiques||j.businesses||[j]);
+ return a.map(x=>{const o={};Object.entries(x||{}).forEach(([k,v])=>{const m=BMAP[bNorm(k)];if(m&&v!=null&&v!=="")o[m]=Array.isArray(v)?v.join(", "):String(v);});return botFill(o,[]);});
+}
+function botParse(text,fname){
+ const ext=(fname||"").split(".").pop().toLowerCase();let l=null;
+ if(ext==="json"||/^\s*[\[{]/.test(text)){try{l=botJSON(text);}catch(e){}}
+ if(!l&&(ext==="csv"||ext==="tsv"||!fname))l=botCSV(text);
+ return(l||botText(text)).filter(s=>s.name);
+}
+const botSeed=s=>({b:{name:s.name,address:s.address,postal_code:s.postal_code,city:s.city,region_code:s.region_code||null,department_code:s.department_code||null,latitude:s.lat,longitude:s.lon,phone:s.phone,email:s.email,website:s.website,short_description:s.short_description,services:s.services,specialties:s.specialties},lk:s.links,cn:s.categories,zs:s.zones.map(c=>({scope:"city",city:c,department_code:s.department_code||null})),pv:{v:1,siret:s.siret,photos_src:s.photos,hrs:s.hours,dc:s.zinfo,offer:"Gratuit",pay:"À régler",pnote:"Importée via l’espace Bots"}});
+async function botGeo(s){if(s.lat!=null||!(s.address||s.city))return;try{const q=[s.address,s.postal_code,s.city].filter(Boolean).join(" "),j=await(await fetch("https://api-adresse.data.gouv.fr/search/?limit=1&q="+encodeURIComponent(q))).json(),c=j.features&&j.features[0]&&j.features[0].geometry.coordinates;if(c){s.lon=c[0];s.lat=c[1];}}catch(e){}}
+async function tBots(){
+ $("aPane").innerHTML='<div class="card"><h3>Coller un texte</h3><p class="meta" style="margin-bottom:10px">Collez les infos d’une ou plusieurs boutiques (« Nom : … », « Adresse : … », « Ville : … », « Téléphone : … », « Instagram : … », « Livraison : … »). Pour plusieurs boutiques, séparez-les par une ligne <b>---</b>.</p><textarea id="botTxt" rows="8" placeholder="Nom : Green Shop&#10;Adresse : 12 rue de la Paix, 38000 Grenoble&#10;Téléphone : 04 76 00 00 00&#10;Instagram : @greenshop38&#10;Livraison : Grenoble, Voiron, Échirolles"></textarea><div class="row" style="margin-top:10px"><button class="btn p" data-bot="txt">Analyser le texte</button></div></div><div class="card"><h3>Importer un fichier</h3><p class="meta" style="margin-bottom:10px">Fichier .txt, .csv ou .json. Pour un CSV : une boutique par ligne, avec des colonnes comme nom, adresse, code postal, ville, téléphone… (depuis Excel : « Enregistrer sous » puis CSV).</p><input id="botFile" type="file" accept=".txt,.csv,.tsv,.json,.md,text/plain,text/csv,application/json"></div><div id="botOut"></div>';
+ if(BOT.length)drawBots();
+}
+function botRun(text,fname){
+ BOT=botParse(text,fname);
+ if(BOT.length)drawBots();else $("botOut").innerHTML='<p class="msg err">Aucune boutique reconnue. Il faut au moins un nom (ex. « Nom : … » ou le nom sur la première ligne).</p>';
+}
+function drawBots(){
+ const o=$("botOut");if(!o)return;if(!BOT.length){o.innerHTML="";return;}
+ o.innerHTML='<h3 class="sub">'+BOT.length+' boutique(s) reconnue(s)</h3>'+BOT.map((s,i)=>{const w=[!s.address&&"adresse",!s.postal_code&&"code postal",!s.city&&"ville",!s.phone&&"téléphone"].filter(Boolean);
+  return '<div class="card ar"><div><b>'+esc(s.name)+'</b><div class="meta">'+esc([s.address,[s.postal_code,s.city].filter(Boolean).join(" ")].filter(Boolean).join(" – ")||"Adresse non reconnue")+(s.phone?" · "+esc(s.phone):"")+(s.email?" · "+esc(s.email):"")+'</div>'+(s.links.length||s.website?'<div class="meta">Liens : '+esc([s.website&&"site"].concat(s.links.map(l=>l.kind)).filter(Boolean).join(", "))+'</div>':'')+(s.zones.length?'<div class="meta">'+s.zones.length+' ville(s) de livraison</div>':'')+(w.length?'<div class="meta">À compléter : '+esc(w.join(", "))+'</div>':'')+'</div><div class="row"><button class="btn" data-bot="edit" data-i="'+i+'">Modifier</button><button class="btn" data-bot="del" data-i="'+i+'">Retirer</button></div></div>';}).join("")
+  +'<label style="grid-auto-flow:column;align-items:center;justify-content:start;gap:8px;margin:12px 0"><input type="checkbox" id="botPub"> Publier tout de suite (sinon : en attente, à valider)</label><button class="btn p" data-bot="go">Créer '+BOT.length+' boutique(s)</button>';
+}
+async function botCreate(){
+ const pub=$("botPub")&&$("botPub").checked,cats=(await sb.from("categories").select("id,name")).data||[],ko=[];let ok=0;
+ for(const s of BOT.slice()){
+  try{
+   note("Création de « "+s.name+" »…");await botGeo(s);
+   let b=null;const base=slug(s.name)||"boutique";
+   for(let k=0;k<4&&!b;k++){
+    const r=await sb.from("businesses").insert({name:s.name,slug:k?base+"-"+Math.random().toString(36).slice(2,6):base,short_description:s.short_description||null,address:s.address||null,postal_code:s.postal_code||null,city:s.city||null,region_code:s.region_code||null,department_code:s.department_code||null,latitude:s.lat,longitude:s.lon,phone:s.phone||null,email:s.email||null,website:s.website||null,specialties:s.specialties||null,services:s.services||null,status:pub?"published":"pending"}).select("id").single();
+    if(!r.error)b=r.data;else if(r.error.code!=="23505")throw r.error;}
+   if(!b)throw new Error("nom déjà pris");
+   const id=b.id;
+   if(s.links.length)await sb.from("business_links").insert(s.links.map((l,i)=>({business_id:id,kind:l.kind,url:l.url,sort_order:i})));
+   if(s.zones.length)await sb.from("business_delivery_zones").insert(s.zones.map((c,i)=>({business_id:id,scope:"city",city:c,department_code:s.department_code||null,sort_order:i})));
+   const cs=cats.filter(c=>s.categories.some(n=>norm(n)===norm(c.name)));if(cs.length)await sb.from("business_categories").insert(cs.map(c=>({business_id:id,category_id:c.id})));
+   await sb.from("business_moderation").upsert({business_id:id,compliance_verified:false,note:JSON.stringify(botSeed(s).pv)});
+   await audit("create","business",id,"Import espace Bots");ok++;BOT.splice(BOT.indexOf(s),1);
+  }catch(e){ko.push(s.name+" ("+(e.message||"erreur")+")");}
+ }
+ await loadBiz();drawBots();if(pub&&ok)refreshPublic();
+ note(ok+" boutique(s) créée(s)"+(ok?(pub?" et publiée(s).":", en attente : ouvrez « Boutiques clients » pour les valider."):".")+(ko.length?" Échecs : "+ko.join(", ")+".":""),ko.length&&!ok);
+}
+document.addEventListener("change",async e=>{
+ if(e.target.id!=="botFile")return;const f=e.target.files[0];if(!f)return;
+ if(f.size>2e6){note("Fichier trop gros (2 Mo maximum).",1);return;}
+ try{botRun(await f.text(),f.name);note("");}catch(x){note("Lecture du fichier impossible.",1);}e.target.value="";
+});
+document.addEventListener("click",async e=>{
+ const t=e.target.closest("#adminBox [data-bot]");if(!t)return;const a=t.dataset.bot,i=+t.dataset.i;
+ try{
+  if(a==="txt"){const v=$("botTxt").value.trim();if(!v)return note("Collez d’abord un texte.",1);note("");botRun(v);}
+  else if(a==="del"){BOT.splice(i,1);drawBots();}
+  else if(a==="edit"){const s=BOT.splice(i,1)[0];note("Recherche des coordonnées…");await botGeo(s);note("");await editor(null,botSeed(s));}
+  else if(a==="go"){t.disabled=true;await botCreate();}
+ }catch(x){note(x.message||"Erreur",1);if(t.isConnected)t.disabled=false;}
+});
+/* ===== Alertes push (Supabase : table push_subscriptions) ===== */
+if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+const b64u=s=>Uint8Array.from(atob(s.replace(/-/g,"+").replace(/_/g,"/")+"=".repeat((4-s.length%4)%4)),c=>c.charCodeAt(0));
+async function enablePush(){
+ if(!("serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window))return note("Alertes indisponibles ici. Sur iPhone : ouvrez le site dans Safari, « Partager » puis « Sur l’écran d’accueil », et lancez l’appli depuis son icône.",1);
+ if(await Notification.requestPermission()!=="granted")return note("Notifications refusées. Autorisez-les dans les réglages du téléphone, puis réessayez.",1);
+ const reg=await navigator.serviceWorker.register("sw.js");await navigator.serviceWorker.ready;
+ const k=await sb.from("site_settings").select("value").eq("key","vapid_public").single();if(k.error)throw k.error;
+ let sub=await reg.pushManager.getSubscription();if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(k.data.value)});
+ const j=sub.toJSON(),u=(await sb.auth.getUser()).data.user,r=await sb.from("push_subscriptions").upsert({user_id:u.id,endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth},{onConflict:"endpoint"});
+ if(r.error)throw r.error;
+ reg.showNotification("Alertes activées ✓",{body:"Vous serez prévenu à chaque nouvelle boutique à valider.",icon:"icon-192.png"});
+ note("Alertes activées sur cet appareil ✓");
+}
 document.addEventListener("click",async e=>{
  const t=e.target.closest("#adminBox [data-a],#adminBox [data-tab]");if(!t)return;
  const a=t.dataset.a,id=t.dataset.id;
  try{
   if(t.dataset.tab)openTab(t.dataset.tab);
   else if(a==="out"){await sb.auth.signOut();location.reload();}
+  else if(a==="push")await enablePush();
   else if(a==="new")await editor();
   else if(a==="edit")await editor(id);
   else if(a==="back")openTab("biz");
@@ -879,3 +1003,4 @@ $("loginForm").onsubmit = async ev => {
 </script>
 </body>
 </html>
+
