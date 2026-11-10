@@ -57,6 +57,18 @@ nav.open{transform:none}nav a{padding:16px;font-size:1.1rem}.hero .btn{flex:1 1 
 .chips{display:flex;flex-wrap:wrap;gap:10px}.chip{min-height:44px}.cnt{margin-left:8px;padding:1px 9px;border-radius:99px;background:rgba(34,211,238,.18);color:var(--c1);font-size:.85rem}
 .head{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:8px 0 20px;color:var(--mut)}
 @media(max-width:760px){.search{flex-wrap:wrap}.search .btn{flex:1 1 100%}}
+.mapcard{position:relative;padding:10px;overflow:hidden}
+#map{width:100%;height:min(68vh,700px);display:block;touch-action:none;cursor:grab}
+#map .rg{fill:color-mix(in srgb,var(--c1) calc(10% + var(--i)*40%),#0e1424);stroke:rgba(150,190,255,.55);stroke-width:1px;vector-effect:non-scaling-stroke;cursor:pointer;outline:none;transition:fill .2s,opacity .3s}
+#map .rg:hover,#map .rg:focus-visible{fill:color-mix(in srgb,var(--c2) 55%,#0e1424);stroke:var(--c1);stroke-width:2px}
+#map .rg.dim{opacity:.22;pointer-events:none}#map .rg.sel{opacity:.45;pointer-events:none}
+#map .dp{fill:color-mix(in srgb,var(--c3) calc(14% + var(--i)*45%),#0e1424);stroke:rgba(200,180,255,.7);stroke-width:.8px;vector-effect:non-scaling-stroke;cursor:pointer;outline:none;transition:fill .2s}
+#map .dp:hover,#map .dp:focus-visible{fill:color-mix(in srgb,var(--c2) 60%,#0e1424);stroke:var(--c1);stroke-width:1.8px}
+#map .dp.on{fill:color-mix(in srgb,var(--c1) 55%,#0e1424);stroke:#fff}
+#map .lb text{font-family:var(--fb);font-size:calc(var(--fs)*1px);font-weight:500;fill:#e8eeff;text-anchor:middle;pointer-events:none;paint-order:stroke;stroke:#070b16;stroke-width:calc(var(--fs)*.3px)}
+#map .lb .n{fill:var(--c1);font-weight:700}
+.zoom{position:absolute;right:14px;top:14px;display:grid;gap:8px}.zoom .btn{width:48px;padding:0;font-size:1.3rem}
+.sub{margin:26px 0 14px;font-size:1.2rem}
 </style>
 </head>
 <body>
@@ -75,8 +87,7 @@ nav.open{transform:none}nav a{padding:16px;font-size:1.1rem}.hero .btn{flex:1 1 
 <div class="row"><a class="btn p" href="#/boutiques">Explorer les boutiques</a><a class="btn" href="#/carte">Accéder à la carte</a><a class="btn" href="#/partenaire">Devenir partenaire</a></div>
 <div class="stat"><span class="dot" id="dot"></span><span id="status">Connexion à Supabase…</span></div>
 </div><div class="wrap" id="sections"></div></section>
-<section class="view" id="v-carte"><div class="wrap page"><h2>Carte de France</h2>
-<div class="card empty"><b>Carte interactive : phase 3</b>Les régions et départements seront chargés depuis des données géographiques officielles.</div></div></section>
+<section class="view" id="v-carte"><div class="wrap page"><h2>Carte de France</h2><div class="head" id="crumb"></div><div class="card mapcard"><p class="msg" id="mapMsg">Chargement de la carte…</p><svg id="map" role="group" aria-label="Carte interactive de la France : régions puis départements"></svg><div class="zoom" id="zoomBox"><button class="btn" data-z="1.4" aria-label="Zoom avant">+</button><button class="btn" data-z="0.7" aria-label="Zoom arrière">−</button><button class="btn" data-z="0" aria-label="Recentrer">⟲</button></div></div><h3 class="sub" id="zTitle"></h3><div id="zoneList"></div><div id="mapShops"></div></div></section>
 <section class="view" id="v-boutiques"><div class="wrap page"><h2>Boutiques CBD</h2><div class="head" id="listHead"></div><div id="list"></div></div></section>
 <section class="view" id="v-partenaire"><div class="wrap page"><h2>Devenir partenaire</h2>
 <div class="card empty"><b>Demande de publicité : phase 6</b>Le formulaire de réservation sera ajouté sans aucun paiement dans l’application.</div></div></section>
@@ -102,7 +113,7 @@ function route(){
   document.querySelectorAll(".view").forEach(s => s.classList.toggle("on", s.id === "v-" + id));
   document.querySelectorAll("nav a").forEach(a => a.classList.toggle("on", a.dataset.v === id || (id==="home" && a.dataset.v==="home")));
   $("nav").classList.remove("open"); $("burger").setAttribute("aria-expanded","false");
-  scrollTo(0,0);if(id==="boutiques"&&loaded)renderList();
+  scrollTo(0,0);if(id==="boutiques"&&loaded)renderList();if(id==="carte"&&GEO)setVB();
 }
 addEventListener("hashchange", route); route();
 $("burger").onclick = () => { const o = $("nav").classList.toggle("open"); $("burger").setAttribute("aria-expanded", o); };
@@ -122,7 +133,7 @@ var DATA=[],REGIONS=[],SECS=[],SUGS=[],loaded=false,filter={q:"",region:"",dept:
 const norm=s=>(s||"").toString().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
 const esc=s=>(s==null?"":String(s)).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const regName=c=>(REGIONS.find(r=>r.code===c)||{}).name||"";
-const matches=(b,q)=>{const h=norm([b.name,b.city,b.postal_code,b.department_code,regName(b.region_code)].join(" "));return norm(q).split(/\s+/).filter(Boolean).every(t=>h.includes(t));};
+const matches=(b,q)=>{const h=norm([b.name,b.city,b.postal_code,b.department_code,depName(b.department_code),regName(b.region_code)].join(" "));return norm(q).split(/\s+/).filter(Boolean).every(t=>h.includes(t));};
 const emptyHTML=(t,s)=>'<div class="card empty"><b>'+t+'</b>'+(s||"")+'</div>';
 const card=b=>'<article class="card shop"><h3>'+esc(b.name)+'</h3><p class="meta">'+esc([b.city,b.postal_code].filter(Boolean).join(" "))+(regName(b.region_code)?'<br>'+esc(regName(b.region_code)):'')+'</p>'+(b.short_description?'<p>'+esc(b.short_description)+'</p>':'')+'</article>';
 const grid=l=>'<div class="grid">'+l.map(card).join("")+'</div>';
@@ -136,7 +147,7 @@ function count(k){const c={};DATA.forEach(b=>{if(b[k])c[b[k]]=(c[b[k]]||0)+1;});
 function body(k){
  const d=SEC_DEF[k];
  if(k==="regions"){const c=count("region_code"),l=REGIONS.filter(r=>c[r.code]);return l.length?chips(l.map(r=>['data-region="'+esc(r.code)+'"',r.name,c[r.code]])):emptyHTML("Aucune région couverte pour le moment.");}
- if(k==="departments"){const c=count("department_code"),l=Object.keys(c).sort();return l.length?chips(l.map(x=>['data-dept="'+esc(x)+'"',"Département "+x,c[x]])):emptyHTML("Aucun département couvert pour le moment.");}
+ if(k==="departments"){const c=count("department_code"),l=Object.keys(c).sort();return l.length?chips(l.map(x=>['data-dept="'+esc(x)+'"',(depName(x)||"Département")+" ("+x+")",c[x]])):emptyHTML("Aucun département couvert pour le moment.");}
  if(k==="nearby")return '<button class="btn" id="geo">Trouver les boutiques proches</button><div id="nearRes" style="margin-top:14px"></div>';
  const l=d.f();return l.length?grid(l):emptyHTML(d.e);
 }
@@ -147,7 +158,7 @@ function renderHome(){
 }
 function renderList(){
  const l=DATA.filter(b=>(!filter.region||b.region_code===filter.region)&&(!filter.dept||b.department_code===filter.dept)&&(!filter.q||matches(b,filter.q)));
- const lab=[filter.q&&"« "+filter.q+" »",filter.region&&regName(filter.region),filter.dept&&"département "+filter.dept].filter(Boolean).join(", ");
+ const lab=[filter.q&&"« "+filter.q+" »",filter.region&&regName(filter.region),filter.dept&&(depName(filter.dept)||"département "+filter.dept)].filter(Boolean).join(", ");
  $("listHead").innerHTML=lab?'<span>'+l.length+' résultat(s) pour '+esc(lab)+'</span><button class="btn" id="reset">Tout afficher</button>':'<span>'+l.length+' boutique(s) publiée(s)</span>';
  $("list").innerHTML=l.length?grid(l):lab?emptyHTML("Aucune boutique trouvée","Essayez une autre ville, un autre code postal ou une autre région."):emptyHTML("Aucune boutique publiée","Les boutiques apparaîtront ici dès leur publication.");
 }
@@ -185,6 +196,85 @@ document.addEventListener("click",e=>{
  else if(t.id==="reset")go({});
 });
 document.querySelector('nav a[data-v="boutiques"]').addEventListener("click",()=>{filter={q:"",region:"",dept:""};$("q").value="";});
+/* ===== Phase 3 : carte interactive (contours officiels IGN simplifiés, repo gregoiredavid/france-geojson) ===== */
+var DEPS=[],GEO=null,VB=[0,0,1,1],VB0=[0,0,1,1],sel={region:"",dept:""};
+const depName=c=>(DEPS.find(d=>d.code===c)||{}).name||"";
+const GEO_BASE="https://cdn.jsdelivr.net/gh/gregoiredavid/france-geojson@master/"; // ou copiez les 2 fichiers dans /data et changez cette ligne
+const KX=Math.cos(46.5*Math.PI/180),PX=l=>(l+5.4)*KX*100,PY=l=>(51.4-l)*100;
+function shape(g){
+ const P=g.type==="Polygon"?[g.coordinates]:g.coordinates;let d="",B=[1e9,1e9,-1e9,-1e9],best=0,L=[0,0];
+ P.forEach(p=>{const b=[1e9,1e9,-1e9,-1e9];
+  p.forEach((r,k)=>{r.forEach((c,i)=>{const x=PX(c[0]),y=PY(c[1]);d+=(i?"L":"M")+x.toFixed(1)+" "+y.toFixed(1);
+   if(k===0){b[0]=Math.min(b[0],x);b[1]=Math.min(b[1],y);b[2]=Math.max(b[2],x);b[3]=Math.max(b[3],y);}});d+="Z";});
+  B=[Math.min(B[0],b[0]),Math.min(B[1],b[1]),Math.max(B[2],b[2]),Math.max(B[3],b[3])];
+  const a=(b[2]-b[0])*(b[3]-b[1]);if(a>best){best=a;L=[(b[0]+b[2])/2,(b[1]+b[3])/2];}});
+ return{d,B,L};
+}
+async function loadMap(){
+ const m=$("mapMsg");
+ try{
+  const [r,d]=await Promise.all(["regions","departements"].map(n=>fetch(GEO_BASE+n+"-version-simplifiee.geojson").then(x=>{if(!x.ok)throw 0;return x.json();})));
+  const rc=new Set(REGIONS.map(x=>x.code)),dc=new Set(DEPS.map(x=>x.code));
+  const mk=(f,s)=>s.has(f.properties.code)?Object.assign({code:f.properties.code,name:f.properties.nom},shape(f.geometry)):null;
+  GEO={reg:r.features.map(f=>mk(f,rc)).filter(Boolean),dep:d.features.map(f=>mk(f,dc)).filter(Boolean)};
+  if(!GEO.reg.length)throw 0;
+  const u=GEO.reg.map(x=>x.B),x0=Math.min(...u.map(b=>b[0]))-10,y0=Math.min(...u.map(b=>b[1]))-10;
+  VB0=[x0,y0,Math.max(...u.map(b=>b[2]))+10-x0,Math.max(...u.map(b=>b[3]))+10-y0];VB=VB0.slice();
+  m.style.display="none";drawMap();setVB();
+ }catch(e){m.className="msg err";m.textContent="Carte indisponible (données géographiques non chargées). Utilisez la liste ci-dessous.";}
+ renderZone();
+}
+function lbl(x,y,t,c){return '<text x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'">'+esc(t)+'<tspan x="'+x.toFixed(1)+'" dy="1.2em" class="n">'+c+'</tspan></text>';}
+function drawMap(){
+ if(!GEO)return;
+ const cr=count("region_code"),cd=count("department_code"),mr=Math.max(1,...Object.values(cr)),md=Math.max(1,...Object.values(cd));
+ let h="",t="";
+ GEO.reg.forEach(x=>{const on=sel.region===x.code,n=cr[x.code]||0;
+  h+='<path class="rg'+(sel.region?(on?' sel':' dim'):'')+'" style="--i:'+(n/mr).toFixed(2)+'" data-r="'+x.code+'" d="'+x.d+'"'+(sel.region?'':' tabindex="0" role="button" aria-label="'+esc(x.name)+', '+n+' boutique(s)"')+'/>';
+  if(!sel.region)t+=lbl(x.L[0],x.L[1],x.name,n);});
+ if(sel.region)GEO.dep.filter(x=>(DEPS.find(d=>d.code===x.code)||{}).region_code===sel.region).forEach(x=>{const n=cd[x.code]||0;
+  h+='<path class="dp'+(sel.dept===x.code?' on':'')+'" style="--i:'+(n/md).toFixed(2)+'" data-d="'+x.code+'" d="'+x.d+'" tabindex="0" role="button" aria-label="'+esc(x.name)+', '+n+' boutique(s)"/>';
+  t+=lbl(x.L[0],x.L[1],x.code,n);});
+ $("map").innerHTML=h+'<g class="lb">'+t+'</g>';
+}
+function setVB(){const s=$("map");s.setAttribute("viewBox",VB.map(v=>v.toFixed(1)).join(" "));const k=Math.min(s.clientWidth/VB[2],s.clientHeight/VB[3])||1;s.style.setProperty("--fs",(11/k).toFixed(2));}
+function fit(b){
+ const p=Math.max(b[2]-b[0],b[3]-b[1])*.08,to=[b[0]-p,b[1]-p,b[2]-b[0]+2*p,b[3]-b[1]+2*p],from=VB.slice(),t0=performance.now(),dur=matchMedia("(prefers-reduced-motion:reduce)").matches?0:350;
+ (function f(n){const k=dur?Math.min(1,(n-t0)/dur):1,e=1-Math.pow(1-k,3);VB=from.map((v,i)=>v+(to[i]-v)*e);setVB();if(k<1)requestAnimationFrame(f);})(t0);
+}
+function pick(r,d){
+ sel={region:r||"",dept:d||""};drawMap();
+ if(GEO){const o=d?GEO.dep.find(x=>x.code===d):r?GEO.reg.find(x=>x.code===r):null;fit(o?o.B:[VB0[0],VB0[1],VB0[0]+VB0[2],VB0[1]+VB0[3]]);}
+ renderZone();
+}
+function renderZone(){
+ const cr=count("region_code"),cd=count("department_code"),reg=REGIONS.find(r=>r.code===sel.region),dep=DEPS.find(d=>d.code===sel.dept);
+ $("crumb").innerHTML='<button class="btn" data-pick="">France</button>'+(reg?'<button class="btn" data-pick="'+esc(reg.code)+'">'+esc(reg.name)+'</button>':'')+(dep?'<b>'+esc(dep.name)+'</b>':'');
+ let l;
+ if(!reg){$("zTitle").textContent="Choisir une région";l=REGIONS.map(r=>['data-pick="'+esc(r.code)+'"',r.name,cr[r.code]||0]);}
+ else{$("zTitle").textContent="Départements : "+reg.name;l=DEPS.filter(d=>d.region_code===reg.code).map(d=>['data-pick="'+esc(reg.code)+'" data-dep="'+esc(d.code)+'"',d.name+" ("+d.code+")",cd[d.code]||0]);}
+ $("zoneList").innerHTML=l.length?chips(l):emptyHTML("Aucune zone disponible","Exécutez supabase.sql pour créer les départements.");
+ const s=DATA.filter(b=>dep?b.department_code===dep.code:reg?b.region_code===reg.code:false),nm=esc(dep?dep.name:reg?reg.name:"");
+ $("mapShops").innerHTML=!reg?emptyHTML("Sélectionnez une région","Touchez la carte ou la liste pour voir les boutiques."):s.length?'<h3 class="sub">'+s.length+' boutique(s) – '+nm+'</h3>'+grid(s):emptyHTML("Aucune boutique pour le moment",dep?"Aucune boutique publiée dans ce département.":"Aucune boutique publiée dans cette région.");
+}
+(function(){
+ const s=$("map"),P=new Map();let moved=0;
+ const pt=(x,y)=>{const q=s.createSVGPoint();q.x=x;q.y=y;return q.matrixTransform(s.getScreenCTM().inverse());};
+ const zoom=(f,x,y)=>{const[a,b,w,h]=VB;VB=[x-(x-a)/f,y-(y-b)/f,w/f,h/f];setVB();};
+ s.addEventListener("pointerdown",e=>{P.set(e.pointerId,[e.clientX,e.clientY]);moved=0;});
+ s.addEventListener("pointermove",e=>{
+  if(!P.has(e.pointerId))return;const o=P.get(e.pointerId),m=s.getScreenCTM();if(!m)return;
+  if(P.size===1){const dx=e.clientX-o[0],dy=e.clientY-o[1];moved+=Math.abs(dx)+Math.abs(dy);if(moved>6){VB[0]-=dx/m.a;VB[1]-=dy/m.a;setVB();}}
+  else{const q=[...P.entries()].find(z=>z[0]!==e.pointerId)[1],d0=Math.hypot(o[0]-q[0],o[1]-q[1]),d1=Math.hypot(e.clientX-q[0],e.clientY-q[1]);moved=99;if(d0&&d1){const c=pt((e.clientX+q[0])/2,(e.clientY+q[1])/2);zoom(d1/d0,c.x,c.y);}}
+  P.set(e.pointerId,[e.clientX,e.clientY]);});
+ ["pointerup","pointercancel","pointerleave"].forEach(n=>s.addEventListener(n,e=>P.delete(e.pointerId)));
+ s.addEventListener("wheel",e=>{e.preventDefault();const c=pt(e.clientX,e.clientY);zoom(e.deltaY<0?1.2:1/1.2,c.x,c.y);},{passive:false});
+ s.addEventListener("click",e=>{if(moved>6)return;const t=e.target.closest("[data-r],[data-d]");if(!t)return;t.dataset.r?pick(t.dataset.r):pick(sel.region,t.dataset.d);});
+ s.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.dataset&&(e.target.dataset.r||e.target.dataset.d)){e.preventDefault();moved=0;e.target.dispatchEvent(new MouseEvent("click",{bubbles:true}));}});
+ $("zoomBox").addEventListener("click",e=>{const f=e.target.dataset.z;if(!f||!GEO)return;if(f==="0")pick(sel.region,sel.dept);else zoom(+f,VB[0]+VB[2]/2,VB[1]+VB[3]/2);});
+ document.addEventListener("click",e=>{const t=e.target.closest("#v-carte [data-pick]");if(t)pick(t.dataset.pick,t.dataset.dep);});
+ addEventListener("resize",()=>{if(GEO)setVB();});
+})();
 async function init(){
  renderHome();renderList();
  if(!sb){$("dot").className="dot ko";$("status").textContent="Supabase non configuré : renseignez l’URL et la clé dans index.html.";return;}
@@ -192,15 +282,16 @@ async function init(){
   const {data,error}=await sb.from("site_settings").select("key,value");
   if(error)throw error;
   applySettings(Object.fromEntries(data.map(r=>[r.key,r.value])));
-  const [r,b,h]=await Promise.all([
+  const [r,b,h,dp]=await Promise.all([
    sb.from("regions").select("code,name").order("name"),
    sb.from("businesses").select("id,name,city,postal_code,department_code,region_code,short_description,featured,created_at,latitude,longitude").eq("status","published").order("created_at",{ascending:false}).limit(2000),
-   sb.from("homepage_sections").select("key,title,enabled,sort_order")]);
+   sb.from("homepage_sections").select("key,title,enabled,sort_order"),
+   sb.from("departments").select("code,name,region_code").order("code")]);
   if(r.error)throw r.error;if(b.error)throw b.error;
-  REGIONS=r.data;DATA=b.data;SECS=h.error?[]:h.data;loaded=true;
+  REGIONS=r.data;DEPS=dp.error?[]:dp.data;DATA=b.data;SECS=h.error?[]:h.data;loaded=true;
   $("dot").className="dot ok";
   $("status").textContent=DATA.length?DATA.length+" boutique"+(DATA.length>1?"s":"")+" référencée"+(DATA.length>1?"s":""):"Connecté : aucune boutique publiée pour l’instant.";
-  renderHome();renderList();
+  renderHome();renderList();loadMap();
  }catch(e){$("dot").className="dot ko";$("status").textContent="Erreur Supabase : "+(e.message||"connexion impossible")+" (supabase.sql exécuté ?)";}
 }
 init();
