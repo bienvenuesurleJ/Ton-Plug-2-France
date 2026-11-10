@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plug 2 France – Annuaire national des boutiques CBD</title>
+<meta name="description" content="Plug 2 France : trouvez les boutiques physiques spécialisées dans le CBD, partout en France.">
+<meta name="theme-color" content="#070b16">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23070b16'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%2322d3ee'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070b16;--bg2:#0e1424;--card:rgba(20,28,48,.62);--line:rgba(120,160,255,.16);--tx:#e8eeff;--mut:#8f9bbd;--c1:#22d3ee;--c2:#3b82f6;--c3:#8b5cf6;--r:18px;--fh:"Space Grotesk",system-ui,sans-serif;--fb:Inter,system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}html{scroll-behavior:smooth}
+body{background:radial-gradient(900px 500px at 85% -10%,rgba(139,92,246,.22),transparent 60%),radial-gradient(800px 500px at 0% 0%,rgba(34,211,238,.14),transparent 55%),var(--bg);color:var(--tx);font:16px/1.6 var(--fb);min-height:100vh;padding-top:env(safe-area-inset-top)}
+h1,h2,h3{font-family:var(--fh);line-height:1.1;letter-spacing:-.02em}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--c1);outline-offset:3px}
+.wrap{width:min(1120px,100% - 32px);margin:auto}
+header{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(7,11,22,.7);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;align-items:center;gap:10px;font:700 1.15rem var(--fh)}
+.logo img{height:34px;display:none}.logo i{width:26px;height:26px;border-radius:9px;background:conic-gradient(from 200deg,var(--c1),var(--c2),var(--c3),var(--c1));box-shadow:0 0 18px rgba(34,211,238,.5)}
+nav{display:flex;gap:6px;align-items:center}
+nav a{padding:10px 14px;border-radius:12px;color:var(--mut);transition:.2s}
+nav a:hover,nav a.on{color:var(--tx);background:rgba(120,160,255,.1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:14px;border:1px solid var(--line);background:rgba(120,160,255,.08);color:var(--tx);font:500 1rem var(--fb);cursor:pointer;transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:scale(.97)}
+.btn.p{background:linear-gradient(120deg,var(--c1),var(--c2) 60%,var(--c3));border:0;color:#04101c;font-weight:700;box-shadow:0 8px 28px rgba(59,130,246,.38)}
+#burger{display:none;width:48px;height:48px;border-radius:14px;border:1px solid var(--line);background:none;color:var(--tx);font-size:1.4rem;cursor:pointer}
+.hero{padding:clamp(48px,10vw,120px) 0 56px}
+.hero h1{font-size:clamp(2.3rem,7.5vw,4.8rem);max-width:15ch}
+.hero p{color:var(--mut);max-width:52ch;margin:20px 0 30px;font-size:1.1rem}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;backdrop-filter:blur(10px);box-shadow:0 18px 50px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.05)}
+.stat{display:inline-flex;gap:10px;align-items:center;margin-top:34px;padding:10px 16px;border-radius:999px;border:1px solid var(--line);color:var(--mut);font-size:.92rem}
+.dot{width:9px;height:9px;border-radius:50%;background:#64748b}.dot.ok{background:#34d399;box-shadow:0 0 10px #34d399}.dot.ko{background:#f87171}
+.view{display:none;padding-bottom:72px}.view.on{display:block}
+.page{padding:48px 0 16px}.page h2{font-size:clamp(1.8rem,5vw,2.8rem);margin-bottom:12px}
+.empty{text-align:center;padding:44px 20px;color:var(--mut)}.empty b{display:block;color:var(--tx);font:700 1.2rem var(--fh);margin-bottom:6px}
+form{display:grid;gap:12px;max-width:420px}
+input{min-height:48px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:rgba(7,11,22,.7);color:var(--tx);font:1rem var(--fb)}
+.msg{min-height:1.4em;color:var(--mut)}.msg.err{color:#f87171}
+footer{border-top:1px solid var(--line);padding:28px 0 calc(28px + env(safe-area-inset-bottom));color:var(--mut);font-size:.9rem}
+@media(max-width:760px){#burger{display:block}
+nav{position:fixed;inset:64px 0 auto 0;flex-direction:column;align-items:stretch;padding:14px 16px 22px;background:rgba(7,11,22,.96);border-bottom:1px solid var(--line);transform:translateY(-130%);transition:transform .3s}
+nav.open{transform:none}nav a{padding:16px;font-size:1.1rem}.hero .btn{flex:1 1 100%}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header><div class="wrap bar">
+<a class="logo" href="#/" aria-label="Plug 2 France – accueil"><i id="logoMark"></i><img id="logoImg" alt=""><span id="siteName">Plug 2 France</span></a>
+<button id="burger" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
+<nav id="nav" aria-label="Navigation principale">
+<a href="#/" data-v="home">Accueil</a><a href="#/carte" data-v="carte">Carte</a><a href="#/boutiques" data-v="boutiques">Boutiques</a><a href="#/partenaire" data-v="partenaire">Devenir partenaire</a><a href="#/admin" data-v="admin">Admin</a>
+</nav></div></header>
+
+<main>
+<section class="view" id="v-home"><div class="wrap hero">
+<h1 id="heroTitle">Toutes les boutiques CBD de France, sur une seule carte.</h1>
+<p id="heroText">Plug 2 France référence uniquement les commerces physiques spécialisés dans le CBD. Choisissez votre région, puis votre département.</p>
+<div class="row"><a class="btn p" href="#/boutiques">Explorer les boutiques</a><a class="btn" href="#/carte">Accéder à la carte</a><a class="btn" href="#/partenaire">Devenir partenaire</a></div>
+<div class="stat"><span class="dot" id="dot"></span><span id="status">Connexion à Supabase…</span></div>
+</div></section>
+<section class="view" id="v-carte"><div class="wrap page"><h2>Carte de France</h2>
+<div class="card empty"><b>Carte interactive : phase 3</b>Les régions et départements seront chargés depuis des données géographiques officielles.</div></div></section>
+<section class="view" id="v-boutiques"><div class="wrap page"><h2>Boutiques CBD</h2>
+<div class="card empty" id="shopsEmpty"><b>Recherche et fiches : phases 2 et 4</b>Aucune boutique publiée pour le moment.</div></div></section>
+<section class="view" id="v-partenaire"><div class="wrap page"><h2>Devenir partenaire</h2>
+<div class="card empty"><b>Demande de publicité : phase 6</b>Le formulaire de réservation sera ajouté sans aucun paiement dans l’application.</div></div></section>
+<section class="view" id="v-admin"><div class="wrap page"><h2>Espace administrateur</h2>
+<div class="card" id="adminBox"><form id="loginForm"><input id="em" type="email" placeholder="E-mail" autocomplete="username" required><input id="pw" type="password" placeholder="Mot de passe" autocomplete="current-password" required><button class="btn p" type="submit">Se connecter</button><p class="msg" id="loginMsg" role="status"></p></form></div></div></section>
+</main>
+<footer><div class="wrap">Plug 2 France – annuaire exclusivement consacré aux boutiques physiques spécialisées dans le CBD. Les produits CBD ne sont pas des médicaments.</div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+// ===== CONFIGURATION : remplacez par les valeurs de votre projet (clé "anon" uniquement, jamais service_role) =====
+const SUPABASE_URL = "https://VOTRE-PROJET.supabase.co";
+const SUPABASE_ANON_KEY = "VOTRE_CLE_ANON";
+// ==================================================================================================================
+const $ = id => document.getElementById(id);
+const configured = !SUPABASE_URL.includes("VOTRE-PROJET");
+const sb = configured ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+/* Navigation (routes par #) */
+function route(){
+  const v = (location.hash.replace(/^#\/?/, "") || "home");
+  const id = ["carte","boutiques","partenaire","admin"].includes(v) ? v : "home";
+  document.querySelectorAll(".view").forEach(s => s.classList.toggle("on", s.id === "v-" + id));
+  document.querySelectorAll("nav a").forEach(a => a.classList.toggle("on", a.dataset.v === id || (id==="home" && a.dataset.v==="home")));
+  $("nav").classList.remove("open"); $("burger").setAttribute("aria-expanded","false");
+  scrollTo(0,0);
+}
+addEventListener("hashchange", route); route();
+$("burger").onclick = () => { const o = $("nav").classList.toggle("open"); $("burger").setAttribute("aria-expanded", o); };
+
+/* Paramètres du site (site_settings) appliqués au site public */
+function applySettings(s){
+  const t = (k, el) => { if (s[k]) $(el).textContent = s[k]; };
+  t("site_name","siteName"); t("hero_title","heroTitle"); t("hero_text","heroText");
+  const root = document.documentElement.style;
+  if (s.color_primary) root.setProperty("--c1", s.color_primary);
+  if (s.color_secondary) root.setProperty("--c2", s.color_secondary);
+  if (s.color_accent) root.setProperty("--c3", s.color_accent);
+  if (s.logo_url && /^https:\/\//.test(s.logo_url)) { $("logoImg").src = s.logo_url; $("logoImg").style.display = "block"; $("logoMark").style.display = "none"; }
+}
+async function init(){
+  if (!sb) { $("dot").className = "dot ko"; $("status").textContent = "Supabase non configuré : renseignez l’URL et la clé anon dans index.html."; return; }
+  try {
+    const { data, error } = await sb.from("site_settings").select("key,value");
+    if (error) throw error;
+    applySettings(Object.fromEntries(data.map(r => [r.key, r.value])));
+    const { count, error: e2 } = await sb.from("businesses").select("id", { count: "exact", head: true });
+    if (e2) throw e2;
+    $("dot").className = "dot ok";
+    $("status").textContent = count ? count + " boutique" + (count > 1 ? "s" : "") + " référencée" + (count > 1 ? "s" : "") : "Connecté : aucune boutique publiée pour l’instant.";
+    if (count) $("shopsEmpty").style.display = "none";
+  } catch (e) { $("dot").className = "dot ko"; $("status").textContent = "Erreur Supabase : " + (e.message || "connexion impossible") + " (supabase.sql exécuté ?)"; }
+}
+init();
+
+/* Connexion administrateur (accès vérifié côté base via is_admin()) */
+$("loginForm").onsubmit = async ev => {
+  ev.preventDefault(); const m = $("loginMsg"); m.className = "msg";
+  if (!sb) { m.className = "msg err"; m.textContent = "Supabase n’est pas configuré."; return; }
+  m.textContent = "Connexion…";
+  const { error } = await sb.auth.signInWithPassword({ email: $("em").value.trim(), password: $("pw").value });
+  if (error) { m.className = "msg err"; m.textContent = "Identifiants incorrects."; return; }
+  const { data: ok } = await sb.rpc("is_admin");
+  if (!ok) { await sb.auth.signOut(); m.className = "msg err"; m.textContent = "Ce compte n’a pas les droits d’administration."; return; }
+  $("adminBox").innerHTML = '<div class="empty"><b>Connecté en administrateur</b>Le tableau de bord arrive en phase 5.</div><button class="btn" id="out">Se déconnecter</button>';
+  $("out").onclick = async () => { await sb.auth.signOut(); location.reload(); };
+};
+</script>
+</body>
+</html>
