@@ -81,6 +81,13 @@ a.shop{display:block;transition:transform .2s,border-color .2s}a.shop:hover{tran
 .hrs{width:100%;border-collapse:collapse;margin-bottom:14px}.hrs td{padding:7px 0;border-bottom:1px solid var(--line)}.hrs td:last-child{text-align:right;color:var(--mut)}
 .tag{display:inline-block;padding:4px 12px;margin:0 6px 6px 0;border-radius:99px;border:1px solid var(--line);color:var(--c1);font-size:.9rem}
 .acts{display:grid;gap:10px;margin:14px 0}.warn{color:#fbbf24}.legal{margin-top:22px;color:var(--mut);font-size:.88rem}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px}.tabs .btn{flex:0 0 auto}
+textarea,select{min-height:48px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(7,11,22,.7);color:var(--tx);font:1rem var(--fb)}
+label{display:grid;gap:4px;color:var(--mut);font-size:.9rem}
+form.wide{max-width:none}.fg{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.ar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:10px}
+.gridA{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-top:12px}.gridA img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;display:block;margin-bottom:8px}
+.sc h3{font-size:2rem}#aPane .card{margin-bottom:14px}.hr input[type=time]{width:130px}
 </style>
 </head>
 <body>
@@ -107,7 +114,7 @@ a.shop{display:block;transition:transform .2s,border-color .2s}a.shop:hover{tran
 <div class="card" id="adminBox"><form id="loginForm"><input id="em" type="email" placeholder="E-mail" autocomplete="username" required><input id="pw" type="password" placeholder="Mot de passe" autocomplete="current-password" required><button class="btn p" type="submit">Se connecter</button><p class="msg" id="loginMsg" role="status"></p></form></div></div></section>
 <section class="view" id="v-fiche"><div class="wrap page"><p><a class="btn" href="#/boutiques">Retour aux boutiques</a></p><div id="shopBox"></div></div></section>
 </main>
-<footer><div class="wrap">Plug 2 France – annuaire exclusivement consacré aux boutiques physiques spécialisées dans le CBD. Les produits CBD ne sont pas des médicaments.</div></footer>
+<footer><div class="wrap" id="footerTxt">Plug 2 France – annuaire exclusivement consacré aux boutiques physiques spécialisées dans le CBD. Les produits CBD ne sont pas des médicaments.</div></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
@@ -134,8 +141,8 @@ $("burger").onclick = () => { const o = $("nav").classList.toggle("open"); $("bu
 /* Paramètres du site (site_settings) appliqués au site public */
 function applySettings(s){
   const t = (k, el) => { if (s[k]) $(el).textContent = s[k]; };
-  t("site_name","siteName"); t("hero_title","heroTitle"); t("hero_text","heroText");
-  const root = document.documentElement.style;
+  t("site_name","siteName"); t("hero_title","heroTitle"); t("hero_text","heroText"); t("footer_text","footerTxt");
+  const root = document.documentElement.style; if(s.ui_radius)root.setProperty("--r",s.ui_radius+"px"); if(s.favicon_url&&/^https:\/\//.test(s.favicon_url))document.querySelector("link[rel=icon]").href=s.favicon_url;
   if (s.color_primary) root.setProperty("--c1", s.color_primary);
   if (s.color_secondary) root.setProperty("--c2", s.color_secondary);
   if (s.color_accent) root.setProperty("--c3", s.color_accent);
@@ -340,6 +347,174 @@ document.addEventListener("click",e=>{
  const g=$("gMain");g.src=t.dataset.src;g.alt=t.dataset.alt;
  document.querySelectorAll(".th").forEach(x=>x.classList.toggle("on",x===t));
 });
+/* ===== Phase 5 : administration ===== */
+var ADM=[],IM=[],CB="",SE=[],CAT=[],TAB="biz";
+const ST={pending:"En attente",published:"Publiée",unpublished:"Dépubliée"};
+const SITE=[["site_name","Nom du site"],["hero_title","Titre principal"],["hero_text","Texte de présentation","ta"],["footer_text","Texte du pied de page","ta"],["color_primary","Couleur cyan","color","#22d3ee"],["color_secondary","Couleur bleu","color","#3b82f6"],["color_accent","Couleur violette","color","#8b5cf6"]];
+const slug=s=>norm(s).replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+const opt=(a,v)=>a.map(x=>'<option value="'+esc(x[0])+'"'+(x[0]===v?' selected':'')+'>'+esc(x[1])+'</option>').join("");
+const FI=(n,l,v,t,x)=>'<label>'+l+'<input name="'+n+'" type="'+(t||"text")+'" value="'+esc(v)+'" '+(x||"")+'></label>';
+const TA=(n,l,v)=>'<label>'+l+'<textarea name="'+n+'" rows="3">'+esc(v)+'</textarea></label>';
+function note(t,err){const n=$("aNote");if(n){n.className="msg"+(err?" err":"");n.textContent=t;}return false;}
+async function audit(action,entity,id,detail){try{await sb.from("audit_logs").insert({action,entity,entity_id:id||null,detail:detail||null});}catch(e){}}
+function refreshPublic(){init();}
+async function autoAdmin(){if(!sb)return;const {data}=await sb.auth.getSession();if(!data.session)return;const {data:ok}=await sb.rpc("is_admin");if(ok)showAdmin();}
+function showAdmin(){
+ const T=[["dash","Tableau de bord"],["biz","Boutiques"],["sec","Accueil"],["site","Site & identité"],["cat","Catégories"],["med","Médias"]];
+ $("adminBox").innerHTML='<div class="tabs">'+T.map(t=>'<button class="btn tb" data-tab="'+t[0]+'">'+t[1]+'</button>').join("")+'<button class="btn" data-a="out">Déconnexion</button></div><p class="msg" id="aNote" role="status"></p><div id="aPane"></div>';
+ openTab(TAB);
+}
+function openTab(t){TAB=t;document.querySelectorAll(".tb").forEach(b=>b.classList.toggle("p",b.dataset.tab===t));note("");({dash:tDash,biz:tBiz,sec:tSec,site:tSite,cat:tCat,med:tMed})[t]().catch(e=>note(e.message||"Erreur",1));}
+async function loadBiz(){const {data,error}=await sb.from("businesses").select("id,name,slug,city,postal_code,region_code,department_code,status,featured,latitude,longitude,created_at").order("created_at",{ascending:false});if(error)throw error;ADM=data;}
+async function tDash(){
+ await loadBiz();
+ const n=s=>ADM.filter(b=>b.status===s).length,nc=ADM.filter(b=>b.latitude==null||b.longitude==null).length;
+ const g=(k,f)=>{const c={};ADM.forEach(b=>{const v=b[k]||"";c[v]=(c[v]||0)+1;});return Object.entries(c).sort((a,b)=>b[1]-a[1]).map(([v,k])=>'<span class="tag">'+esc(f(v))+' : '+k+'</span>').join("")||"Aucune donnée";};
+ $("aPane").innerHTML='<div class="grid">'+[["Boutiques",ADM.length],["Publiées",n("published")],["En attente",n("pending")],["Sans coordonnées (à corriger)",nc]].map(x=>'<div class="card sc"><h3>'+x[1]+'</h3><p class="meta">'+x[0]+'</p></div>').join("")+'</div><div class="card"><h3>Par région</h3><p>'+g("region_code",c=>regName(c)||"Non renseignée")+'</p><h3>Par département</h3><p>'+g("department_code",c=>depName(c)||c||"Non renseigné")+'</p></div>'+emptyHTML("Publicités, visites et clics","Disponibles aux phases 6 et 7 : aucun chiffre fictif n’est affiché.");
+}
+async function tBiz(){
+ await loadBiz();
+ $("aPane").innerHTML='<div class="row"><input id="bq" type="search" placeholder="Filtrer par nom, ville, département…" style="flex:1"><select id="bs"><option value="">Tous statuts</option>'+opt(Object.entries(ST),"")+'</select><button class="btn p" data-a="new">Ajouter une boutique</button></div><div id="bl" style="margin-top:14px"></div>';
+ fillBiz();
+}
+function fillBiz(){
+ const q=$("bq").value,st=$("bs").value,l=ADM.filter(b=>(!st||b.status===st)&&(!q||matches(b,q)));
+ $("bl").innerHTML=l.length?l.map(b=>'<div class="card ar"><div><b>'+esc(b.name)+'</b><div class="meta">'+esc([b.city,b.postal_code].filter(Boolean).join(" "))+' – '+ST[b.status]+(b.featured?' – à la une':'')+'</div></div><div class="row"><button class="btn" data-a="edit" data-id="'+b.id+'">Modifier</button><button class="btn" data-a="pub" data-id="'+b.id+'">'+(b.status==="published"?"Dépublier":"Publier")+'</button><button class="btn" data-a="feat" data-id="'+b.id+'">'+(b.featured?"Retirer de la une":"Mettre à la une")+'</button><button class="btn" data-a="del" data-id="'+b.id+'">Supprimer</button></div></div>').join(""):emptyHTML("Aucune boutique","Ajoutez votre première boutique CBD.");
+}
+async function rowAct(a,id){
+ const b=ADM.find(x=>x.id===id);
+ if(a==="del"){if(!confirm("Supprimer définitivement « "+b.name+" » et ses photos ?"))return;
+  const {data}=await sb.from("business_images").select("storage_path").eq("business_id",id),ps=(data||[]).map(x=>x.storage_path).filter(Boolean);
+  if(ps.length)await sb.storage.from("business-media").remove(ps);
+  const r=await sb.from("businesses").delete().eq("id",id);if(r.error)throw r.error;audit("delete","business",id,b.name);}
+ else if(a==="pub"){const to=b.status==="published"?"unpublished":"published";
+  if(to==="published"){const m=await sb.from("business_moderation").select("compliance_verified").eq("business_id",id).maybeSingle();if(!(m.data&&m.data.compliance_verified))return note("Cochez « Conformité vérifiée » dans la fiche avant de publier.",1);}
+  const r=await sb.from("businesses").update({status:to}).eq("id",id);if(r.error)throw r.error;audit(to,"business",id,b.name);}
+ else{const r=await sb.from("businesses").update({featured:!b.featured}).eq("id",id);if(r.error)throw r.error;audit("feature","business",id,b.name);}
+ await loadBiz();fillBiz();note("Modification enregistrée.");refreshPublic();
+}
+function fillDeps(r,v){$("depSel").innerHTML='<option value="">—</option>'+opt(DEPS.filter(d=>!r||d.region_code===r).map(d=>[d.code,d.name+" ("+d.code+")"]),v);}
+const lrow=l=>'<div class="row"><select name="lk">'+opt(Object.entries(LK),l.kind||"website")+'</select><input name="ll" placeholder="Libellé (facultatif)" value="'+esc(l.label)+'"><input name="lu" placeholder="https://… ou tel:+33…" value="'+esc(l.url)+'" style="flex:1;min-width:180px"><button type="button" class="btn" data-a="lrm" aria-label="Retirer le lien">×</button></div>';
+async function editor(id){
+ CB=id||"";const cats=(await sb.from("categories").select("id,name").eq("active",true).order("sort_order")).data||[];
+ let b={status:"pending"},lk=[],hr=[],cs=[],mod={};
+ if(id){const [x,l,h,c,m]=await Promise.all([sb.from("businesses").select("*").eq("id",id).single(),sb.from("business_links").select("*").eq("business_id",id).order("sort_order"),sb.from("business_hours").select("*").eq("business_id",id),sb.from("business_categories").select("category_id").eq("business_id",id),sb.from("business_moderation").select("*").eq("business_id",id).maybeSingle()]);
+  if(x.error)throw x.error;b=x.data;lk=l.data||[];hr=h.data||[];cs=(c.data||[]).map(r=>r.category_id);mod=m.data||{};}
+ const chk=(n,v,l)=>'<label style="grid-auto-flow:column;align-items:center;justify-content:start;gap:8px"><input type="checkbox" name="'+n+'"'+(v?' checked':'')+(n==="cat"?' value="'+esc(l[0])+'"':'')+'>'+esc(n==="cat"?l[1]:l)+'</label>';
+ $("aPane").innerHTML='<p><button class="btn" data-a="back">← Retour aux boutiques</button></p><form id="bf" class="wide" data-id="'+esc(id||"")+'">'+
+ '<div class="card"><h3>Informations</h3><div class="fg">'+FI("name","Nom de la boutique",b.name,"text","required minlength=2")+FI("slug","Adresse de la fiche (slug)",b.slug,"text",'placeholder="auto"')+'<label>Statut<select name="status">'+opt(Object.entries(ST),b.status)+'</select></label>'+chk("featured",b.featured,"Mettre à la une")+'</div>'+TA("short_description","Description courte",b.short_description)+TA("description","Description complète",b.description)+'</div>'+
+ '<div class="card"><h3>Localisation</h3><div class="fg">'+FI("address","Adresse",b.address)+FI("postal_code","Code postal",b.postal_code,"text",'pattern="[0-9]{5}" inputmode="numeric"')+FI("city","Ville",b.city)+'<label>Région<select name="region_code"><option value="">—</option>'+opt(REGIONS.map(r=>[r.code,r.name]),b.region_code)+'</select></label><label>Département<select name="department_code" id="depSel"></select></label>'+FI("latitude","Latitude",b.latitude,"number",'step="any" min="-90" max="90"')+FI("longitude","Longitude",b.longitude,"number",'step="any" min="-180" max="180"')+'</div><div class="row" style="margin-top:10px"><button type="button" class="btn" data-a="mypos">Utiliser ma position</button><button type="button" class="btn" data-a="osm">Vérifier sur la carte</button></div></div>'+
+ '<div class="card"><h3>Contact</h3><div class="fg">'+FI("phone","Téléphone",b.phone,"tel")+FI("email","E-mail",b.email,"email")+FI("website","Site Internet (https://)",b.website,"url")+'</div><h3 style="margin-top:14px">Liens (réseaux, WhatsApp…)</h3><div id="lks">'+lk.map(lrow).join("")+'</div><button type="button" class="btn" data-a="ladd" style="margin-top:8px">Ajouter un lien</button></div>'+
+ '<div class="card"><h3>Activité</h3>'+TA("specialties","Spécialités",b.specialties)+TA("services","Services",b.services)+TA("extra_info","Informations complémentaires",b.extra_info)+'<h3>Catégories CBD</h3><div class="fg">'+cats.map(c=>chk("cat",cs.includes(c.id),[c.id,c.name])).join("")+'</div></div>'+
+ '<div class="card"><h3>Horaires</h3>'+DAYS.map((d,i)=>{const k=i+1,h=hr.find(x=>x.weekday===k)||{};return '<div class="row hr"><span style="width:90px">'+d+'</span>'+chk("h"+k+"c",h.closed,"Fermé")+'<input type="time" name="h'+k+'o" value="'+esc(hhmm(h.opens))+'" aria-label="Ouverture"><input type="time" name="h'+k+'f" value="'+esc(hhmm(h.closes))+'" aria-label="Fermeture"></div>';}).join("")+'</div>'+
+ '<div class="card"><h3>Modération</h3>'+chk("verified",mod.compliance_verified,"Conformité vérifiée (produits licites, aucune allégation thérapeutique)")+TA("mod_note","Note interne (jamais publique)",mod.note)+'</div>'+
+ '<button class="btn p" type="submit">Enregistrer la boutique</button></form>'+
+ '<div class="card" style="margin-top:14px"><h3>Photos et logo</h3>'+(id?'<div class="fg"><label>Ajouter des photos (compressées automatiquement)<input id="upImgs" type="file" accept="image/jpeg,image/png,image/webp" multiple></label><label>Importer / remplacer le logo<input id="upLogo" type="file" accept="image/jpeg,image/png,image/webp"></label></div><div class="gridA" id="imgs"></div>':'<p class="msg">Enregistrez d’abord la boutique pour ajouter des photos.</p>')+'</div>';
+ fillDeps(b.region_code,b.department_code);if(id)loadImgs(id);
+}
+async function saveBiz(f){
+ const d=new FormData(f),id=f.dataset.id,g=n=>(d.get(n)||"").toString().trim(),nul=n=>g(n)||null,num=n=>g(n)===""?null:+g(n);
+ const row={name:g("name"),slug:slug(g("slug")||g("name")),short_description:nul("short_description"),description:nul("description"),address:nul("address"),postal_code:nul("postal_code"),city:nul("city"),region_code:nul("region_code"),department_code:nul("department_code"),latitude:num("latitude"),longitude:num("longitude"),phone:nul("phone"),email:nul("email"),website:nul("website"),specialties:nul("specialties"),services:nul("services"),extra_info:nul("extra_info"),status:g("status"),featured:d.has("featured"),updated_at:new Date().toISOString()};
+ const ver=d.has("verified"),kinds=d.getAll("lk"),lbls=d.getAll("ll"),lks=d.getAll("lu").map((u,i)=>({kind:kinds[i],label:lbls[i]||null,url:u.trim(),sort_order:i})).filter(x=>x.url);
+ if(row.status==="published"&&!ver)return note("Cochez « Conformité vérifiée » avant de publier.",1);
+ if(row.website&&!/^https:\/\/\S+$/i.test(row.website))return note("Le site Internet doit commencer par https://",1);
+ if(lks.some(x=>!safe(x.url)))return note("Chaque lien doit commencer par https:// ou tel:+33…",1);
+ const r=id?await sb.from("businesses").update(row).eq("id",id).select("id").single():await sb.from("businesses").insert(row).select("id").single();
+ if(r.error)return note(r.error.code==="23505"?"Cette adresse de fiche (slug) existe déjà : modifiez-la.":r.error.message,1);
+ const bid=r.data.id;
+ await sb.from("business_categories").delete().eq("business_id",bid);const cs=d.getAll("cat");if(cs.length)await sb.from("business_categories").insert(cs.map(c=>({business_id:bid,category_id:c})));
+ const hrs=[1,2,3,4,5,6,7].filter(k=>d.has("h"+k+"c")||g("h"+k+"o")||g("h"+k+"f")).map(k=>({business_id:bid,weekday:k,closed:d.has("h"+k+"c"),opens:d.has("h"+k+"c")?null:nul("h"+k+"o"),closes:d.has("h"+k+"c")?null:nul("h"+k+"f")}));
+ await sb.from("business_hours").delete().eq("business_id",bid);if(hrs.length)await sb.from("business_hours").insert(hrs);
+ await sb.from("business_links").delete().eq("business_id",bid);if(lks.length)await sb.from("business_links").insert(lks.map(x=>({...x,business_id:bid})));
+ await sb.from("business_moderation").upsert({business_id:bid,compliance_verified:ver,note:nul("mod_note"),verified_at:ver?new Date().toISOString():null});
+ audit(id?"update":"create","business",bid,row.name);refreshPublic();
+ await editor(bid);note("Boutique enregistrée.");
+}
+async function loadImgs(id){
+ const {data}=await sb.from("business_images").select("*").eq("business_id",id).order("sort_order");IM=data||[];
+ $("imgs").innerHTML=IM.map(i=>'<div class="card"><img src="'+esc(i.url)+'" alt=""><div class="row"><button class="btn" data-a="main" data-id="'+i.id+'">'+(i.is_main?"Principale ✓":"Principale")+'</button><button class="btn" data-a="mv" data-id="'+i.id+'" data-d="-1" aria-label="Monter">↑</button><button class="btn" data-a="mv" data-id="'+i.id+'" data-d="1" aria-label="Descendre">↓</button><button class="btn" data-a="rmimg" data-id="'+i.id+'">Supprimer</button></div></div>').join("")||'<p class="msg">Aucune photo.</p>';
+}
+async function syncCover(id){const {data}=await sb.from("business_images").select("url,is_main").eq("business_id",id).order("sort_order"),m=(data||[]).find(i=>i.is_main)||(data||[])[0];await sb.from("businesses").update({cover_url:m?m.url:null}).eq("id",id);}
+async function compress(file,max){const bmp=await createImageBitmap(file),k=Math.min(1,max/Math.max(bmp.width,bmp.height)),c=document.createElement("canvas");c.width=Math.round(bmp.width*k);c.height=Math.round(bmp.height*k);c.getContext("2d").drawImage(bmp,0,0,c.width,c.height);return new Promise(r=>c.toBlob(r,"image/webp",.82));}
+async function up(bucket,path,file,max){
+ const raw=/svg|icon/.test(file.type),blob=raw?file:await compress(file,max),p=path+(raw?"."+file.name.split(".").pop().toLowerCase():".webp");
+ const {error}=await sb.storage.from(bucket).upload(p,blob,{contentType:raw?file.type:"image/webp"});if(error)throw error;
+ return{path:p,url:sb.storage.from(bucket).getPublicUrl(p).data.publicUrl};
+}
+async function addImgs(inp){
+ const fs=[...inp.files];let n=Math.max(0,...IM.map(i=>i.sort_order))+1;note("Import en cours…");
+ for(const f of fs){const u=await up("business-media",CB+"/"+crypto.randomUUID(),f,1600);const r=await sb.from("business_images").insert({business_id:CB,url:u.url,storage_path:u.path,sort_order:n++,is_main:!IM.length&&f===fs[0]});if(r.error)throw r.error;}
+ await syncCover(CB);inp.value="";await loadImgs(CB);note(fs.length+" photo(s) ajoutée(s).");refreshPublic();
+}
+async function addLogo(inp){const u=await up("business-media",CB+"/logo-"+Date.now(),inp.files[0],512),r=await sb.from("businesses").update({logo_url:u.url}).eq("id",CB);if(r.error)throw r.error;inp.value="";note("Logo enregistré.");refreshPublic();}
+async function imgAct(a,id,d){
+ const c=IM.find(i=>i.id===id);
+ if(a==="main"){await sb.from("business_images").update({is_main:false}).eq("business_id",CB);await sb.from("business_images").update({is_main:true}).eq("id",id);}
+ else if(a==="mv"){const o=IM[IM.indexOf(c)+d];if(!o)return;await sb.from("business_images").update({sort_order:o.sort_order}).eq("id",id);await sb.from("business_images").update({sort_order:c.sort_order}).eq("id",o.id);}
+ else{if(!confirm("Supprimer cette photo ?"))return;if(c.storage_path)await sb.storage.from("business-media").remove([c.storage_path]);await sb.from("business_images").delete().eq("id",id);if(c.is_main){const r=IM.find(i=>i.id!==id);if(r)await sb.from("business_images").update({is_main:true}).eq("id",r.id);}}
+ await syncCover(CB);await loadImgs(CB);refreshPublic();
+}
+async function tSec(){
+ const {data,error}=await sb.from("homepage_sections").select("*").order("sort_order");if(error)throw error;SE=data;drawSec();
+}
+function readSec(){document.querySelectorAll("[data-sec]").forEach(c=>{const i=+c.dataset.sec;SE[i].enabled=c.checked;SE[i].title=document.querySelector('[data-st="'+i+'"]').value.trim();});}
+function drawSec(){$("aPane").innerHTML='<div class="card"><p class="meta">Affichez, renommez et réordonnez les sections de l’accueil.</p>'+SE.map((s,i)=>'<div class="ar"><label style="grid-auto-flow:column;align-items:center"><input type="checkbox" data-sec="'+i+'"'+(s.enabled?' checked':'')+'> Afficher</label><input data-st="'+i+'" value="'+esc(s.title||SEC_DEF[s.key].t)+'" style="flex:1;min-width:160px"><button class="btn" data-a="smv" data-id="'+i+'" data-d="-1" aria-label="Monter">↑</button><button class="btn" data-a="smv" data-id="'+i+'" data-d="1" aria-label="Descendre">↓</button></div>').join("")+'<button class="btn p" data-a="ssave">Enregistrer</button></div>';}
+async function tSite(){
+ const {data}=await sb.from("site_settings").select("key,value"),v=Object.fromEntries((data||[]).map(r=>[r.key,r.value]));
+ const img=(k,l)=>'<label>'+l+'<input type="file" accept="image/*" data-key="'+k+'"></label>'+(safe(v[k])?'<img src="'+esc(v[k])+'" alt="" style="height:48px;border-radius:8px">':'');
+ $("aPane").innerHTML='<form id="sf2" class="wide"><div class="card"><h3>Textes et couleurs</h3><div class="fg">'+SITE.map(s=>s[2]==="ta"?TA(s[0],s[1],v[s[0]]):FI(s[0],s[1],v[s[0]]||s[3]||"",s[2])).join("")+FI("ui_radius","Arrondi des cartes (px)",v.ui_radius||18,"number",'min="0" max="40"')+'</div><button class="btn p" type="submit" style="margin-top:14px">Enregistrer</button></form><div class="card"><h3>Images d’identité</h3><div class="fg">'+img("logo_url","Logo principal")+img("favicon_url","Favicon")+img("hero_image","Image de fond de l’accueil")+'</div></div>';
+}
+async function saveSite(f){
+ const d=new FormData(f),rows=SITE.map(s=>s[0]).concat("ui_radius").map(k=>({key:k,value:(d.get(k)||"").toString().trim(),updated_at:new Date().toISOString()}));
+ const r=await sb.from("site_settings").upsert(rows);if(r.error)throw r.error;
+ applySettings(Object.fromEntries(rows.map(x=>[x.key,x.value])));audit("update","site_settings",null,"identité");note("Enregistré et appliqué au site public.");
+}
+async function upSite(inp){const k=inp.dataset.key,u=await up("site-media","brand/"+k+"-"+Date.now(),inp.files[0],k==="favicon_url"?128:1600),r=await sb.from("site_settings").upsert({key:k,value:u.url,updated_at:new Date().toISOString()});if(r.error)throw r.error;applySettings({[k]:u.url});note("Image enregistrée et appliquée.");tSite();}
+async function tCat(){
+ const {data,error}=await sb.from("categories").select("*").order("sort_order");if(error)throw error;CAT=data;
+ $("aPane").innerHTML='<div class="card">'+CAT.map((c,i)=>'<div class="ar"><input data-cn="'+i+'" value="'+esc(c.name)+'" style="flex:1"><label style="grid-auto-flow:column;align-items:center"><input type="checkbox" data-ca="'+i+'"'+(c.active?' checked':'')+'> Active</label></div>').join("")+'<button class="btn p" data-a="csave">Enregistrer</button></div><div class="card"><h3>Nouvelle catégorie CBD</h3><div class="row"><input id="cnew" placeholder="Ex. Vapes CBD" style="flex:1"><button class="btn" data-a="cadd">Ajouter</button></div></div>';
+}
+async function tMed(){
+ const out=[];for(const f of ["brand","library"]){const {data}=await sb.storage.from("site-media").list(f,{limit:100,sortBy:{column:"created_at",order:"desc"}});(data||[]).filter(x=>x.id).forEach(x=>out.push(f+"/"+x.name));}
+ $("aPane").innerHTML='<div class="card"><label>Importer une image dans la médiathèque<input id="upMed" type="file" accept="image/*"></label><div class="gridA">'+(out.map(p=>{const u=sb.storage.from("site-media").getPublicUrl(p).data.publicUrl;return '<div class="card"><img src="'+esc(u)+'" alt=""><div class="row"><button class="btn" data-a="mcopy" data-u="'+esc(u)+'">Copier le lien</button><button class="btn" data-a="mdel" data-id="'+esc(p)+'">Supprimer</button></div></div>';}).join("")||"")+'</div>'+(out.length?'':emptyHTML("Aucune image"))+'</div>';
+}
+document.addEventListener("click",async e=>{
+ const t=e.target.closest("#adminBox [data-a],#adminBox [data-tab]");if(!t)return;
+ const a=t.dataset.a,id=t.dataset.id;
+ try{
+  if(t.dataset.tab)openTab(t.dataset.tab);
+  else if(a==="out"){await sb.auth.signOut();location.reload();}
+  else if(a==="new")await editor();
+  else if(a==="edit")await editor(id);
+  else if(a==="back")openTab("biz");
+  else if(["pub","feat","del"].includes(a))await rowAct(a,id);
+  else if(["main","mv","rmimg"].includes(a))await imgAct(a==="rmimg"?"rm":a,id,+t.dataset.d);
+  else if(a==="ladd")$("lks").insertAdjacentHTML("beforeend",lrow({}));
+  else if(a==="lrm")t.closest(".row").remove();
+  else if(a==="osm"){const f=$("bf"),la=f.latitude.value,lo=f.longitude.value;if(!la||!lo)return note("Renseignez la latitude et la longitude.",1);open("https://www.openstreetmap.org/?mlat="+la+"&mlon="+lo+"#map=17/"+la+"/"+lo,"_blank","noopener");}
+  else if(a==="mypos")navigator.geolocation.getCurrentPosition(p=>{$("bf").latitude.value=p.coords.latitude.toFixed(6);$("bf").longitude.value=p.coords.longitude.toFixed(6);note("Position renseignée : enregistrez la boutique.");},()=>note("Position refusée.",1));
+  else if(a==="smv"){readSec();const i=+id,j=i+ +t.dataset.d;if(SE[j]){[SE[i],SE[j]]=[SE[j],SE[i]];drawSec();}}
+  else if(a==="ssave"){readSec();const r=await sb.from("homepage_sections").upsert(SE.map((s,i)=>({key:s.key,title:s.title||null,enabled:s.enabled,sort_order:i+1})));if(r.error)throw r.error;audit("update","homepage_sections",null,"ordre");note("Sections enregistrées.");refreshPublic();}
+  else if(a==="csave"){const r=await Promise.all(CAT.map((c,i)=>sb.from("categories").update({name:document.querySelector('[data-cn="'+i+'"]').value.trim()||c.name,active:document.querySelector('[data-ca="'+i+'"]').checked}).eq("id",c.id)));if(r.some(x=>x.error))throw r.find(x=>x.error).error;note("Catégories enregistrées.");}
+  else if(a==="cadd"){const n=$("cnew").value.trim();if(!n)return;const r=await sb.from("categories").insert({name:n,slug:slug(n),sort_order:CAT.length+1});if(r.error)throw r.error;tCat();}
+  else if(a==="mcopy"){await navigator.clipboard.writeText(t.dataset.u);note("Lien copié.");}
+  else if(a==="mdel"){if(confirm("Supprimer cette image ?")){await sb.storage.from("site-media").remove([id]);tMed();}}
+ }catch(err){note(err.message||"Erreur",1);}
+});
+document.addEventListener("change",async e=>{
+ const t=e.target;
+ try{
+  if(t.name==="region_code"&&t.closest("#bf"))fillDeps(t.value);
+  else if(t.id==="upImgs")await addImgs(t);
+  else if(t.id==="upLogo")await addLogo(t);
+  else if(t.type==="file"&&t.dataset.key)await upSite(t);
+  else if(t.id==="upMed"){note("Import…");const u=await up("site-media","library/"+crypto.randomUUID(),t.files[0],1600);note("Image importée.");tMed();}
+ }catch(err){note(err.message||"Erreur",1);t.value="";}
+});
+document.addEventListener("submit",async e=>{
+ const f=e.target;if(!f.closest("#adminBox")||f.id==="loginForm")return;e.preventDefault();
+ try{if(f.id==="bf")await saveBiz(f);else if(f.id==="sf2")await saveSite(f);}catch(err){note(err.message||"Erreur",1);}
+});
 async function init(){
  renderHome();renderList();
  if(!sb){$("dot").className="dot ko";$("status").textContent="Supabase non configuré : renseignez l’URL et la clé dans index.html.";return;}
@@ -359,7 +534,7 @@ async function init(){
   renderHome();renderList();loadMap();if(location.hash.startsWith("#/boutique/"))openShop(decodeURIComponent(location.hash.slice(11)));
  }catch(e){$("dot").className="dot ko";$("status").textContent="Erreur Supabase : "+(e.message||"connexion impossible")+" (supabase.sql exécuté ?)";}
 }
-init();
+init().then(autoAdmin);
 
 /* Connexion administrateur (accès vérifié côté base via is_admin()) */
 $("loginForm").onsubmit = async ev => {
@@ -370,8 +545,7 @@ $("loginForm").onsubmit = async ev => {
   if (error) { m.className = "msg err"; m.textContent = "Identifiants incorrects."; return; }
   const { data: ok } = await sb.rpc("is_admin");
   if (!ok) { await sb.auth.signOut(); m.className = "msg err"; m.textContent = "Ce compte n’a pas les droits d’administration."; return; }
-  $("adminBox").innerHTML = '<div class="empty"><b>Connecté en administrateur</b>Le tableau de bord arrive en phase 5.</div><button class="btn" id="out">Se déconnecter</button>';
-  $("out").onclick = async () => { await sb.auth.signOut(); location.reload(); };
+  showAdmin();
 };
 </script>
 </body>
