@@ -267,6 +267,11 @@ a.vit.v4{border:1.5px solid transparent;background:linear-gradient(var(--bg2),va
 #map .rg.sel,#map .dp.on{stroke-dasharray:7 5;animation:dash 1.2s linear infinite}@keyframes dash{to{stroke-dashoffset:-24}}
 .zh{position:absolute;left:14px;bottom:44px;padding:8px 14px;border-radius:99px;background:rgba(7,11,22,.8);backdrop-filter:blur(8px);border:1px solid var(--line);font-size:.85rem;opacity:0;transform:translateY(8px);transition:.4s;pointer-events:none}.zh.on{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){#map .mi,#map .cb2,#map .rg.sel,#map .dp.on{animation:none}}
+#map .kc{fill:#0b1226;stroke:var(--c1);stroke-width:1.6px;filter:drop-shadow(0 8px 14px rgba(0,0,0,.65))}#map .kc.f{stroke:var(--c2);stroke-width:2.2px}
+#map .kl{fill:color-mix(in srgb,var(--c1) 30%,#0b1226);stroke:var(--c1);stroke-width:1.5px}
+#map .kt{font:800 20px var(--fb);fill:#fff;text-anchor:middle;dominant-baseline:central}
+#map .kn{font:700 14px var(--fb);fill:#fff}#map .ki{font:500 12px var(--fb);fill:var(--mut)}#map .kd2{font:600 11.5px var(--fb);fill:var(--c1)}#map .kgo{font:700 26px var(--fb);fill:var(--c1)}
+#map .mk:has(.kc):hover .mi{transform:scale(1.04)}
 </style>
 </head>
 <body>
@@ -518,26 +523,40 @@ function renderZone(){
  addEventListener("resize",()=>{if(GEO)setVB();});
 })();
 /* ---- Boutiques sur la carte de France : elles apparaissent à mesure qu’on zoome ---- */
+var ZD=null,ZL=0,SELB="";
+const cut1=(t,n)=>t.length>n?t.slice(0,n-1)+"…":t;
+const dlv=b=>{const e=ZD&&ZD[b.id];if(!e)return"";const d=[...e.d],r=[...e.r].map(c=>(REGIONS.find(x=>x.code===c)||{}).name).filter(Boolean),t=d.slice(0,3).map(c=>depName(c)||c).concat(r.slice(0,1));return t.join(", ")+(d.length>3?" +"+(d.length-3):"");};
+async function loadZones(){ZL=1;try{let a=[],o=0,q;do{q=await sb.from("business_delivery_zones").select("business_id,scope,department_code,region_code").range(o,o+999);if(q.error)throw q.error;a=a.concat(q.data);o+=1000;}while(q.data.length===1000&&o<10000);
+ ZD={};a.forEach(z=>{const e=ZD[z.business_id]||(ZD[z.business_id]={d:new Set(),r:new Set()});if(z.department_code)e.d.add(z.department_code);if(z.scope==="region"&&z.region_code)e.r.add(z.region_code);});$("shg").innerHTML="";shopsLayer();}catch(e){ZD={};}}
 function shopsLayer(){
  const g=$("shg");if(!g||!GEO)return;
  const sv=$("map"),W=sv.clientWidth,H=sv.clientHeight;if(!W)return;
  const ox=(W-VB[2]*K)/2,oy=(H-VB[3]*K)/2,zf=VB0[2]/VB[2],P=[];
  DATA.forEach(b=>{if(!validGeo(b)||(sel.region&&b.region_code!==sel.region)||(sel.dept&&b.department_code!==sel.dept))return;
   const x=PX(+b.longitude),y=PY(+b.latitude),sx=(x-VB[0])*K+ox,sy=(y-VB[1])*K+oy;if(sx>-50&&sy>-50&&sx<W+50&&sy<H+50)P.push({b,x,y,sx,sy});});
- const cell=zf<2.2?0:zf<5?86:zf<12?56:zf<26?38:0,C=new Map(),hz=$("zhint");
+ const cell=zf<2.2?0:zf<5?86:zf<8?56:0,C=new Map(),hz=$("zhint"),CD=zf>=8,pl=[],cardOK=p=>{const r=[p.sx-120,p.sy-140,240,96];if(p.b.id!==SELB&&pl.some(u=>r[0]<u[0]+u[2]&&r[0]+r[2]>u[0]&&r[1]<u[1]+u[3]&&r[1]+r[3]>u[1]))return false;pl.push(r);return true;};if(!ZL)loadZones();
  if(zf<2.2&&!sel.region){C.clear();hz.textContent="Zoomez ou touchez une région : les boutiques apparaissent";}
- else{hz.textContent=P.length+" boutique(s) dans la vue";P.forEach(p=>{const k=cell?Math.round(p.sx/cell)+"_"+Math.round(p.sy/cell):p.b.id;(C.get(k)||C.set(k,[]).get(k)).push(p);});}
+ else{hz.textContent=P.length+" boutique(s) dans la vue";P.sort((a,b)=>(b.b.id===SELB)-(a.b.id===SELB)||(+!!b.b.featured)-(+!!a.b.featured));P.forEach(p=>{const k=cell?Math.round(p.sx/cell)+"_"+Math.round(p.sy/cell):p.b.id;(C.get(k)||C.set(k,[]).get(k)).push(p);});}
  hz.classList.add("on");clearTimeout(hz._t);hz._t=setTimeout(()=>hz.classList.remove("on"),3800);
  const have=new Map([...g.children].filter(e=>!e.classList.contains("gone")).map(e=>[e.dataset.sg,e])),keep=new Set();let h="",i=0;
- C.forEach((a,k)=>{const n=a.length,x=a.reduce((t,p)=>t+p.x,0)/n,y=a.reduce((t,p)=>t+p.y,0)/n,sg=n>1?"c"+k+":"+n:"s"+a[0].b.id;keep.add(sg);if(have.has(sg))return;
+ C.forEach((a,k)=>{const n=a.length,x=a.reduce((t,p)=>t+p.x,0)/n,y=a.reduce((t,p)=>t+p.y,0)/n,kd=n===1&&(CD||a[0].b.id===SELB)&&cardOK(a[0]),sg=n>1?"c"+k+":"+n:"s"+a[0].b.id+(kd?"k":"");keep.add(sg);if(have.has(sg))return;
   const at='class="mk" data-sg="'+sg+'" data-x="'+x.toFixed(1)+'" data-y="'+y.toFixed(1)+'" transform="translate('+x.toFixed(1)+' '+y.toFixed(1)+') scale('+(1/K).toFixed(4)+')" tabindex="0" style="--d:'+Math.min(i++*28,700)+'ms"';
   if(n>1){const r=n<10?17:n<50?21:26,cs=[...new Set(a.map(p=>p.b.city).filter(Boolean))],bb=[Math.min(...a.map(p=>p.x)),Math.min(...a.map(p=>p.y)),Math.max(...a.map(p=>p.x)),Math.max(...a.map(p=>p.y))];
    h+='<g '+at+' data-bb="'+bb.map(v=>v.toFixed(1))+'" data-n="'+esc(cs.slice(0,3).join(", ")||n+" boutiques")+'" data-s="'+n+' boutiques · cliquez pour zoomer" role="button" aria-label="'+n+' boutiques, zoomer"><g class="mi"><circle class="cb2" r="'+r+'"/><circle class="cb" r="'+r+'"/><text class="ct">'+n+'</text></g>'+(cs.length===1&&zf>=3?'<text class="sl" y="'+(r+15)+'" text-anchor="middle">'+esc(cs[0])+'</text>':'')+'</g>';}
-  else{const b=a[0].b;h+='<g '+at+' data-h="'+esc(hrefB(b))+'" data-n="'+esc(b.name)+'" data-s="'+esc(b.city||"")+'" role="link" aria-label="'+esc(b.name)+'"><g class="mi">'+(b.featured?'<circle class="cb2" cy="-22" r="11"/>':'')+'<path class="sp'+(b.featured?' f':'')+'" d="M0 0C-9-11-13-17-13-23a13 13 0 1 1 26 0C13-17 9-11 0 0Z"/><circle cy="-23" r="4.6" fill="#04101c"/></g>'+(zf>=9?'<text class="sl" x="17" y="-19">'+esc(b.name)+'</text>':'')+'</g>';}});
+  else{const b=a[0].b,f=b.featured?" f":"",id=esc(b.id),sd=cut1((b.short_description||"").replace(/\s+/g," ").trim(),28),dv=dlv(b);
+   h+='<g '+at+' data-h="'+esc(hrefB(b))+'" data-n="'+esc(b.name)+'" data-s="'+esc(b.city||"")+'" data-id="'+id+'" role="link" aria-label="'+esc(b.name)+'"><g class="mi">'+(b.featured&&!kd?'<circle class="cb2" cy="-22" r="11"/>':'')
+   +(kd?'<rect class="kc'+f+'" x="-120" y="-140" width="240" height="96" rx="16"/><circle class="kl" cx="-84" cy="-106" r="23"/>'
+    +(safe(b.logo_url)?'<clipPath id="lc'+id+'"><circle cx="-84" cy="-106" r="22"/></clipPath><image href="'+esc(b.logo_url)+'" x="-106" y="-128" width="44" height="44" clip-path="url(#lc'+id+')" preserveAspectRatio="xMidYMid slice"/>':'<text class="kt" x="-84" y="-106">'+esc((b.name||"?")[0].toUpperCase())+'</text>')
+    +'<text class="kn" x="-52" y="-117">'+esc(cut1(b.name||"",19))+'</text><text class="ki" x="-52" y="-100">'+esc(cut1([catOf(b),b.city].filter(Boolean).join(" · "),28))+'</text>'+(sd?'<text class="ki" x="-52" y="-84">'+esc(sd)+'</text>':'')
+    +'<text class="kd2" x="-106" y="-58">'+esc(cut1(dv?"🚚 Livre : "+dv:"📍 "+loc(b),36))+'</text><text class="kgo" x="104" y="-96">›</text>':'')
+   +'<path class="sp'+f+'" d="M0 0C-9-11-13-17-13-23a13 13 0 1 1 26 0C13-17 9-11 0 0Z"/><circle cy="-23" r="4.6" fill="#04101c"/></g></g>';}});
  have.forEach((e,sg)=>{if(!keep.has(sg)){e.classList.add("gone");setTimeout(()=>e.remove(),260);}});
  g.insertAdjacentHTML("beforeend",h);
 }
-$("map").addEventListener("click",e=>{const m=e.target.closest(".mk");if(!m)return;if(m.dataset.h)location.href=m.dataset.h;else if(m.dataset.bb){const b=m.dataset.bb.split(",").map(Number);fit(b);}});
+$("map").addEventListener("click",e=>{const m=e.target.closest(".mk");if(!m)return;
+ if(m.dataset.bb)fit(m.dataset.bb.split(",").map(Number));
+ else if(m.querySelector(".kc"))location.href=m.dataset.h;
+ else{SELB=m.dataset.id;const x=+m.dataset.x,y=+m.dataset.y,w=Math.min(VB[2],VB0[2]/10),h=w*VB[3]/VB[2];go([x-w/2,y-h*.62,w,h],800);shopsLayer();}});
 $("map").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.classList&&e.target.classList.contains("mk"))e.target.dispatchEvent(new MouseEvent("click",{bubbles:true}));});
 /* ===== Phase 4 : fiches boutiques ===== */
 const DAYS=["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
