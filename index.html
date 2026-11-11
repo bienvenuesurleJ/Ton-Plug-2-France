@@ -273,6 +273,24 @@ a.vit.v4{border:1.5px solid transparent;background:linear-gradient(var(--bg2),va
 #map .kn{font:700 14px var(--fb);fill:#fff}#map .ki{font:500 12px var(--fb);fill:var(--mut)}#map .kd2{font:600 11.5px var(--fb);fill:var(--c1)}#map .kgo{font:700 26px var(--fb);fill:var(--c1)}
 #map .mk:has(.kc):hover .mi{transform:scale(1.04)}
 .zh{top:14px;bottom:auto;max-width:calc(100% - 100px)}.leg{flex-wrap:wrap;row-gap:6px}.leg .pl{flex:1 1 100%}
+/* ---- Accueil : UI/UX ---- */
+#v-home{overflow-x:clip}.hero{position:relative;isolation:isolate}
+.hero::before,.hero::after{content:"";position:absolute;z-index:-1;width:min(520px,80vw);aspect-ratio:1;border-radius:50%;filter:blur(70px);pointer-events:none;animation:orb 14s ease-in-out infinite alternate}
+.hero::before{background:var(--c2);opacity:.3;top:-8%;left:-12%}.hero::after{background:var(--c1);opacity:.2;bottom:-6%;right:-14%;animation-delay:-7s}
+@keyframes orb{to{transform:translate(40px,30px) scale(1.15)}}
+.qk{display:flex;gap:8px;overflow-x:auto;justify-content:center;margin:16px auto 8px;padding:2px;scrollbar-width:none}.qk::-webkit-scrollbar{display:none}.qk[hidden],.kpis[hidden]{display:none}
+.qk .chip{flex:0 0 auto;min-height:40px;white-space:nowrap}.qk .qn{border-color:var(--c1);color:var(--c1)}
+@media(max-width:760px){.qk{justify-content:flex-start}}
+.hero .row .btn:nth-child(3){background:none;border-color:transparent;color:var(--mut);text-decoration:underline;text-underline-offset:4px}
+.hero .stat:has(#dot:not(.ko)){display:none}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:640px;margin:34px auto 0;opacity:0;transform:translateY(16px);transition:opacity .7s,transform .7s cubic-bezier(.2,.8,.2,1)}.kpis.in{opacity:1;transform:none}
+.kpis>div{padding:14px 4px;border-radius:var(--r);background:var(--card);border:1px solid var(--line);backdrop-filter:blur(8px)}
+.kpis b{display:block;font:700 clamp(1.4rem,5vw,2rem) var(--fh);color:var(--c1)}.kpis span{font-size:.72rem;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}
+.rvj .sec{opacity:0;transform:translateY(28px);transition:opacity .7s,transform .7s cubic-bezier(.2,.8,.2,1)}.rvj .sec.in{opacity:1;transform:none}
+.sk{height:150px;margin-top:20px;border-radius:var(--r);background:linear-gradient(100deg,var(--card) 30%,rgba(255,255,255,.08) 50%,var(--card) 70%) 0 0/300% 100%;animation:skl 1.4s linear infinite}@keyframes skl{to{background-position:-300% 0}}
+body:has(#dot.ko) .sk{display:none}
+@media(max-width:760px){.car .grid,.car .vgrid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;margin-inline:-16px;padding:4px 16px 14px;scrollbar-width:none}.car .grid::-webkit-scrollbar,.car .vgrid::-webkit-scrollbar{display:none}.car .grid>*,.car .vgrid>*{flex:0 0 82%;scroll-snap-align:center}}
+@media(prefers-reduced-motion:reduce){.hero::before,.hero::after,.sk{animation:none}.rvj .sec,.kpis{transition:none}}
 </style>
 </head>
 <body>
@@ -291,11 +309,13 @@ a.vit.v4{border:1.5px solid transparent;background:linear-gradient(var(--bg2),va
 <h1 id="heroTitle">Toutes les boutiques CBD de France, sur une seule carte.</h1>
 <p id="heroText">Plug 2 France référence uniquement les commerces physiques spécialisés dans le CBD. Choisissez votre région, puis votre département.</p>
 <form class="search" id="sf" role="search"><input id="q" type="search" placeholder="Nom, ville, code postal, département ou région" autocomplete="off" aria-label="Rechercher une boutique" aria-controls="sug"><button class="btn p" type="submit">Rechercher</button><ul class="sug" id="sug" hidden></ul></form>
+<div class="qk" id="qk" hidden></div>
 <div class="row"><a class="btn p" href="#/boutiques" data-set="cta1">Explorer les boutiques</a><a class="btn" href="#/carte" data-set="cta2">Accéder à la carte</a><a class="btn" href="#/partenaire" data-set="cta3">Devenir partenaire</a></div>
+<div class="kpis" id="kpis" hidden></div>
 <div class="stat"><span class="dot" id="dot"></span><span id="status">Connexion à Supabase…</span></div>
 </div>
 <div class="wrap about"><div class="card"><h2>À quoi sert Plug 2 France ?</h2><p>Plug 2 France est l’annuaire national des boutiques CBD physiques. Notre but : vous permettre de trouver en quelques secondes une boutique près de chez vous, par région, département ou ville, avec toutes les infos utiles : photos, horaires, produits, zones de livraison et contacts directs.</p><div class="grid"><div class="card tlt"><h3>Pour les clients</h3><p class="meta">Repérez les boutiques sur la carte, contactez-les ou lancez l’itinéraire en un clic.</p></div><div class="card tlt"><h3>Pour les boutiques</h3><p class="meta">Créez votre fiche avec un abonnement : elle est préparée automatiquement dès le paiement, puis vérifiée par notre équipe avant publication.</p></div><div class="card tlt"><h3>Des fiches contrôlées</h3><p class="meta">Chaque boutique est validée avant d’apparaître : uniquement des commerces physiques spécialisés CBD.</p></div></div><a class="btn p" href="#/partenaire">Référencer ma boutique</a></div></div>
-<div class="wrap" id="sections"></div></section>
+<div class="wrap" id="sections"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div></section>
 <section class="view" id="v-carte"><div class="wrap page"><h2 data-set="map_title">Carte de France</h2><p class="meta" data-set="map_intro" style="max-width:60ch;margin-bottom:12px">Touchez une région pour voir ses départements, puis ses boutiques.</p><div id="zoneMode"><div class="head" id="crumb"></div><div class="card mapcard"><p class="msg" id="mapMsg">Chargement de la carte…</p><svg id="map" role="group" aria-label="Carte interactive de la France : régions puis départements"></svg><div class="zoom" id="zoomBox"><button class="btn" data-z="1.4" aria-label="Zoom avant">+</button><button class="btn" data-z="0.7" aria-label="Zoom arrière">−</button><button class="btn" data-z="0" aria-label="Recentrer">⟲</button><button class="btn" data-z="loc" aria-label="Ma position">◎</button></div><div class="tip" id="tip"></div><div class="zh" id="zhint" role="status"></div><div class="leg"><span>Peu de boutiques</span><u></u><span>Beaucoup</span><span class="pl">◉ Groupe · 📍 Boutique · ★ Mise en avant</span></div></div><h3 class="sub" id="zTitle"></h3><div id="zoneList"></div><div id="mapShops"></div></div></div></section>
 <section class="view" id="v-boutiques"><div class="wrap page"><h2 data-set="list_title">Boutiques CBD</h2><div class="fbar" id="fbar"></div><div class="head" id="listHead"></div><div id="list"></div></div></section>
 <section class="view" id="v-partenaire"><div class="wrap page"><h2 data-set="partner_title">Devenir partenaire</h2>
@@ -485,10 +505,10 @@ function setVB(){const s=$("map");s.setAttribute("viewBox",VB.map(v=>v.toFixed(1
 (function(){const s=$("map"),tip=$("tip"),mc=s.parentElement;
  s.addEventListener("mousemove",e=>{const t=e.target.closest("[data-n]");if(!t){tip.classList.remove("on");return;}const r=mc.getBoundingClientRect();tip.style.left=(e.clientX-r.left)+"px";tip.style.top=(e.clientY-r.top)+"px";tip.innerHTML="<b>"+esc(t.dataset.n)+"</b><span>"+esc(t.dataset.s||t.dataset.c+" boutique(s)")+"</span>";tip.classList.add("on");});
  s.addEventListener("mouseleave",()=>tip.classList.remove("on"));})();
-function go(to,dur){const from=VB.slice(),t0=performance.now(),id=++TW;dur=matchMedia("(prefers-reduced-motion:reduce)").matches?0:dur;
+function fly(to,dur){const from=VB.slice(),t0=performance.now(),id=++TW;dur=matchMedia("(prefers-reduced-motion:reduce)").matches?0:dur;
  (function f(n){if(id!==TW)return;const k=dur?Math.min(1,(n-t0)/dur):1,e=1-Math.pow(1-k,3);VB=from.map((v,i)=>v+(to[i]-v)*e);setVB();if(k<1)requestAnimationFrame(f);})(t0);
 }
-function fit(b){const p=Math.max(b[2]-b[0],b[3]-b[1])*.08,w=Math.max(b[2]-b[0]+2*p,VB0[2]/90),h=Math.max(b[3]-b[1]+2*p,VB0[3]/90);go([(b[0]+b[2])/2-w/2,(b[1]+b[3])/2-h/2,w,h],650);}
+function fit(b){const p=Math.max(b[2]-b[0],b[3]-b[1])*.08,w=Math.max(b[2]-b[0]+2*p,VB0[2]/90),h=Math.max(b[3]-b[1]+2*p,VB0[3]/90);fly([(b[0]+b[2])/2-w/2,(b[1]+b[3])/2-h/2,w,h],650);}
 function pick(r,d){
  sel={region:r||"",dept:d||""};drawMap();
  if(GEO){const o=d?GEO.dep.find(x=>x.code===d):r?GEO.reg.find(x=>x.code===r):null;fit(o?o.B:[VB0[0],VB0[1],VB0[0]+VB0[2],VB0[1]+VB0[3]]);}
@@ -508,7 +528,7 @@ function renderZone(){
 (function(){
  const s=$("map"),P=new Map();let moved=0;
  const pt=(x,y)=>{const q=s.createSVGPoint();q.x=x;q.y=y;return q.matrixTransform(s.getScreenCTM().inverse());};
- const zoom=(f,x,y,d)=>{const[a,b,w,h]=VB;if((f>1&&w/f<VB0[2]/90)||(f<1&&w/f>VB0[2]*1.1))return;go([x-(x-a)/f,y-(y-b)/f,w/f,h/f],d||0);};
+ const zoom=(f,x,y,d)=>{const[a,b,w,h]=VB;if((f>1&&w/f<VB0[2]/90)||(f<1&&w/f>VB0[2]*1.1))return;fly([x-(x-a)/f,y-(y-b)/f,w/f,h/f],d||0);};
  s.addEventListener("pointerdown",e=>{TW++;P.set(e.pointerId,[e.clientX,e.clientY]);moved=0;});
  s.addEventListener("pointermove",e=>{
   if(!P.has(e.pointerId))return;const o=P.get(e.pointerId),m=s.getScreenCTM();if(!m)return;
@@ -519,7 +539,7 @@ function renderZone(){
  s.addEventListener("wheel",e=>{e.preventDefault();const c=pt(e.clientX,e.clientY);zoom(e.deltaY<0?1.35:1/1.35,c.x,c.y,220);},{passive:false});
  s.addEventListener("click",e=>{if(moved>14)return;const t=e.target.closest("[data-r],[data-d]");if(!t)return;t.dataset.r?pick(t.dataset.r):pick(sel.region,t.dataset.d);});
  s.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.dataset&&(e.target.dataset.r||e.target.dataset.d)){e.preventDefault();moved=0;e.target.dispatchEvent(new MouseEvent("click",{bubbles:true}));}});
- $("zoomBox").addEventListener("click",e=>{const f=e.target.dataset.z;if(!f||!GEO)return;if(f==="0")pick(sel.region,sel.dept);else if(f==="loc"){navigator.geolocation?navigator.geolocation.getCurrentPosition(q=>{const w=VB0[2]/22,h=w*VB[3]/VB[2];go([PX(q.coords.longitude)-w/2,PY(q.coords.latitude)-h/2,w,h],1000);},()=>{$("zhint").textContent="Position indisponible";$("zhint").classList.add("on");}):0;}else zoom(+f,VB[0]+VB[2]/2,VB[1]+VB[3]/2,320);});
+ $("zoomBox").addEventListener("click",e=>{const f=e.target.dataset.z;if(!f||!GEO)return;if(f==="0")pick(sel.region,sel.dept);else if(f==="loc"){navigator.geolocation?navigator.geolocation.getCurrentPosition(q=>{const w=VB0[2]/22,h=w*VB[3]/VB[2];fly([PX(q.coords.longitude)-w/2,PY(q.coords.latitude)-h/2,w,h],1000);},()=>{$("zhint").textContent="Position indisponible";$("zhint").classList.add("on");}):0;}else zoom(+f,VB[0]+VB[2]/2,VB[1]+VB[3]/2,320);});
  document.addEventListener("click",e=>{const t=e.target.closest("#v-carte [data-pick]");if(t)pick(t.dataset.pick,t.dataset.dep);});
  addEventListener("resize",()=>{if(GEO)setVB();});
 })();
@@ -561,8 +581,25 @@ function shopsLayer(){
 $("map").addEventListener("click",e=>{const m=e.target.closest(".mk");if(!m)return;
  if(m.dataset.bb)fit(m.dataset.bb.split(",").map(Number));
  else if(m.querySelector(".kc"))location.href=m.dataset.h;
- else{SELB=m.dataset.id;const x=+m.dataset.x,y=+m.dataset.y,w=Math.min(VB[2],VB0[2]/10),h=w*VB[3]/VB[2];go([x-w/2,y-h*.62,w,h],800);shopsLayer();}});
+ else{SELB=m.dataset.id;const x=+m.dataset.x,y=+m.dataset.y,w=Math.min(VB[2],VB0[2]/10),h=w*VB[3]/VB[2];fly([x-w/2,y-h*.62,w,h],800);shopsLayer();}});
 $("map").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.classList&&e.target.classList.contains("mk"))e.target.dispatchEvent(new MouseEvent("click",{bubbles:true}));});
+/* ---- Accueil : chiffres animés, accès rapides, apparition au scroll, carrousels mobiles ---- */
+(function(){
+ const rh=renderHome;
+ renderHome=function(){rh();homeFx();};
+ function homeFx(){
+  if(!DATA.length)return;
+  const cr=count("region_code"),rg=REGIONS.filter(r=>cr[r.code]).sort((a,b)=>cr[b.code]-cr[a.code]),
+   ci=new Set(DATA.map(b=>(b.city||"").toLowerCase()).filter(Boolean)).size,dp=Object.keys(count("department_code")).length;
+  $("qk").innerHTML='<button class="btn chip qn" type="button" data-qn="1">📍 Près de moi</button>'+rg.slice(0,5).map(r=>'<button class="btn chip" type="button" data-qr="'+esc(r.code)+'">'+esc(r.name)+'</button>').join("");$("qk").hidden=false;
+  $("kpis").innerHTML=[[DATA.length,"boutiques"],[rg.length,"régions"],[dp,"départements"],[ci,"villes"]].map(x=>'<div><b data-n="'+x[0]+'">0</b><span>'+x[1]+'</span></div>').join("");$("kpis").hidden=false;
+  document.body.classList.add("rvj");
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;io.unobserve(e.target);e.target.classList.add("in");e.target.querySelectorAll("[data-n]").forEach(c=>{const n=+c.dataset.n,t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/1100);c.textContent=Math.round(n*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f);})(t0);});}),{threshold:.1});
+  document.querySelectorAll("#kpis,#sections .sec").forEach(e=>{e.classList.remove("in");io.observe(e);});
+  document.querySelectorAll("#sections .sec").forEach(x=>{if(x.querySelector(".grid>a.shop,.vgrid>a.vit"))x.classList.add("car");});
+ }
+ document.addEventListener("click",e=>{const r=e.target.closest("[data-qr]");if(r)return go({region:r.dataset.qr});if(e.target.closest("[data-qn]")){const g=$("geo");if(g){g.scrollIntoView({behavior:"smooth",block:"center"});g.click();}}});
+})();
 /* ===== Phase 4 : fiches boutiques ===== */
 const DAYS=["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
 const LK={website:"Site Internet",instagram:"Instagram",facebook:"Facebook",tiktok:"TikTok",snapchat:"Snapchat",telegram:"Telegram",whatsapp:"WhatsApp",youtube:"YouTube",phone:"Téléphone",other:"Lien"};
