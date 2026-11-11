@@ -1555,7 +1555,7 @@ var GP={};
 async function pGeo(){
  const {data,error}=await sb.from("businesses").select("id,name,address,postal_code,city,latitude,longitude,status").order("name").limit(2000);if(error)throw error;
  const no=data.filter(b=>b.latitude==null||b.longitude==null);
- $("pPane").innerHTML='<p class="meta" style="margin-bottom:12px">Les épingles de la carte ont besoin de coordonnées. '+(data.length-no.length)+' fiche(s) localisée(s), '+no.length+' à localiser. Les adresses sont converties via la Base Adresse Nationale (api-adresse.data.gouv.fr) : vérifiez chaque proposition avant d’enregistrer.</p>'
+ $("pPane").innerHTML='<p class="meta" style="margin-bottom:12px">Les épingles de la carte ont besoin de coordonnées. '+(data.length-no.length)+' fiche(s) localisée(s), '+no.length+' à localiser. Les adresses sont converties via le géocodeur public de l’IGN / Base Adresse Nationale (data.geopf.fr) : vérifiez chaque proposition avant d’enregistrer.</p>'
  +(no.length?'<div class="row" style="margin-bottom:12px"><button class="btn" data-pg="all">Proposer pour toutes les fiches</button></div>':'')
  +(no.length?no.map(b=>'<div class="card ar" data-gb="'+b.id+'"><div><b>'+esc(b.name)+'</b><div class="meta">'+esc([b.address,b.postal_code,b.city].filter(Boolean).join(", ")||"Adresse non renseignée")+'</div><div class="meta" data-gr></div></div><div class="row"><button class="btn" data-pg="find">Localiser</button><button class="btn p" data-pg="save" hidden>Enregistrer</button></div></div>').join(""):emptyHTML("Toutes les fiches sont localisées"));
  PCACHE.geo=Object.fromEntries(no.map(b=>[b.id,b]));
@@ -1565,7 +1565,11 @@ async function geoFind(card){
  if(!q){r.textContent="Adresse insuffisante.";return;}
  r.textContent="Recherche…";
  try{
-  const j=await(await fetch("https://api-adresse.data.gouv.fr/search/?limit=1&q="+encodeURIComponent(q))).json(),f=j.features&&j.features[0];
+  let f=null,ok=false;
+  for(const u of ["https://data.geopf.fr/geocodage/search/?limit=1&q=","https://api-adresse.data.gouv.fr/search/?limit=1&q="]){
+   try{const rs=await fetch(u+encodeURIComponent(q));if(!rs.ok)continue;const j=await rs.json();ok=true;f=j.features&&j.features[0];break;}catch(x){}
+  }
+  if(!ok){r.textContent="Service d’adresses injoignable depuis votre navigateur, réessayez plus tard.";return;}
   if(!f){r.textContent="Aucun résultat : complétez l’adresse de la fiche.";return;}
   GP[b.id]={lon:f.geometry.coordinates[0],lat:f.geometry.coordinates[1]};
   r.textContent="Proposition : "+f.properties.label+" (fiabilité "+Math.round((f.properties.score||0)*100)+" %) → "+GP[b.id].lat.toFixed(5)+", "+GP[b.id].lon.toFixed(5);
