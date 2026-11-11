@@ -251,6 +251,22 @@ a.vit.v4{border:1.5px solid transparent;background:linear-gradient(var(--bg2),va
 .fav-on{border-color:var(--c1)!important;color:var(--c1)}
 @media(max-width:760px){.vgrid,.vgrid.xl{grid-template-columns:1fr}#pinMap{height:62vh}}
 [hidden]{display:none!important}
+
+/* ---- Carte de France : boutiques animées ---- */
+#map{height:min(78vh,820px)}
+#map .mk{cursor:pointer;outline:none}
+#map .mi{transform-box:fill-box;transform-origin:50% 100%;animation:mpop .55s cubic-bezier(.2,1.5,.4,1) backwards;animation-delay:var(--d,0ms)}
+@keyframes mpop{from{transform:scale(0);opacity:0}}
+#map .mk.gone .mi{animation:mout .25s forwards}@keyframes mout{to{transform:scale(0);opacity:0}}
+#map .mk:hover .mi,#map .mk:focus-visible .mi{filter:drop-shadow(0 0 7px var(--c1)) brightness(1.25);transform:scale(1.18);transition:transform .2s}
+#map .cb{fill:color-mix(in srgb,var(--c1) 85%,#04101c);stroke:#fff;stroke-width:2px}
+#map .cb2{fill:none;stroke:var(--c1);stroke-width:2px;transform-box:fill-box;transform-origin:center;animation:ring 2.4s ease-out infinite}
+#map .ct{font:800 13px var(--fb);fill:#04101c;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+#map .sp{fill:var(--c1);stroke:#fff;stroke-width:2px}#map .sp.f{fill:var(--c2)}
+#map .sl{font:600 12px var(--fb);fill:#fff;paint-order:stroke;stroke:#070b16;stroke-width:3.5px;pointer-events:none}
+#map .rg.sel,#map .dp.on{stroke-dasharray:7 5;animation:dash 1.2s linear infinite}@keyframes dash{to{stroke-dashoffset:-24}}
+.zh{position:absolute;left:14px;bottom:44px;padding:8px 14px;border-radius:99px;background:rgba(7,11,22,.8);backdrop-filter:blur(8px);border:1px solid var(--line);font-size:.85rem;opacity:0;transform:translateY(8px);transition:.4s;pointer-events:none}.zh.on{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){#map .mi,#map .cb2,#map .rg.sel,#map .dp.on{animation:none}}
 </style>
 </head>
 <body>
@@ -274,13 +290,13 @@ a.vit.v4{border:1.5px solid transparent;background:linear-gradient(var(--bg2),va
 </div>
 <div class="wrap about"><div class="card"><h2>À quoi sert Plug 2 France ?</h2><p>Plug 2 France est l’annuaire national des boutiques CBD physiques. Notre but : vous permettre de trouver en quelques secondes une boutique près de chez vous, par région, département ou ville, avec toutes les infos utiles : photos, horaires, produits, zones de livraison et contacts directs.</p><div class="grid"><div class="card tlt"><h3>Pour les clients</h3><p class="meta">Repérez les boutiques sur la carte, contactez-les ou lancez l’itinéraire en un clic.</p></div><div class="card tlt"><h3>Pour les boutiques</h3><p class="meta">Créez votre fiche avec un abonnement : elle est préparée automatiquement dès le paiement, puis vérifiée par notre équipe avant publication.</p></div><div class="card tlt"><h3>Des fiches contrôlées</h3><p class="meta">Chaque boutique est validée avant d’apparaître : uniquement des commerces physiques spécialisés CBD.</p></div></div><a class="btn p" href="#/partenaire">Référencer ma boutique</a></div></div>
 <div class="wrap" id="sections"></div></section>
-<section class="view" id="v-carte"><div class="wrap page"><h2 data-set="map_title">Carte de France</h2><p class="meta" data-set="map_intro" style="max-width:60ch;margin-bottom:12px">Touchez une région pour voir ses départements, puis ses boutiques.</p><div class="tabs" id="mapMode" role="group" aria-label="Mode de la carte"><button class="btn p" data-mm="pin">Boutiques sur la carte</button><button class="btn" data-mm="reg">Par région et département</button></div><div id="zoneMode" hidden><div class="head" id="crumb"></div><div class="card mapcard"><p class="msg" id="mapMsg">Chargement de la carte…</p><svg id="map" role="group" aria-label="Carte interactive de la France : régions puis départements"></svg><div class="zoom" id="zoomBox"><button class="btn" data-z="1.4" aria-label="Zoom avant">+</button><button class="btn" data-z="0.7" aria-label="Zoom arrière">−</button><button class="btn" data-z="0" aria-label="Recentrer">⟲</button></div><div class="tip" id="tip"></div><div class="leg"><span>Peu de boutiques</span><u></u><span>Beaucoup</span><span class="pl">● Boutique</span></div></div><h3 class="sub" id="zTitle"></h3><div id="zoneList"></div><div id="mapShops"></div></div><div id="pinMode"><div class="card" style="padding:12px"><div id="pinF"></div><div id="pinMap" role="application" aria-label="Carte des boutiques CBD de France"></div><p class="msg" id="pinMsg" role="status" style="margin-top:8px">Chargement de la carte…</p><div class="pleg"><span><i class="pin t1"></i>Référencé</span><span><i class="pin t2"></i>Sponsorisé</span><span><i class="pin t3"><i>★</i></i>Premium</span><span><i class="pin t4"><i>★</i></i>Partenaire Exclusif</span></div></div></div></div></section>
+<section class="view" id="v-carte"><div class="wrap page"><h2 data-set="map_title">Carte de France</h2><p class="meta" data-set="map_intro" style="max-width:60ch;margin-bottom:12px">Touchez une région pour voir ses départements, puis ses boutiques.</p><div id="zoneMode"><div class="head" id="crumb"></div><div class="card mapcard"><p class="msg" id="mapMsg">Chargement de la carte…</p><svg id="map" role="group" aria-label="Carte interactive de la France : régions puis départements"></svg><div class="zoom" id="zoomBox"><button class="btn" data-z="1.4" aria-label="Zoom avant">+</button><button class="btn" data-z="0.7" aria-label="Zoom arrière">−</button><button class="btn" data-z="0" aria-label="Recentrer">⟲</button><button class="btn" data-z="loc" aria-label="Ma position">◎</button></div><div class="tip" id="tip"></div><div class="zh" id="zhint" role="status"></div><div class="leg"><span>Peu de boutiques</span><u></u><span>Beaucoup</span><span class="pl">◉ Groupe de boutiques · 📍 Boutique · ★ Mise en avant</span></div></div><h3 class="sub" id="zTitle"></h3><div id="zoneList"></div><div id="mapShops"></div></div></div></section>
 <section class="view" id="v-boutiques"><div class="wrap page"><h2 data-set="list_title">Boutiques CBD</h2><div class="fbar" id="fbar"></div><div class="head" id="listHead"></div><div id="list"></div></div></section>
 <section class="view" id="v-partenaire"><div class="wrap page"><h2 data-set="partner_title">Devenir partenaire</h2>
-<div class="grid pf" style="margin-bottom:14px"><div class="card tlt"><h3>Visible sur la carte</h3><p class="meta">Votre boutique apparaît par région, département et ville.</p></div><div class="card tlt"><h3>Mise à la une</h3><p class="meta">Passez devant les autres sur l’accueil et les listes.</p></div><div class="card tlt"><h3>Fiche complète</h3><p class="meta">Photos, horaires, zones de livraison et liens directs.</p></div></div>
+<div class="grid pf" id="pTiles" style="margin-bottom:14px"><div class="card tlt"><h3 data-set="partner_t1_title">Visible sur la carte</h3><p class="meta" data-set="partner_t1_text">Votre boutique apparaît par région, département et ville.</p></div><div class="card tlt"><h3 data-set="partner_t2_title">Mise à la une</h3><p class="meta" data-set="partner_t2_text">Passez devant les autres sur l’accueil et les listes.</p></div><div class="card tlt"><h3 data-set="partner_t3_title">Fiche complète</h3><p class="meta" data-set="partner_t3_text">Photos, horaires, zones de livraison et liens directs.</p></div></div>
 <div class="card" id="offerBox" style="max-width:820px;margin-bottom:14px;display:none"><p data-set="offer_text" style="white-space:pre-line"></p></div><p class="meta" data-set="partner_intro" style="max-width:60ch;margin-bottom:14px">Demandez la mise en avant de votre boutique CBD. Aucun paiement n’est demandé ici : votre demande est étudiée, puis nous vous contactons.</p>
-<div class="card" style="margin-bottom:14px"><h3>Comment ça marche</h3><p class="meta">1. Remplissez votre fiche. 2. Réglez l’abonnement sur la page de paiement sécurisée Stripe. 3. Votre boutique est créée automatiquement, puis vérifiée par notre équipe avant d’être publiée.</p></div>
-<form id="adf" class="wide pf"><div class="card"><h3>Votre boutique</h3><div class="fg"><label>Boutique déjà référencée<select id="adBiz" name="business"><option value="">Pas encore référencée</option></select></label><label>Nom de la boutique<input name="shop" required maxlength="120"></label><label>Nom du responsable<input name="contact" required maxlength="120"></label><label>SIRET (facultatif)<input name="siret" maxlength="20" inputmode="numeric"></label><label>E-mail<input name="email" type="email" required maxlength="200"></label><label>Téléphone<input name="phone" type="tel" required minlength="6" maxlength="30"></label></div></div><div class="card"><h3>Adresse du magasin</h3><div class="fg"><label>Adresse<input name="address" maxlength="160"></label><label>Code postal<input name="zip" inputmode="numeric" pattern="[0-9]{5}" maxlength="5"></label><label>Ville<input name="city" maxlength="80"></label><label>Région<select name="region" id="adReg"><option value="">—</option></select></label></div></div><div class="card"><h3>Site et canaux</h3><div class="fg"><label>Site Internet<input name="website" type="url" maxlength="300" placeholder="https://…"></label><label>Instagram<input name="ig" type="url" maxlength="300" placeholder="https://…"></label><label>TikTok<input name="tt" type="url" maxlength="300" placeholder="https://…"></label><label>Snapchat<input name="sn" type="url" maxlength="300" placeholder="https://…"></label><label>Telegram<input name="tg" type="url" maxlength="300" placeholder="https://…"></label><label>WhatsApp<input name="wa" type="url" maxlength="300" placeholder="https://…"></label><label>Facebook<input name="fb" type="url" maxlength="300" placeholder="https://…"></label></div></div><div class="card"><h3>Votre activité</h3><label>Présentation courte<textarea name="short" rows="2" maxlength="200"></textarea></label><label style="margin-top:10px">Services et spécialités<textarea name="services" rows="2" maxlength="300"></textarea></label><div class="fg" id="adCats" style="margin-top:12px"></div></div><div class="card"><h3>Livraison</h3><label>Villes où vous livrez<textarea name="zones" rows="3" maxlength="800" placeholder="Grenoble, Voiron, Échirolles…"></textarea></label><label style="margin-top:10px">Conditions (frais, délai, minimum)<input name="zinfo" maxlength="200" placeholder="Gratuite dès 30 €, livraison sous 24 h"></label></div><div class="card"><h3>Horaires et photos</h3><label>Horaires d’ouverture<input name="hours" maxlength="160" placeholder="Lun–Sam 10h–19h, dimanche fermé"></label><label style="margin-top:10px">Lien vers vos photos (Drive, WeTransfer…)<input name="photos" type="url" maxlength="300" placeholder="https://…"></label><p class="meta" style="margin-top:8px">Plusieurs photos : façade, intérieur, produits, logo.</p></div><div class="card"><h3>Votre offre</h3><div id="planBox"><p class="msg">Chargement des offres…</p></div><div id="adZone" style="margin-top:14px"></div><select name="dur" id="adDur" hidden><option value="3d">3 jours</option></select><label id="adCus" hidden>Nombre de jours<input name="days" type="number" min="1" max="365"></label><label style="margin-top:10px">Message complémentaire<textarea name="msg" rows="3" maxlength="600"></textarea></label><p class="meta" style="margin-top:8px">Abonnement mensuel, prix TTC. Résiliable à tout moment depuis votre espace pro.</p></div><input name="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px"><label style="grid-auto-flow:column;align-items:center;justify-content:start;gap:8px"><input type="checkbox" required> J’accepte que ces informations soient utilisées pour traiter ma demande (RGPD).</label><button class="btn p" type="submit" style="margin-top:14px">Payer l’abonnement et créer ma boutique</button><p class="msg" id="adMsg" role="status"></p></form></div></section>
+<div class="card" id="pHow" style="margin-bottom:14px"><h3 data-set="partner_how_title">Comment ça marche</h3><p class="meta" data-set="partner_how_text" style="white-space:pre-line">1. Remplissez votre fiche. 2. Réglez l’abonnement sur la page de paiement sécurisée Stripe. 3. Votre boutique est créée automatiquement, puis vérifiée par notre équipe avant d’être publiée.</p></div>
+<form id="adf" class="wide pf"><div class="card"><h3>Votre boutique</h3><div class="fg"><label>Boutique déjà référencée<select id="adBiz" name="business"><option value="">Pas encore référencée</option></select></label><label>Nom de la boutique<input name="shop" required maxlength="120"></label><label>Nom du responsable<input name="contact" required maxlength="120"></label><label>SIRET (facultatif)<input name="siret" maxlength="20" inputmode="numeric"></label><label>E-mail<input name="email" type="email" required maxlength="200"></label><label>Téléphone<input name="phone" type="tel" required minlength="6" maxlength="30"></label></div></div><div class="card"><h3>Adresse du magasin</h3><div class="fg"><label>Adresse<input name="address" maxlength="160"></label><label>Code postal<input name="zip" inputmode="numeric" pattern="[0-9]{5}" maxlength="5"></label><label>Ville<input name="city" maxlength="80"></label><label>Région<select name="region" id="adReg"><option value="">—</option></select></label></div></div><div class="card"><h3>Site et canaux</h3><div class="fg"><label>Site Internet<input name="website" type="url" maxlength="300" placeholder="https://…"></label><label>Instagram<input name="ig" type="url" maxlength="300" placeholder="https://…"></label><label>TikTok<input name="tt" type="url" maxlength="300" placeholder="https://…"></label><label>Snapchat<input name="sn" type="url" maxlength="300" placeholder="https://…"></label><label>Telegram<input name="tg" type="url" maxlength="300" placeholder="https://…"></label><label>WhatsApp<input name="wa" type="url" maxlength="300" placeholder="https://…"></label><label>Facebook<input name="fb" type="url" maxlength="300" placeholder="https://…"></label></div></div><div class="card"><h3>Votre activité</h3><label>Présentation courte<textarea name="short" rows="2" maxlength="200"></textarea></label><label style="margin-top:10px">Services et spécialités<textarea name="services" rows="2" maxlength="300"></textarea></label><div class="fg" id="adCats" style="margin-top:12px"></div></div><div class="card"><h3>Livraison</h3><label>Villes où vous livrez<textarea name="zones" rows="3" maxlength="800" placeholder="Grenoble, Voiron, Échirolles…"></textarea></label><label style="margin-top:10px">Conditions (frais, délai, minimum)<input name="zinfo" maxlength="200" placeholder="Gratuite dès 30 €, livraison sous 24 h"></label></div><div class="card"><h3>Horaires et photos</h3><label>Horaires d’ouverture<input name="hours" maxlength="160" placeholder="Lun–Sam 10h–19h, dimanche fermé"></label><label style="margin-top:10px">Lien vers vos photos (Drive, WeTransfer…)<input name="photos" type="url" maxlength="300" placeholder="https://…"></label><p class="meta" style="margin-top:8px">Plusieurs photos : façade, intérieur, produits, logo.</p></div><div class="card"><h3>Votre offre</h3><div id="planBox"><p class="msg">Chargement des offres…</p></div><div id="adZone" style="margin-top:14px"></div><select name="dur" id="adDur" hidden><option value="3d">3 jours</option></select><label id="adCus" hidden>Nombre de jours<input name="days" type="number" min="1" max="365"></label><label style="margin-top:10px">Message complémentaire<textarea name="msg" rows="3" maxlength="600"></textarea></label><p class="meta" data-set="partner_price_note" style="margin-top:8px">Abonnement mensuel, prix TTC. Résiliable à tout moment depuis votre espace pro.</p></div><input name="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px"><label style="grid-auto-flow:column;align-items:center;justify-content:start;gap:8px"><input type="checkbox" required> <span data-set="partner_rgpd">J’accepte que ces informations soient utilisées pour traiter ma demande (RGPD).</span></label><button class="btn p" type="submit" data-set="partner_btn" style="margin-top:14px">Payer l’abonnement et créer ma boutique</button><p class="msg" id="adMsg" role="status"></p></form></div></section>
 <section class="view" id="v-favoris"><div class="wrap page"><h2>Mes favoris</h2><div id="favList"></div></div></section>
 <section class="view" id="v-pro"><div class="wrap page"><h2>Espace professionnel</h2><div id="proBox"></div></div></section>
 <section class="view" id="v-admin"><div class="wrap page"><h2>Espace administrateur</h2>
@@ -312,6 +328,8 @@ function route(){
 addEventListener("hashchange", route); route();
 $("burger").onclick = () => { const o = $("nav").classList.toggle("open"); $("burger").setAttribute("aria-expanded", o); };
 
+/* Textes d’origine de la page partenaire (pour pouvoir les rétablir depuis l’admin) */
+document.querySelectorAll("#v-partenaire [data-set]").forEach(el=>{el.dataset.def=el.textContent;});
 /* Paramètres du site (site_settings) appliqués au site public */
 var CFG={};
 function applySettings(s){setTimeout(gfx);Object.assign(CFG,s);
@@ -320,6 +338,8 @@ function applySettings(s){setTimeout(gfx);Object.assign(CFG,s);
   document.querySelectorAll("[data-set]").forEach(el=>{if(s[el.dataset.set])el.textContent=s[el.dataset.set];});
   if("announce_text" in s||"announce_on" in s){const a=$("ann");a.textContent=CFG.announce_text||"";a.classList.toggle("on",!!CFG.announce_text&&CFG.announce_on!=="0");}
   if("offer_text" in s)$("offerBox").style.display=s.offer_text?"block":"none";
+  if("partner_tiles_on" in s)$("pTiles").style.display=s.partner_tiles_on==="0"?"none":"";
+  if("partner_how_on" in s)$("pHow").style.display=s.partner_how_on==="0"?"none":"";
   if(safe(s.hero_image)){document.body.style.setProperty("--hi","url('"+s.hero_image+"')");document.body.classList.add("hi");}
   const root = document.documentElement.style; if(s.ui_radius)root.setProperty("--r",s.ui_radius+"px"); if(s.favicon_url&&/^https:\/\//.test(s.favicon_url))document.querySelector("link[rel=icon]").href=s.favicon_url;
   if (s.color_primary) root.setProperty("--c1", s.color_primary);
@@ -429,7 +449,7 @@ async function loadMap(){
  }catch(e){m.className="msg err";m.textContent="Carte indisponible (données géographiques non chargées). Utilisez la liste ci-dessous.";}
  renderZone();
 }
-var K=1,LBL=[],lbRaf=0;
+var K=1,LBL=[],lbRaf=0,TW=0,SHT=0;
 function lbl(x,y,t,c,z){return '<text'+(z?' class="z"':'')+' x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'">'+esc(t)+(c?'<tspan x="'+x.toFixed(1)+'" dy="1.2em" class="n">'+c+'</tspan>':'')+'</text>';}
 function drawMap(){
  if(!GEO)return;
@@ -441,8 +461,7 @@ function drawMap(){
  if(sel.region)GEO.dep.filter(x=>(DEPS.find(d=>d.code===x.code)||{}).region_code===sel.region).forEach((x,j)=>{const n=cd[x.code]||0;
   h+='<path class="dp'+(sel.dept===x.code?' on':'')+'" style="--i:'+(n/md).toFixed(2)+';--k:'+j+'" data-d="'+x.code+'" data-n="'+esc(x.name)+'" data-c="'+n+'" d="'+x.d+'" tabindex="0" role="button" aria-label="'+esc(x.name)+', '+n+' boutique(s)"/>';
   LBL.push({x:x.L[0],y:x.L[1],t:x.code,n,w:x.W});});
- h+=DATA.filter(b=>b.latitude!=null&&b.longitude!=null&&(!sel.region||b.region_code===sel.region)&&(!sel.dept||b.department_code===sel.dept)).slice(0,600).map(b=>{const c='cx="'+PX(+b.longitude).toFixed(1)+'" cy="'+PY(+b.latitude).toFixed(1)+'" r="2"/>';return(b.featured?'<circle class="ring" '+c:'')+'<circle class="pin" '+c;}).join("");
- $("map").innerHTML=h+'<g class="lb" id="lbg"></g>';setVB();
+ $("map").innerHTML=h+'<g class="lb" id="lbg"></g><g id="shg"></g>';setVB();
 }
 function placeLabels(){
  const g=$("lbg"),s=$("map");if(!g)return;
@@ -456,14 +475,14 @@ function placeLabels(){
  });
  g.innerHTML=h;
 }
-function setVB(){const s=$("map");s.setAttribute("viewBox",VB.map(v=>v.toFixed(1)).join(" "));K=Math.min(s.clientWidth/VB[2],s.clientHeight/VB[3])||1;s.style.setProperty("--fs",(11/K).toFixed(2));s.style.setProperty("--ex",(3.2/K).toFixed(2));s.querySelectorAll(".pin,.ring").forEach(p=>p.setAttribute("r",(4.5/K).toFixed(2)));cancelAnimationFrame(lbRaf);lbRaf=requestAnimationFrame(placeLabels);}
+function setVB(){const s=$("map");s.setAttribute("viewBox",VB.map(v=>v.toFixed(1)).join(" "));K=Math.min(s.clientWidth/VB[2],s.clientHeight/VB[3])||1;s.style.setProperty("--fs",(11/K).toFixed(2));s.style.setProperty("--ex",(3.2/K).toFixed(2));s.querySelectorAll(".pin,.ring").forEach(p=>p.setAttribute("r",(4.5/K).toFixed(2)));cancelAnimationFrame(lbRaf);lbRaf=requestAnimationFrame(placeLabels);s.querySelectorAll(".mk").forEach(m=>m.setAttribute("transform","translate("+m.dataset.x+" "+m.dataset.y+") scale("+(1/K).toFixed(4)+")"));clearTimeout(SHT);SHT=setTimeout(shopsLayer,140);}
 (function(){const s=$("map"),tip=$("tip"),mc=s.parentElement;
- s.addEventListener("mousemove",e=>{const t=e.target.closest("[data-n]");if(!t){tip.classList.remove("on");return;}const r=mc.getBoundingClientRect();tip.style.left=(e.clientX-r.left)+"px";tip.style.top=(e.clientY-r.top)+"px";tip.innerHTML="<b>"+esc(t.dataset.n)+"</b><span>"+t.dataset.c+" boutique(s)</span>";tip.classList.add("on");});
+ s.addEventListener("mousemove",e=>{const t=e.target.closest("[data-n]");if(!t){tip.classList.remove("on");return;}const r=mc.getBoundingClientRect();tip.style.left=(e.clientX-r.left)+"px";tip.style.top=(e.clientY-r.top)+"px";tip.innerHTML="<b>"+esc(t.dataset.n)+"</b><span>"+esc(t.dataset.s||t.dataset.c+" boutique(s)")+"</span>";tip.classList.add("on");});
  s.addEventListener("mouseleave",()=>tip.classList.remove("on"));})();
-function fit(b){
- const p=Math.max(b[2]-b[0],b[3]-b[1])*.08,to=[b[0]-p,b[1]-p,b[2]-b[0]+2*p,b[3]-b[1]+2*p],from=VB.slice(),t0=performance.now(),dur=matchMedia("(prefers-reduced-motion:reduce)").matches?0:350;
- (function f(n){const k=dur?Math.min(1,(n-t0)/dur):1,e=1-Math.pow(1-k,3);VB=from.map((v,i)=>v+(to[i]-v)*e);setVB();if(k<1)requestAnimationFrame(f);})(t0);
+function go(to,dur){const from=VB.slice(),t0=performance.now(),id=++TW;dur=matchMedia("(prefers-reduced-motion:reduce)").matches?0:dur;
+ (function f(n){if(id!==TW)return;const k=dur?Math.min(1,(n-t0)/dur):1,e=1-Math.pow(1-k,3);VB=from.map((v,i)=>v+(to[i]-v)*e);setVB();if(k<1)requestAnimationFrame(f);})(t0);
 }
+function fit(b){const p=Math.max(b[2]-b[0],b[3]-b[1])*.08,w=Math.max(b[2]-b[0]+2*p,VB0[2]/90),h=Math.max(b[3]-b[1]+2*p,VB0[3]/90);go([(b[0]+b[2])/2-w/2,(b[1]+b[3])/2-h/2,w,h],650);}
 function pick(r,d){
  sel={region:r||"",dept:d||""};drawMap();
  if(GEO){const o=d?GEO.dep.find(x=>x.code===d):r?GEO.reg.find(x=>x.code===r):null;fit(o?o.B:[VB0[0],VB0[1],VB0[0]+VB0[2],VB0[1]+VB0[3]]);}
@@ -483,21 +502,43 @@ function renderZone(){
 (function(){
  const s=$("map"),P=new Map();let moved=0;
  const pt=(x,y)=>{const q=s.createSVGPoint();q.x=x;q.y=y;return q.matrixTransform(s.getScreenCTM().inverse());};
- const zoom=(f,x,y)=>{const[a,b,w,h]=VB;VB=[x-(x-a)/f,y-(y-b)/f,w/f,h/f];setVB();};
- s.addEventListener("pointerdown",e=>{P.set(e.pointerId,[e.clientX,e.clientY]);moved=0;});
+ const zoom=(f,x,y,d)=>{const[a,b,w,h]=VB;if((f>1&&w/f<VB0[2]/90)||(f<1&&w/f>VB0[2]*1.1))return;go([x-(x-a)/f,y-(y-b)/f,w/f,h/f],d||0);};
+ s.addEventListener("pointerdown",e=>{TW++;P.set(e.pointerId,[e.clientX,e.clientY]);moved=0;});
  s.addEventListener("pointermove",e=>{
   if(!P.has(e.pointerId))return;const o=P.get(e.pointerId),m=s.getScreenCTM();if(!m)return;
   if(P.size===1){const dx=e.clientX-o[0],dy=e.clientY-o[1];moved+=Math.abs(dx)+Math.abs(dy);if(moved>14){VB[0]-=dx/m.a;VB[1]-=dy/m.a;setVB();}}
   else{const q=[...P.entries()].find(z=>z[0]!==e.pointerId)[1],d0=Math.hypot(o[0]-q[0],o[1]-q[1]),d1=Math.hypot(e.clientX-q[0],e.clientY-q[1]);moved=99;if(d0&&d1){const c=pt((e.clientX+q[0])/2,(e.clientY+q[1])/2);zoom(d1/d0,c.x,c.y);}}
   P.set(e.pointerId,[e.clientX,e.clientY]);});
  ["pointerup","pointercancel","pointerleave"].forEach(n=>s.addEventListener(n,e=>P.delete(e.pointerId)));
- s.addEventListener("wheel",e=>{e.preventDefault();const c=pt(e.clientX,e.clientY);zoom(e.deltaY<0?1.2:1/1.2,c.x,c.y);},{passive:false});
+ s.addEventListener("wheel",e=>{e.preventDefault();const c=pt(e.clientX,e.clientY);zoom(e.deltaY<0?1.35:1/1.35,c.x,c.y,220);},{passive:false});
  s.addEventListener("click",e=>{if(moved>14)return;const t=e.target.closest("[data-r],[data-d]");if(!t)return;t.dataset.r?pick(t.dataset.r):pick(sel.region,t.dataset.d);});
  s.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.dataset&&(e.target.dataset.r||e.target.dataset.d)){e.preventDefault();moved=0;e.target.dispatchEvent(new MouseEvent("click",{bubbles:true}));}});
- $("zoomBox").addEventListener("click",e=>{const f=e.target.dataset.z;if(!f||!GEO)return;if(f==="0")pick(sel.region,sel.dept);else zoom(+f,VB[0]+VB[2]/2,VB[1]+VB[3]/2);});
+ $("zoomBox").addEventListener("click",e=>{const f=e.target.dataset.z;if(!f||!GEO)return;if(f==="0")pick(sel.region,sel.dept);else if(f==="loc"){navigator.geolocation?navigator.geolocation.getCurrentPosition(q=>{const w=VB0[2]/22,h=w*VB[3]/VB[2];go([PX(q.coords.longitude)-w/2,PY(q.coords.latitude)-h/2,w,h],1000);},()=>{$("zhint").textContent="Position indisponible";$("zhint").classList.add("on");}):0;}else zoom(+f,VB[0]+VB[2]/2,VB[1]+VB[3]/2,320);});
  document.addEventListener("click",e=>{const t=e.target.closest("#v-carte [data-pick]");if(t)pick(t.dataset.pick,t.dataset.dep);});
  addEventListener("resize",()=>{if(GEO)setVB();});
 })();
+/* ---- Boutiques sur la carte de France : elles apparaissent à mesure qu’on zoome ---- */
+function shopsLayer(){
+ const g=$("shg");if(!g||!GEO)return;
+ const sv=$("map"),W=sv.clientWidth,H=sv.clientHeight;if(!W)return;
+ const ox=(W-VB[2]*K)/2,oy=(H-VB[3]*K)/2,zf=VB0[2]/VB[2],P=[];
+ DATA.forEach(b=>{if(!validGeo(b)||(sel.region&&b.region_code!==sel.region)||(sel.dept&&b.department_code!==sel.dept))return;
+  const x=PX(+b.longitude),y=PY(+b.latitude),sx=(x-VB[0])*K+ox,sy=(y-VB[1])*K+oy;if(sx>-50&&sy>-50&&sx<W+50&&sy<H+50)P.push({b,x,y,sx,sy});});
+ const cell=zf<2.2?0:zf<5?86:zf<12?56:zf<26?38:0,C=new Map(),hz=$("zhint");
+ if(zf<2.2&&!sel.region){C.clear();hz.textContent="Zoomez ou touchez une région : les boutiques apparaissent";}
+ else{hz.textContent=P.length+" boutique(s) dans la vue";P.forEach(p=>{const k=cell?Math.round(p.sx/cell)+"_"+Math.round(p.sy/cell):p.b.id;(C.get(k)||C.set(k,[]).get(k)).push(p);});}
+ hz.classList.add("on");clearTimeout(hz._t);hz._t=setTimeout(()=>hz.classList.remove("on"),3800);
+ const have=new Map([...g.children].filter(e=>!e.classList.contains("gone")).map(e=>[e.dataset.sg,e])),keep=new Set();let h="",i=0;
+ C.forEach((a,k)=>{const n=a.length,x=a.reduce((t,p)=>t+p.x,0)/n,y=a.reduce((t,p)=>t+p.y,0)/n,sg=n>1?"c"+k+":"+n:"s"+a[0].b.id;keep.add(sg);if(have.has(sg))return;
+  const at='class="mk" data-sg="'+sg+'" data-x="'+x.toFixed(1)+'" data-y="'+y.toFixed(1)+'" transform="translate('+x.toFixed(1)+' '+y.toFixed(1)+') scale('+(1/K).toFixed(4)+')" tabindex="0" style="--d:'+Math.min(i++*28,700)+'ms"';
+  if(n>1){const r=n<10?17:n<50?21:26,cs=[...new Set(a.map(p=>p.b.city).filter(Boolean))],bb=[Math.min(...a.map(p=>p.x)),Math.min(...a.map(p=>p.y)),Math.max(...a.map(p=>p.x)),Math.max(...a.map(p=>p.y))];
+   h+='<g '+at+' data-bb="'+bb.map(v=>v.toFixed(1))+'" data-n="'+esc(cs.slice(0,3).join(", ")||n+" boutiques")+'" data-s="'+n+' boutiques · cliquez pour zoomer" role="button" aria-label="'+n+' boutiques, zoomer"><g class="mi"><circle class="cb2" r="'+r+'"/><circle class="cb" r="'+r+'"/><text class="ct">'+n+'</text></g>'+(cs.length===1&&zf>=3?'<text class="sl" y="'+(r+15)+'" text-anchor="middle">'+esc(cs[0])+'</text>':'')+'</g>';}
+  else{const b=a[0].b;h+='<g '+at+' data-h="'+esc(hrefB(b))+'" data-n="'+esc(b.name)+'" data-s="'+esc(b.city||"")+'" role="link" aria-label="'+esc(b.name)+'"><g class="mi">'+(b.featured?'<circle class="cb2" cy="-22" r="11"/>':'')+'<path class="sp'+(b.featured?' f':'')+'" d="M0 0C-9-11-13-17-13-23a13 13 0 1 1 26 0C13-17 9-11 0 0Z"/><circle cy="-23" r="4.6" fill="#04101c"/></g>'+(zf>=9?'<text class="sl" x="17" y="-19">'+esc(b.name)+'</text>':'')+'</g>';}});
+ have.forEach((e,sg)=>{if(!keep.has(sg)){e.classList.add("gone");setTimeout(()=>e.remove(),260);}});
+ g.insertAdjacentHTML("beforeend",h);
+}
+$("map").addEventListener("click",e=>{const m=e.target.closest(".mk");if(!m)return;if(m.dataset.h)location.href=m.dataset.h;else if(m.dataset.bb){const b=m.dataset.bb.split(",").map(Number);fit(b);}});
+$("map").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.classList&&e.target.classList.contains("mk"))e.target.dispatchEvent(new MouseEvent("click",{bubbles:true}));});
 /* ===== Phase 4 : fiches boutiques ===== */
 const DAYS=["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
 const LK={website:"Site Internet",instagram:"Instagram",facebook:"Facebook",tiktok:"TikTok",snapchat:"Snapchat",telegram:"Telegram",whatsapp:"WhatsApp",youtube:"YouTube",phone:"Téléphone",other:"Lien"};
@@ -573,11 +614,11 @@ async function audit(action,entity,id,detail){try{await sb.from("audit_logs").in
 function refreshPublic(){init();}
 async function autoAdmin(){if(!sb)return;const {data}=await sb.auth.getSession();if(!data.session)return;const {data:ok}=await sb.rpc("is_admin");if(ok)showAdmin();}
 function showAdmin(){ADMON=true;
- const T=[["dash","Tableau de bord"],["biz","Boutiques clients"],["bots","Bots"],["ads","Publicités"],["promo","Mises en avant"],["qual","Qualité des fiches"],["log","Journal"],["exp","Export"],["sec","Accueil"],["site","Site & identité"],["txt","Textes & pages"],["cat","Catégories"],["med","Médias"]];
+ const T=[["dash","Tableau de bord"],["biz","Boutiques clients"],["bots","Bots"],["ads","Publicités"],["promo","Mises en avant"],["qual","Qualité des fiches"],["log","Journal"],["exp","Export"],["sec","Accueil"],["site","Site & identité"],["txt","Textes & pages"],["part","Page partenaire"],["cat","Catégories"],["med","Médias"]];
  $("adminBox").innerHTML='<div class="tabs">'+T.map(t=>'<button class="btn tb" data-tab="'+t[0]+'">'+t[1]+'</button>').join("")+'<button class="btn" data-a="push">🔔 Activer les alertes</button><button class="btn" data-a="out">Déconnexion</button></div><p class="msg" id="aNote" role="status"></p><div id="aPane"></div>';
  openTab(TAB);
 }
-function openTab(t){TAB=t;document.querySelectorAll(".tb").forEach(b=>b.classList.toggle("p",b.dataset.tab===t));note("");({qual:tQual,log:tLog,exp:tExp,dash:tDash,biz:tBiz,sec:tSec,site:tSite,cat:tCat,med:tMed,ads:tAds,promo:tPromo,txt:tTxt,bots:tBots})[t]().catch(e=>note(e.message||"Erreur",1));}
+function openTab(t){TAB=t;document.querySelectorAll(".tb").forEach(b=>b.classList.toggle("p",b.dataset.tab===t));note("");({qual:tQual,log:tLog,exp:tExp,dash:tDash,biz:tBiz,sec:tSec,site:tSite,cat:tCat,med:tMed,ads:tAds,promo:tPromo,txt:tTxt,part:tPart,bots:tBots})[t]().catch(e=>note(e.message||"Erreur",1));}
 async function loadBiz(){const {data,error}=await sb.from("businesses").select("id,name,slug,city,postal_code,region_code,department_code,status,featured,latitude,longitude,created_at").order("created_at",{ascending:false});if(error)throw error;ADM=data;}
 async function tDash(){
  await loadBiz();
@@ -618,7 +659,7 @@ async function editor(id,seed){
  CB=id||"";const ZOK=!(await sb.from("business_delivery_zones").select("id").limit(1)).error;const cats=(await sb.from("categories").select("id,name").eq("active",true).order("sort_order")).data||[];
  let b={status:"pending"},lk=[],hr=[],cs=[],mod={},pv={},zs=[];
  if(id){const [x,l,h,c,m,z]=await Promise.all([sb.from("businesses").select("*").eq("id",id).single(),sb.from("business_links").select("*").eq("business_id",id).order("sort_order"),sb.from("business_hours").select("*").eq("business_id",id),sb.from("business_categories").select("category_id").eq("business_id",id),sb.from("business_moderation").select("*").eq("business_id",id).maybeSingle(),sb.from("business_delivery_zones").select("*").eq("business_id",id).order("sort_order")]);
-  if(x.error)throw x.error;b=x.data;lk=l.data||[];hr=h.data||[];cs=(c.data||[]).map(r=>r.category_id);mod=m.data||{};pv=parsePV(mod.note);zs=z.error?[]:(z.data||[]);}else if(seed){zs=seed.zs||[];b={...b,...seed.b};lk=seed.lk||[];hr=seed.hr||[];pv=seed.pv||{};cs=cats.filter(c=>(seed.cn||[]).includes(c.name)).map(c=>c.id);}
+  if(x.error)throw x.error;b=x.data;lk=l.data||[];hr=h.data||[];cs=(c.data||[]).map(r=>r.category_id);mod=m.data||{};pv=parsePV(mod.note);zs=z.error?[]:(z.data||[]);}else if(seed){zs=seed.zs||[];b={...b,...seed.b};lk=seed.lk||[];pv=seed.pv||{};cs=cats.filter(c=>(seed.cn||[]).includes(c.name)).map(c=>c.id);}
  const chk=(n,v,l)=>'<label style="grid-auto-flow:column;align-items:center;justify-content:start;gap:8px"><input type="checkbox" name="'+n+'"'+(v?' checked':'')+(n==="cat"?' value="'+esc(l[0])+'"':'')+'>'+esc(n==="cat"?l[1]:l)+'</label>';
  const zcard='<div class="card"><h3>Zones de livraison</h3>'+(ZOK?'<input type="hidden" name="zok" value="1"><p class="meta" style="margin-bottom:10px">Villes, départements ou régions où cette boutique livre. Elles s’affichent sur sa fiche publique.</p><label>Ajouter plusieurs villes d’un coup (département de la boutique appliqué)<textarea id="zbulk" rows="2" placeholder="Grenoble, Voiron, Échirolles…"></textarea></label><div class="row" style="margin:8px 0 14px"><button type="button" class="btn" data-a="zbulk">Ajouter ces villes</button><button type="button" class="btn" data-a="zadd">+ Zone détaillée</button></div><div id="zrows">'+zs.map(zrow).join("")+'</div>':'<p class="msg err">Zones de livraison indisponibles : la mise à jour de la base n’est pas encore faite.</p>')+'</div>';
  const dossier='<div class="card"><h3>Dossier client (privé, jamais affiché au public)</h3><div class="fg">'+PVF.map(x=>FI("pv_"+x[0],x[1],pv[x[0]],x[2])).join("")+'<label>Offre souscrite<select name="pv_offer">'+opt(OFFERS.map(o=>[o,o]),pv.offer||"Gratuit")+'</select></label><label>Paiement<select name="pv_pay">'+opt(["À régler","Reçu","Offert"].map(o=>[o,o]),pv.pay||"À régler")+'</select></label></div>'+FI("pv_photos_src","Lien des photos fournies par le client",pv.photos_src,"url")+(pv.hrs?'<p class="meta" style="margin-top:8px">Horaires indiqués par le client : '+esc(pv.hrs)+'</p><input type="hidden" name="pv_hrs" value="'+esc(pv.hrs)+'">':'')+(pv.dc?'<p class="meta" style="margin-top:8px">Livraison indiquée par le client : '+esc(pv.dc)+'</p><input type="hidden" name="pv_dc" value="'+esc(pv.dc)+'">':'')+TA("pv_pnote","Notes internes",pv.pnote)+'</div>';
@@ -683,12 +724,38 @@ async function tSec(){
 }
 function readSec(){document.querySelectorAll("[data-sec]").forEach(c=>{const i=+c.dataset.sec;SE[i].enabled=c.checked;SE[i].title=document.querySelector('[data-st="'+i+'"]').value.trim();});}
 function drawSec(){$("aPane").innerHTML='<div class="card"><p class="meta">Affichez, renommez et réordonnez les sections de l’accueil.</p>'+SE.map((s,i)=>'<div class="ar"><label style="grid-auto-flow:column;align-items:center"><input type="checkbox" data-sec="'+i+'"'+(s.enabled?' checked':'')+'> Afficher</label><input data-st="'+i+'" value="'+esc(s.title||SEC_DEF[s.key].t)+'" style="flex:1;min-width:160px"><button class="btn" data-a="smv" data-id="'+i+'" data-d="-1" aria-label="Monter">↑</button><button class="btn" data-a="smv" data-id="'+i+'" data-d="1" aria-label="Descendre">↓</button></div>').join("")+'<button class="btn p" data-a="ssave">Enregistrer</button></div>';}
-const TXT=[["announce_text","Bandeau d’annonce (haut du site)"],["announce_on","Bandeau actif","sel"],["cta1","Bouton principal de l’accueil"],["cta2","Bouton « carte » de l’accueil"],["cta3","Bouton « partenaire » de l’accueil"],["map_title","Titre de la page Carte"],["map_intro","Texte de la page Carte","ta"],["list_title","Titre de la page Boutiques"],["partner_title","Titre de la page Partenaire"],["partner_intro","Introduction de la page Partenaire","ta"],["offer_text","Tarifs et offres affichés aux partenaires","ta"],["contact_note","Message affiché après l’envoi d’une demande","ta"]];
+const TXT=[["announce_text","Bandeau d’annonce (haut du site)"],["announce_on","Bandeau actif","sel"],["cta1","Bouton principal de l’accueil"],["cta2","Bouton « carte » de l’accueil"],["cta3","Bouton « partenaire » de l’accueil"],["map_title","Titre de la page Carte"],["map_intro","Texte de la page Carte","ta"],["list_title","Titre de la page Boutiques"],["contact_note","Message affiché après l’envoi d’une demande","ta"]];
 async function tTxt(){
  const {data}=await sb.from("site_settings").select("key,value"),v=Object.fromEntries((data||[]).map(r=>[r.key,r.value]));
  $("aPane").innerHTML='<form id="sf3" class="wide"><div class="card"><h3>Textes des pages</h3><p class="meta" style="margin-bottom:12px">Chaque champ vide garde le texte par défaut du site.</p><div class="fg">'+TXT.map(x=>x[2]==="sel"?'<label>'+x[1]+'<select name="'+x[0]+'">'+opt([["1","Oui"],["0","Non"]],v[x[0]]||"1")+'</select></label>':x[2]==="ta"?TA(x[0],x[1],v[x[0]]):FI(x[0],x[1],v[x[0]])).join("")+'</div></div><button class="btn p" type="submit">Enregistrer</button></form>';
 }
 async function saveTxt(f){const d=new FormData(f),rows=TXT.map(x=>({key:x[0],value:(d.get(x[0])||"").toString().trim(),updated_at:new Date().toISOString()})),r=await sb.from("site_settings").upsert(rows);if(r.error)throw r.error;applySettings(Object.fromEntries(rows.map(x=>[x.key,x.value])));audit("update","site_settings",null,"textes");note("Enregistré et appliqué au site public.");}
+/* ---- Page « Devenir partenaire » : tout le contenu modifiable depuis l’admin ---- */
+const PARTG=[
+ ["En-tête de la page",[["partner_title","Titre de la page"],["partner_intro","Introduction","ta"]]],
+ ["Les 3 avantages",[["partner_tiles_on","Afficher les 3 avantages","sel"],["partner_t1_title","Avantage 1 – titre"],["partner_t1_text","Avantage 1 – texte","ta"],["partner_t2_title","Avantage 2 – titre"],["partner_t2_text","Avantage 2 – texte","ta"],["partner_t3_title","Avantage 3 – titre"],["partner_t3_text","Avantage 3 – texte","ta"]]],
+ ["Tarifs et offres",[["offer_text","Encadré tarifs / offres (laisser vide pour le masquer)","ta"],["partner_price_note","Note sous le choix de l’offre","ta"]]],
+ ["Comment ça marche",[["partner_how_on","Afficher ce bloc","sel"],["partner_how_title","Titre du bloc"],["partner_how_text","Texte du bloc (une ligne par étape)","ta"]]],
+ ["Formulaire",[["partner_btn","Texte du bouton d’envoi"],["partner_rgpd","Texte de la case de consentement (RGPD)","ta"]]]
+];
+async function tPart(){
+ const {data,error}=await sb.from("site_settings").select("key,value");if(error)throw error;
+ const v=Object.fromEntries((data||[]).map(r=>[r.key,r.value])),
+  d=k=>{const e=document.querySelector('#v-partenaire [data-set="'+k+'"]');return e&&e.dataset.def||"";},
+  fld=x=>{const k=x[0],c=v[k]||d(k);return x[2]==="sel"?'<label>'+x[1]+'<select name="'+k+'">'+opt([["1","Oui"],["0","Non"]],v[k]||"1")+'</select></label>':x[2]==="ta"?TA(k,x[1],c):FI(k,x[1],c);};
+ $("aPane").innerHTML='<form id="sf4" class="wide"><p class="meta" style="margin-bottom:12px">Modifiez ici tout le contenu de la page « Devenir partenaire ». Les changements sont visibles tout de suite sur le site public. <a href="#/partenaire">Voir la page</a></p>'+PARTG.map(g=>'<div class="card"><h3>'+g[0]+'</h3><div class="fg">'+g[1].map(fld).join("")+'</div></div>').join("")+'<div class="row"><button class="btn p" type="submit">Enregistrer</button><button class="btn" type="button" data-a="partreset">Rétablir les textes d’origine</button></div></form>';
+}
+async function savePart(f,reset){
+ const fd=new FormData(f),now=new Date().toISOString(),
+  d=k=>{const e=document.querySelector('#v-partenaire [data-set="'+k+'"]');return e&&e.dataset.def||"";},
+  rows=PARTG.flatMap(g=>g[1]).map(x=>{const k=x[0];let val=reset?"":(fd.get(k)||"").toString().trim();if(x[2]!=="sel"&&val===d(k))val="";if(reset&&x[2]==="sel")val="1";return{key:k,value:val,updated_at:now};});
+ const r=await sb.from("site_settings").upsert(rows);if(r.error)throw r.error;
+ rows.forEach(x=>{if(!x.value)document.querySelectorAll('#v-partenaire [data-set="'+x.key+'"]').forEach(e=>{e.textContent=e.dataset.def||"";});});
+ applySettings(Object.fromEntries(rows.map(x=>[x.key,x.value])));
+ audit("update","site_settings",null,reset?"page partenaire (réinitialisée)":"page partenaire");
+ note(reset?"Textes d’origine rétablis.":"Enregistré et appliqué au site public.");
+ if(reset)tPart().catch(e=>note(e.message||"Erreur",1));
+}
 async function tSite(){
  const {data}=await sb.from("site_settings").select("key,value"),v=Object.fromEntries((data||[]).map(r=>[r.key,r.value]));
  const img=(k,l)=>'<label>'+l+'<input type="file" accept="image/*" data-key="'+k+'"></label>'+(safe(v[k])?'<img src="'+esc(v[k])+'" alt="" style="height:48px;border-radius:8px">':'');
@@ -711,217 +778,37 @@ async function tMed(){
 /* ===== Espace Bots : analyse d’un texte ou d’un fichier (txt / csv / json) ===== */
 var BOT=[];
 const bkn=s=>norm(s).replace(/[_\s]+/g," ").trim();
-const BAL={name:["nom","nom de la boutique","boutique","enseigne","name","shop","shop name","raison sociale","etablissement"],address:["adresse","rue","address","adresse du magasin"],postal_code:["cp","code postal","zip","postal code"],city:["ville","city","commune"],phone:["telephone","tel","phone","mobile","portable","numero"],email:["email","e-mail","mail","courriel"],website:["site","site web","site internet","website","web","url"],instagram:["instagram","insta","ig"],facebook:["facebook","fb"],tiktok:["tiktok","tik tok","tt"],snapchat:["snapchat","snap","sn"],telegram:["telegram","tg"],whatsapp:["whatsapp","wa"],youtube:["youtube","yt"],links:["liens","lien","reseaux","reseaux sociaux","autres liens","links","social","socials","contacts"],short_description:["description","presentation","description courte","short description","a propos","about","resume"],description:["description complete","description longue","presentation complete","texte"],services:["services","service"],specialties:["specialites","specialite","specialties"],hours:["horaires","horaire","heures","hours","ouverture"],zones:["livraison","zones de livraison","villes de livraison","zones","zone","secteur","secteurs","delivery","villes livrees","livre","livre a","livraison a","livraison dans","departements livres","zones desservies","villes","communes"],fee:["frais","frais de livraison","frais livraison","tarif livraison","tarifs de livraison","prix livraison","cout de livraison","tarif"],min_order:["minimum","minimum de commande","commande minimum","min commande","panier minimum","montant minimum","minimum commande"],delay:["delai","delais","delai de livraison","delai livraison","delais de livraison","duree de livraison"],categories:["categories","categorie","produits","gamme"],siret:["siret"],photos:["photos","photo","images","lien photos"],region:["region","region code"],department:["departement","department","department code","dept"],zinfo:["conditions de livraison","conditions","infos livraison","precisions livraison"]};
+const BAL={name:["nom","nom de la boutique","boutique","enseigne","name","shop","shop name","raison sociale","etablissement"],address:["adresse","rue","address","adresse du magasin"],postal_code:["cp","code postal","zip","postal code"],city:["ville","city","commune"],phone:["telephone","tel","phone","mobile","portable","numero"],email:["email","e-mail","mail","courriel"],website:["site","site web","site internet","website","web","url"],instagram:["instagram","insta","ig"],facebook:["facebook","fb"],tiktok:["tiktok","tik tok","tt"],snapchat:["snapchat","snap","sn"],telegram:["telegram","tg"],whatsapp:["whatsapp","wa"],short_description:["description","presentation","description courte","short description","a propos","about","resume"],services:["services","service"],specialties:["specialites","specialite","specialties"],hours:["horaires","horaire","heures","hours","ouverture"],zones:["livraison","zones de livraison","villes de livraison","zones","delivery","villes livrees"],categories:["categories","categorie","produits","gamme"],siret:["siret"],photos:["photos","photo","images","lien photos"],region:["region","region code"],department:["departement","department","department code","dept"],zinfo:["conditions de livraison","frais de livraison","conditions"]};
 const BMAP={};Object.entries(BAL).forEach(([k,a])=>a.forEach(x=>BMAP[bkn(x)]=k));
-const bkm=k=>BMAP[bkn(k)]||BMAP[bkn(k).replace(/\s*\d+$/,"")];
-const MULTI=new Set(["links","instagram","facebook","tiktok","snapchat","telegram","whatsapp","youtube","zones","categories","services","specialties","photos","hours","zinfo"]);
-const BSO={instagram:"https://instagram.com/",tiktok:"https://tiktok.com/@",snapchat:"https://snapchat.com/add/",telegram:"https://t.me/",facebook:"https://facebook.com/",youtube:"https://youtube.com/@"};
-const BHOST=[[/instagram\.com|instagr\.am/i,"instagram"],[/facebook\.com|(^|\.)fb\.com|fb\.me|fb\.watch/i,"facebook"],[/tiktok\.com/i,"tiktok"],[/snapchat\.com/i,"snapchat"],[/^t\.me$|telegram\.(me|org|dog)/i,"telegram"],[/^wa\.me$|whatsapp\.com/i,"whatsapp"],[/youtube\.com|youtu\.be/i,"youtube"]];
-const BIMG=/\.(?:jpe?g|png|webp|gif)(?:\?\S*)?$/i,BPH=/drive\.google\.|dropbox\.|imgur\.|wetransfer|we\.tl|photos\.app\.goo\.gl|flickr|postimg|ibb\.co/i;
+const BSO={instagram:"https://instagram.com/",tiktok:"https://tiktok.com/@",snapchat:"https://snapchat.com/add/",telegram:"https://t.me/"};
+const BHOST=[[/instagram\.com/i,"instagram"],[/facebook\.com|fb\.com|fb\.me/i,"facebook"],[/tiktok\.com/i,"tiktok"],[/snapchat\.com/i,"snapchat"],[/t\.me|telegram\./i,"telegram"],[/wa\.me|whatsapp\./i,"whatsapp"]];
 const bHttps=u=>{u=(u||"").trim();if(/^https:\/\/\S+$/i.test(u))return u;if(/^http:\/\/\S+$/i.test(u))return u.replace(/^http:/i,"https:");return /^(www\.)?[\w-]+(\.[\w-]+)+(\/\S*)?$/i.test(u)?"https://"+u:"";};
 const bList=v=>String(v||"").split(/[\n,;]+/).map(x=>x.trim()).filter(Boolean);
 const bDept=z=>!z?"":/^9[78]/.test(z)?z.slice(0,3):/^20/.test(z)?(+z<20200?"2A":"2B"):z.slice(0,2);
-const bCut=(s,n)=>s.length<=n?s:s.slice(0,n-1).replace(/\s+\S*$/,"")+"…";
-const bDay=l=>/\b(?:lun|mar|mer|jeu|ven|sam|dim)[a-z]*/.test(norm(l));
-const isHrLine=l=>bDay(l)&&/\d\s*h|\d\s*:\s*\d|ferm|24\s*h?\s*(?:\/|sur)\s*24|tous les jours/.test(norm(l));
-const isZnLine=l=>/^[-*•·\s]*(?:nous\s+)?(?:livraisons?|livrons|livre|zones?(?:\s+de\s+livraison)?|secteurs?)\b/i.test(l);
-
-/* ---------- Liens : plusieurs par réseau, @pseudo, numéros WhatsApp, URLs dans le texte ---------- */
-function bSplit(v){
- const out=[];String(v||"").split(/[\n,;|]+|\s\/\s/).map(x=>x.trim()).filter(Boolean).forEach(p=>{
-  p.split(/\s+(?:et|ou|&)\s+/i).forEach(q=>{q=q.replace(/\s*\([^)]*\)/g,"").trim();if(!q)return;const t=q.split(/\s+/);
-   if(t.length>1&&t.every(x=>/^(?:https?:\/\/|www\.|@|[\w.-]+\.[a-z]{2,}\/)\S*$/i.test(x)))out.push(...t);else out.push(q);});});
- return out;
-}
-function bLink(v,hint){
- v=(v||"").trim().replace(/^[<(\["'«]+|[>)\]"'».,;:!]+$/g,"");
- if(!v||/^(?:mailto|tel):/i.test(v)||/^[\w.+-]+@[\w-]+\.[\w.-]+$/.test(v))return null;
- let u="";
- if(hint==="whatsapp"&&/^(?:\+|00)?[\d\s.()-]{8,}$/.test(v)){let n=v.replace(/\D/g,"");if(/^00/.test(n))n=n.slice(2);else if(/^0\d{9}$/.test(n))n="33"+n.slice(1);u="https://wa.me/"+n;}
- else if(/^@?[\w.]{2,40}$/.test(v)&&BSO[hint]&&!/\.(?:com|fr|net|org|io|me|shop|store)$/i.test(v))u=BSO[hint]+v.replace(/^@/,"");
- else u=bHttps(v);
- if(!u)return null;
- const h=((u.match(/^https?:\/\/([^\/?#]+)/i)||[])[1]||"").toLowerCase().replace(/^www\./,""),hk=BHOST.find(x=>x[0].test(h));let kind=hk?hk[1]:"";
- if(["instagram","tiktok","snapchat","telegram"].includes(kind)||(kind==="facebook"&&!/profile\.php/.test(u)))u=u.split(/[?#]/)[0];
- u=u.replace(/\/+$/,"");
- if(!kind){if(hint==="photos"||BIMG.test(u)||BPH.test(h))return{photo:u};return{kind:(!hint||hint==="website"||hint==="links")?"web":"other",url:u,label:h};}
- return{kind,url:u};
-}
-function bLinks(o,rest){
- const out=[],seen=new Set(),photos=[],warn=[];let web="";
- const add=(v,hint)=>{const r=bLink(v,hint);
-  if(!r){if(hint&&v&&!/^[-–—.]+$/.test(v.trim()))warn.push("lien non reconnu : "+v.trim().slice(0,40));return;}
-  if(r.photo){if(!photos.includes(r.photo))photos.push(r.photo);return;}
-  const k=r.url.toLowerCase();if(seen.has(k))return;seen.add(k);
-  if(r.kind==="web"){if(!web){web=r.url;return;}r.kind="other";}
-  if(r.kind==="other"&&!r.label)r.label=(r.url.match(/^https?:\/\/(?:www\.)?([^\/?#]+)/i)||[])[1]||null;
-  out.push({kind:r.kind,url:r.url,label:r.label||null});};
- [["website","website"],["instagram","instagram"],["facebook","facebook"],["tiktok","tiktok"],["snapchat","snapchat"],["telegram","telegram"],["whatsapp","whatsapp"],["youtube","youtube"],["links","links"],["photos","photos"]].forEach(([k,h])=>bSplit(o[k]).forEach(v=>add(v,h)));
- const txt=rest.join("\n");
- (txt.match(/(?:https?:\/\/|www\.)[^\s,;<>"')]+|\b(?:instagram|facebook|tiktok|snapchat)\.com\/[^\s,;<>"')]+|\b(?:t\.me|wa\.me|youtu\.be|linktr\.ee)\/[^\s,;<>"')]+/gi)||[]).forEach(v=>add(v,""));
- const KS={insta:"instagram",instagram:"instagram",ig:"instagram",snap:"snapchat",snapchat:"snapchat",tiktok:"tiktok",tg:"telegram",telegram:"telegram",whatsapp:"whatsapp",wa:"whatsapp",facebook:"facebook",fb:"facebook"};
- for(const m of txt.matchAll(/\b(insta(?:gram)?|ig|snap(?:chat)?|tik\s?tok|telegram|tg|whats\s?app|wa|facebook|fb)\b\s*[:\-–]?\s*(@[\w.]{2,40})/gi))add(m[2],KS[m[1].toLowerCase().replace(/\s/g,"")]);
- return{links:out.slice(0,25),website:web,photos,warn};
-}
-
-/* ---------- Horaires : « Lun-Sam 10h-19h, Dim fermé », « 7j/7 9h-21h », « 10h-12h / 14h-19h »… ---------- */
-const WD=["lun","mar","mer","jeu","ven","sam","dim"],DA=["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
-const bT=(h,m)=>{h=+h;m=+m||0;if(h>=24){h=23;m=59;}return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");};
-function bHours(t){
- t=norm(t||"");if(!t)return[];const res={},anyDay=/\b(?:lun|mar|mer|jeu|ven|sam|dim)/.test(t);
- t.split(/[\n;]+|,(?=\s*(?:lun|mar|mer|jeu|ven|sam|dim))|\s\|\s/).forEach(seg=>{
-  seg=seg.trim();if(!seg)return;let days=[];
-  if(/tous les jours|7\s*j\s*(?:\/|sur)\s*7|7\/7|quotidien/.test(seg))days=[1,2,3,4,5,6,7];
-  else{const f=[...seg.matchAll(/\b(lun|mar|mer|jeu|ven|sam|dim)[a-z]*\.?/g)];
-   if(f.length){const ix=f.map(x=>WD.indexOf(x[1])+1),bt=f.length===2?seg.slice(f[0].index+f[0][0].length,f[1].index):"";
-    if(f.length===2&&/^\s*(?:au|a|-|–|—|jusqu'?a(?:u)?)\s*$/.test(bt)){for(let d=ix[0];;d=d%7+1){days.push(d);if(d===ix[1])break;}}else days=ix;}
-   else if(!anyDay)days=[1,2,3,4,5,6,7];}
-  if(!days.length)return;
-  const closed=/ferme|closed/.test(seg);let op=null,cl=null;
-  if(!closed){
-   if(/24\s*h?\s*(?:\/|sur)\s*24/.test(seg)){op="00:00";cl="23:59";}
-   else{const body=seg.replace(/\b(?:lun|mar|mer|jeu|ven|sam|dim)[a-z]*\.?/g," "),rg=[...body.matchAll(/(\d{1,2})(?:\s*(?:h|:)\s*(\d{2})?)?\s*(?:-|–|—|a|au)\s*(\d{1,2})(?:\s*(?:h|:)\s*(\d{2})?)?/g)].filter(x=>+x[1]<=24&&+x[3]<=24&&(/[h:]/.test(x[0])));
-    if(rg.length){op=bT(rg[0][1],rg[0][2]);cl=bT(rg[rg.length-1][3],rg[rg.length-1][4]);}}}
-  if(closed)days.forEach(d=>res[d]={weekday:d,closed:true,opens:null,closes:null});
-  else if(op)days.forEach(d=>res[d]={weekday:d,closed:false,opens:op,closes:cl});});
- return Object.values(res).sort((a,b)=>a.weekday-b.weekday);
-}
-function hrSum(hr){
- const k=h=>h.closed?"fermé":h.opens+"–"+h.closes,a=[...hr].sort((x,y)=>x.weekday-y.weekday),out=[];let i=0;
- while(i<a.length){let j=i;while(j+1<a.length&&a[j+1].weekday===a[j].weekday+1&&k(a[j+1])===k(a[i]))j++;out.push((j>i?DA[a[i].weekday-1]+"–"+DA[a[j].weekday-1]:DA[a[i].weekday-1])+" "+k(a[i]));i=j+1;}
- return out.join(" · ");
-}
-
-/* ---------- Zones de livraison : villes, départements, régions, France entière + frais / minimum / délai ---------- */
-const zk=s=>norm(s).replace(/[^a-z0-9]+/g," ").trim();
-var ZI=null,ZIn="";
-function zIdx(){
- const n=DEPS.length+"/"+REGIONS.length;if(ZI&&ZIn===n)return ZI;ZIn=n;ZI={d:{},r:{}};
- DEPS.forEach(x=>{ZI.d[zk(x.name)]=x;ZI.d[String(x.code).toLowerCase()]=x;});REGIONS.forEach(x=>{ZI.r[zk(x.name)]=x;});
- [["idf","ile de france"],["paca","provence alpes cote d azur"],["aura","auvergne rhone alpes"]].forEach(([a,b])=>{if(ZI.r[b])ZI.r[a]=ZI.r[b];});
- return ZI;
-}
-function zSpec(s){
- const r={fee:null,min:null,delay:null,free:null,rest:"",pure:false};let t=" "+(s||"")+" ";const num=x=>+String(x).replace(",",".");
- t=t.replace(/(?:gratuit\w*|offert\w*)\s*(?:[àa] partir de|d[èeé]s|au[- ]?dessus de|pour toute commande de)\s*(\d+(?:[.,]\d+)?)\s*(?:€|eur\w*)?/gi,(m,n)=>{r.free=num(n);return" ";});
- t=t.replace(/(?:minimum|mini|min\.?)\s*(?:de\s*)?(?:commande|achat|panier)?\s*[:=]?\s*(\d+(?:[.,]\d+)?)\s*(?:€|eur\w*)?/gi,(m,n)=>{r.min=num(n);return" ";});
- t=t.replace(/(?:d[ée]lai\s*[:=]?\s*)?(?:sous\s+|en\s+)?(\d+\s*(?:[àa\/–-]\s*\d+\s*)?(?:h|heures?|jours?|j|min(?:utes)?)\b|(?:le\s+)?jour\s+m[êe]me|m[êe]me\s+jour|lendemain|express|j\+\d)/gi,(m,d)=>{if(!r.delay)r.delay=d.replace(/\s+/g," ").trim();return" ";});
- t=t.replace(/(\d+(?:[.,]\d+)?)\s*(?:€|eur\w*)/i,(m,n)=>{if(r.fee==null)r.fee=num(n);return" ";});
- if(/gratuit|offert/i.test(t)){if(r.fee==null&&r.free==null)r.fee=0;t=t.replace(/gratuit\w*|offert\w*/gi," ");}
- t=t.replace(/frais\s*[:=]?\s*(\d+(?:[.,]\d+)?)/i,(m,n)=>{if(r.fee==null)r.fee=num(n);return" ";});
- const left=t.replace(/\b(?:frais|livraisons?|livre|livrons|tarif|prix|de|du|la|le|les|à|a|pour|et|offerte?s?|gratuite?s?|minimum|mini|min|commande|d[ée]lai|sous|en|dès|des)\b/gi," ").replace(/[:=()€,;.\-–—\/+]/g," ").replace(/\s+/g," ").trim();
- r.pure=!/[a-zà-ÿ]{2,}/i.test(left);r.rest=t.replace(/\s+/g," ").trim().replace(/^[:=\-–—,;\s]+|[:=\-–—,;\s]+$/g,"");
- return r;
-}
-function zSplit(s){
- const out=[];let d=0,c="";for(const ch of String(s)){if(ch==="(")d++;if(ch===")")d=Math.max(0,d-1);if(!d&&/[,;•|\n]/.test(ch)){out.push(c);c="";}else c+=ch;}out.push(c);
- return out.flatMap(x=>x.split(/\s+(?:et|&|ou|puis)\s+|\s\/\s/i)).map(x=>x.trim()).filter(Boolean);
-}
-const ZSTOP=new Set(["gratuite","gratuit","rapide","discrete","discret","securisee","securise","partout","etc","suivi","express","possible","disponible","domicile","a domicile","sur demande","oui","non","tout","toute"]);
-const ZPRE=/^(?:(?:nous\s+)?(?:livrons|livre|livraisons?)\s*(?:gratuite?s?\s*)?(?:partout\s*)?(?:dans|sur|à|a|en|vers)?\s*(?:toute\s+la\s+ville\s+de\s+|la\s+ville\s+de\s+)?|(?:zones?|secteurs?)\s*(?:de livraison)?\s*:?\s*|(?:dans|sur|vers|à|en|autour de|aux environs de|environs de)\s+(?:le\s+secteur\s+de\s+|la\s+ville\s+de\s+)?)/i;
-const ZLEAD=/^(?:departements?|dept|dep|regions?|tout|toute|tous|toutes|le|la|les|l|du|de|des|d|en|dans|sur|vers|a|au|aux|livraisons?|livre|livrons|zones?|secteurs?|nous|partout|gratuite?s?|autour|environs)\s+/;
-function zRes(t,strict,ctx,hint,dh){
- t=t.replace(/(?:^|\s)(?:etc\.?|…|\.\.\.)\s*$/i,"").replace(/^[\s\-–•*>·]+|[\s.,;:]+$/g,"");if(!t)return null;
- let zip="";const zm=t.match(/\b(\d{5})\b/);
- if(zm){zip=zm[1];t=t.replace(zm[0]," ").replace(/\s+/g," ").trim().replace(/^[-,\s]+|[-,\s]+$/g,"");if(!t)return{skip:"code postal "+zip+" sans nom de ville"};}
- const q=zk(t);if(!q)return null;
- if(/\b(?:toute la france|partout en france|france entiere|france metropolitaine|tout le territoire)\b/.test(q)||q==="france"||q==="national"||q==="nationale")return{scope:"france"};
- const I=zIdx();
- if(/^(?:\d{2,3}|2a|2b)$/.test(q)){const d=I.d[q];return d?{scope:"department",department_code:d.code}:{skip:"département « "+t+" » inconnu"};}
- const hasD=/\b(?:departements?|dept|dep)\b/.test(q),hasR=/\bregions?\b/.test(q),hasA=/\b(?:tout|toute|tous|toutes|entier|entiere|entieres)\b/.test(q);
- let c=q;for(let i=0;i<6&&ZLEAD.test(c);i++)c=c.replace(ZLEAD,"");c=c.replace(/\s+(?:entier|entiere|entieres|complet|complete)$/,"");
- let D=null,R=null;for(const x of [q,c]){if(!x)continue;D=D||I.d[x];R=R||I.r[x];}
- if(hasR&&R)return{scope:"region",region_code:R.code};
- if(D&&!(q==="paris"&&!hasA&&!hasD)&&!(ctx.city&&zk(ctx.city)===c&&!hasA&&!hasD))return{scope:"department",department_code:D.code};
- if(R)return{scope:"region",region_code:R.code};
- let name=t.replace(ZPRE,"").trim();
- if(hasD||hasR||hasA)return{skip:"zone non reconnue : "+t.slice(0,40)};
- if(name.length<2||name.length>80||!/[A-Za-zÀ-ÿ]/.test(name)||ZSTOP.has(zk(name)))return null;
- if(strict&&!/^[A-ZÀ-ÖØ-Þ]/.test(name))return null;
- const dd=hint||(zip?bDept(zip):"")||dh||"";return{scope:"city",city:name,department_code:dd||ctx.dept||null,assumed:!dd};
-}
-function botZones(o,rest,ctx){
- const zs=[],warn=[],notes=[],seen=new Set();let last=null;
- const D={fee:null,min:null,delay:null};
- if(o.fee){const f=zSpec(/^\d+(?:[.,]\d+)?$/.test(o.fee.trim())?o.fee.trim()+" €":o.fee);D.fee=f.fee;if(f.free!=null)notes.push("Livraison gratuite dès "+f.free+" €");else if(f.fee==null)notes.push("Frais : "+o.fee.trim());}
- if(o.min_order){const f=zSpec("minimum "+o.min_order);D.min=f.min;if(f.min==null)notes.push("Minimum : "+o.min_order.trim());}
- if(o.delay){const f=zSpec(o.delay);D.delay=f.delay||o.delay.trim().slice(0,60);}
- const lines=[];
- String(o.zones||"").split(/\n+/).forEach(l=>{if(l.trim())lines.push({t:l,strict:false});});
- rest.forEach(l=>{if(isZnLine(l))lines.push({t:l,strict:true});});
- const mrg=(a,b)=>({fee:a.fee!=null?a.fee:b.fee,min:a.min!=null?a.min:b.min,delay:a.delay||b.delay,free:a.free!=null?a.free:b.free});
- lines.forEach(({t,strict})=>{
-  let grp={fee:null,min:null,delay:null,free:null},body=t,dh="";
-  const gm=t.match(/^(.*?)\s*(?::|=|\s[-–—]\s)\s*([^:=]+)$/);
-  if(gm&&gm[1].trim()){const sp=zSpec(gm[2]);
-   if(sp.pure&&(sp.fee!=null||sp.min!=null||sp.delay||sp.free!=null)){grp=sp;body=gm[1];}
-   else{const left=zRes(gm[1],false,ctx,"");if(left&&left.scope==="department"){dh=left.department_code;body=gm[2];const k="department||"+left.department_code;if(!seen.has(k)){seen.add(k);zs.push({scope:"department",city:null,department_code:left.department_code,region_code:null,fee:D.fee,min_order:D.min,delay:D.delay});}}}}
-  if(grp.free!=null)notes.push("Livraison gratuite dès "+grp.free+" €");
-  if(grp.fee==null&&grp.free==null&&!/d[èeé]s|[àa] partir/i.test(t)){if(/^[-*•·\s]*(?:nous\s+)?(?:livraisons?|livrons|livre)\s+gratuit\w*/i.test(t))grp.fee=0;else if(/\bgratuit\w*\s*[.!]?\s*$/i.test(body)){grp.fee=0;body=body.replace(/\s*\bgratuit\w*\s*[.!]?\s*$/i,"");}}
-  zSplit(body).forEach(tk=>{
-   let hint="",sp={fee:null,min:null,delay:null,free:null};
-   const km=tk.match(/(?:\+|dans un rayon de|rayon de|rayon|jusqu'?[àa])?\s*(\d{1,3})\s*km\b/i);if(km){{const rem=tk.replace(km[0]," ").trim().replace(ZPRE,"").trim();notes.push("Rayon "+km[1]+" km"+(rem?" autour de "+rem:""));}tk=tk.replace(km[0]," ");}
-   const pm=tk.match(/\(([^)]*)\)/);
-   if(pm){const c=pm[1].trim();if(/^(?:\d{2,3}|2[AB])$/i.test(c))hint=c.toUpperCase();else sp=mrg(sp,zSpec(c));tk=tk.replace(pm[0]," ");}
-   const s2=zSpec(tk);sp=mrg(sp,s2);
-   const name=s2.rest.replace(ZPRE,"").trim();
-   if(s2.pure&&!name){if(last)["fee","min_order","delay"].forEach((f,i)=>{const v=[sp.fee,sp.min,sp.delay][i];if(v!=null&&v!==""&&last[f]==null)last[f]=v;});if(sp.free!=null)notes.push("Livraison gratuite dès "+sp.free+" €");return;}
-   if(sp.free!=null)notes.push("Livraison gratuite dès "+sp.free+" €");
-   const z=zRes(s2.rest,strict,ctx,hint,dh);if(!z)return;if(z.skip){warn.push(z.skip);return;}
-   const f=mrg(sp,mrg(grp,{fee:D.fee,min:D.min,delay:D.delay}));
-   const zz={scope:z.scope,city:z.city||null,department_code:z.department_code||null,region_code:z.region_code||null,fee:f.fee,min_order:f.min,delay:f.delay||null,assumed:!!z.assumed};
-   const key=zz.scope+"|"+zk(zz.city||"")+"|"+(zz.department_code||"")+"|"+(zz.region_code||"");
-   if(seen.has(key)){const e=zs.find(x=>x&&x.scope+"|"+zk(x.city||"")+"|"+(x.department_code||"")+"|"+(x.region_code||"")===key);if(e){["fee","min_order","delay"].forEach(k=>{if(e[k]==null&&zz[k]!=null)e[k]=zz[k];});}last=e||zz;return;}
-   seen.add(key);zs.push(zz);last=zz;});
- });
- const out=zs.filter(Boolean).slice(0,100);
- if(!out.length&&(D.fee!=null||D.min!=null))warn.push("frais ou minimum donnés mais aucune zone reconnue");
- return{zones:out,warn,notes};
-}
-
-/* ---------- Analyse d’une boutique ---------- */
 function botFill(o,rest){
- rest=rest.slice();const U=new Set();
- if(!o.name&&rest.length){o.name=rest.shift().replace(/^#+\s*/,"").replace(/^(?:boutique|enseigne|shop)\s*[:\-–]\s*/i,"");}
- const txt=rest.join("\n"),SK=["siret","hours","photos","zones","zinfo","fee","min_order","delay","links","instagram","facebook","tiktok","snapchat","telegram","whatsapp","youtube"];
- const all=txt+"\n"+Object.entries(o).filter(e=>!SK.includes(e[0])).map(e=>e[1]).join("\n");
+ if(!o.name&&rest.length)o.name=rest.shift().replace(/^#+\s*/,"");
+ const all=rest.join("\n")+"\n"+Object.values(o).join("\n");
  if(!o.email)o.email=(all.match(/[\w.+-]+@[\w-]+\.[\w.-]+/)||[])[0];
- const PHR=/(?:\+33\s?|0)[1-9](?:[\s.-]?\d{2}){4}/g,xph=[];
- if(o.phone){const pa=o.phone.match(PHR);if(pa){o.phone=pa[0];pa.slice(1).forEach(x=>xph.push(x));}}
  if(!o.phone)o.phone=(all.match(/(?:\+33\s?|0)[1-9](?:[\s.-]?\d{2}){4}/)||[])[0];
+ (rest.join("\n").match(/https?:\/\/[^\s,;)]+/g)||[]).forEach(u=>{const h=BHOST.find(x=>x[0].test(u));if(h){if(!o[h[1]])o[h[1]]=u;}else if(!o.website)o.website=u;});
  if(o.address&&!o.postal_code){const m=o.address.match(/^(.*?)[,\s-]*\b(\d{5})\s+(.+)$/);if(m){o.address=m[1].trim();o.postal_code=m[2];if(!o.city)o.city=m[3].trim();}}
- if(!o.address){const a=rest.find(l=>/^\d+[\w\s,'.-]*\b(rue|avenue|av\.|boulevard|bd|chemin|place|all[ée]e|impasse|route|cours|quai|zone|rond-point)\b/i.test(l));if(a){U.add(a);o.address=a;const m=a.match(/^(.*?)[,\s-]*\b(\d{5})\s+(.+)$/);if(m){o.address=m[1].trim();o.postal_code=o.postal_code||m[2];o.city=o.city||m[3].trim();}}}
- if(!o.postal_code){const m=rest.filter(l=>!isHrLine(l)&&!isZnLine(l)).join("\n").match(/\b(\d{5})\s+([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ' -]{1,40})/);if(m){o.postal_code=m[1];if(!o.city)o.city=m[2].trim();}}
+ if(!o.address){const a=rest.find(l=>/^\d+[\w\s,'.-]*\b(rue|avenue|av\.|boulevard|bd|chemin|place|all[ée]e|impasse|route|cours|quai|zone|rond-point)\b/i.test(l));if(a){o.address=a;const m=a.match(/^(.*?)[,\s-]*\b(\d{5})\s+(.+)$/);if(m){o.address=m[1].trim();o.postal_code=o.postal_code||m[2];o.city=o.city||m[3].trim();}}}
+ if(!o.postal_code){const m=rest.join("\n").match(/\b(\d{5})\s+([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ' -]{1,40})/);if(m){o.postal_code=m[1];if(!o.city)o.city=m[2].trim();}}
+ const links=[];["instagram","facebook","tiktok","snapchat","telegram","whatsapp"].forEach(k=>{let u=(o[k]||"").trim();if(!u)return;if(/^@/.test(u)&&BSO[k])u=BSO[k]+u.slice(1);u=bHttps(u);if(u)links.push({kind:k,url:u});});
  const zip=/^\d{5}$/.test((o.postal_code||"").trim())?o.postal_code.trim():"";
  let dc=bDept(zip),dp=DEPS.find(d=>d.code===dc);
  if(!dp&&o.department){const q=bkn(o.department);dp=DEPS.find(d=>bkn(d.name)===q||d.code===o.department.trim());}
  let rg=dp?dp.region_code:"";
  if(!rg&&o.region){const q=bkn(o.region),r=REGIONS.find(r=>bkn(r.name)===q||r.code===o.region.trim());if(r)rg=r.code;}
- const L=bLinks(o,rest),Z=botZones(o,rest,{dept:dp?dp.code:"",city:(o.city||"").trim()});
- const hl=rest.filter(isHrLine);hl.forEach(l=>U.add(l));rest.filter(isZnLine).forEach(l=>U.add(l));
- const hoursRaw=[o.hours||"",...hl].filter(Boolean).join("\n").trim(),hr=bHours(hoursRaw);
- let sd=(o.short_description||"").trim(),ds=(o.description||"").trim();
- if(!sd&&!ds){const l=rest.find(l=>l.length>=50&&/\s/.test(l)&&!U.has(l)&&!/^(?:https?:|www\.)/i.test(l)&&!/\b\d{5}\b/.test(l));if(l){sd=l;U.add(l);}}
- if(sd.length>200){if(!ds)ds=sd;sd=bCut(sd,200);}else if(!sd&&ds)sd=bCut(ds,200);
- if(sd===ds)ds="";
- const em=(o.email||"").trim(),si=(o.siret||"").replace(/\D/g,""),zinfo=[(o.zinfo||"").replace(/\n+/g," · ").trim(),...Z.notes].filter(Boolean).join(" · ").slice(0,400);
- const un=rest.filter(l=>!U.has(l)&&!(o.phone&&l.includes(o.phone))&&!(o.email&&l.includes(o.email))&&!/https?:\/\/|www\./i.test(l)&&!/(?:^|\s)@[\w.]{2,}/.test(l)&&l!==sd&&!(o.city&&o.postal_code&&l.includes(o.postal_code)));
- return{name:(o.name||"").trim().slice(0,120),address:(o.address||"").trim().slice(0,160),postal_code:zip,city:(o.city||"").trim().slice(0,80),phone:(o.phone||"").trim().slice(0,30),email:/^\S+@\S+\.\S+$/.test(em)?em:"",website:L.website,short_description:sd,description:ds,services:(o.services||"").replace(/\n+/g,", ").trim(),specialties:(o.specialties||"").replace(/\n+/g,", ").trim(),hours:hoursRaw,hr,zinfo,siret:si.length===14?si:(o.siret||"").trim(),photos:L.photos[0]||"",photosMore:L.photos.slice(1),links:L.links,zones:Z.zones,categories:bList(o.categories),catText:[o.categories,o.specialties,o.services,sd].join(" "),department_code:dp?dp.code:"",region_code:rg,lat:null,lon:null,warn:[...L.warn,...Z.warn].slice(0,10),notes:(xph.length?["Autre(s) numéro(s) : "+xph.join(", ")]:[]).concat(un).slice(0,8)};
+ const em=(o.email||"").trim();
+ return{name:(o.name||"").trim().slice(0,120),address:(o.address||"").trim().slice(0,160),postal_code:zip,city:(o.city||"").trim().slice(0,80),phone:(o.phone||"").trim().slice(0,30),email:/^\S+@\S+\.\S+$/.test(em)?em:"",website:bHttps(o.website),short_description:(o.short_description||"").trim().slice(0,200),services:(o.services||"").trim(),specialties:(o.specialties||"").trim(),hours:(o.hours||"").trim(),zinfo:(o.zinfo||"").trim().slice(0,200),siret:(o.siret||"").trim(),photos:bHttps(o.photos),links,zones:bList(o.zones).filter(x=>x.length>=2&&x.length<=80).slice(0,60),categories:bList(o.categories),department_code:dp?dp.code:"",region_code:rg,lat:null,lon:null};
 }
-const BLOOSE=/^[-*•·\s]*(instagram|insta|ig|facebook|fb|tiktok|snapchat|snap|telegram|whatsapp|wa|youtube|tel|telephone|email|mail|site|siret)(?:\s+(?:internet|web))?\s+(\S.*)$/i;
 function botBlock(txt){
- const o={},rest=[];let cur=null,hdr=false;
- const put=(k,v)=>{o[k]=o[k]?o[k]+(MULTI.has(k)?"\n":", ")+v:v;};
- txt.split(/\r?\n/).map(l=>l.replace(/\*\*/g,"").trim()).filter(l=>l&&!/^(?:-{3,}|={3,}|\*{3,}|_{3,})$/.test(l)).flatMap(l=>l.split(/\s+(?=(?:instagram|insta|ig|snapchat|snap|tiktok|telegram|tg|whatsapp|facebook|fb)\s*(?::|@))/i)).forEach(l=>{
-  let m=l.match(/^[-*•·\s]*([^:=]{2,32}?)\s*[:=]\s*(.*)$/),k=m&&bkm(m[1]);
-  if(k){const v=m[2].trim();cur=MULTI.has(k)?k:null;hdr=!v;if(v)put(k,v);return;}
-  if(cur&&(hdr||/^[-*•·–]\s*\S/.test(l)||(cur==="hours"&&bDay(l)))){put(cur,l.replace(/^[-*•·–]\s*/,""));return;}
-  m=l.match(BLOOSE);if(m){k=bkm(m[1]);if(k){put(k,m[2].trim());cur=null;hdr=false;return;}}
-  cur=null;hdr=false;rest.push(l);});
+ const o={},rest=[];
+ txt.split(/\r?\n/).map(l=>l.trim()).filter(Boolean).forEach(l=>{const m=l.match(/^[-*•\s]*([^:=]{2,32}?)\s*[:=]\s*(.+)$/),k=m&&BMAP[bkn(m[1])];if(k)o[k]=(o[k]?o[k]+", ":"")+m[2].trim();else rest.push(l);});
  return botFill(o,rest);
 }
 function botText(t){
- t=t.replace(/\*\*/g,"");
  const L=t.split(/\r?\n/),ix=[];L.forEach((l,i)=>{const m=l.match(/^[-*•\s]*([^:=]{2,32}?)\s*[:=]/);if(m&&BMAP[bkn(m[1])]==="name")ix.push(i);});
  const parts=ix.length>1?ix.map((s,k)=>L.slice(s,ix[k+1]).join("\n")):t.split(/\n\s*(?:-{3,}|={3,}|\*{3,})\s*\n|\n[ \t]*\n[ \t]*\n+/);
  return parts.map(botBlock);
@@ -932,21 +819,12 @@ function botCSV(t){
   if(q){if(ch==='"'){if(t[i+1]==='"'){c+='"';i++;}else q=false;}else c+=ch;}
   else if(ch==='"')q=true;else if(ch===dl){r.push(c);c="";}else if(ch==="\n"||ch==="\r"){if(ch==="\r"&&t[i+1]==="\n")i++;r.push(c);c="";if(r.some(x=>x.trim()))rows.push(r);r=[];}else c+=ch;}
  r.push(c);if(r.some(x=>x.trim()))rows.push(r);
- if(!rows.length)return null;const H=rows.shift().map(h=>bkm(h)||"");if(H.filter(Boolean).length<2)return null;
- return rows.map(r=>{const o={};H.forEach((k,i)=>{if(k&&r[i]&&r[i].trim())o[k]=o[k]&&MULTI.has(k)?o[k]+"\n"+r[i].trim():r[i].trim();});return botFill(o,[]);});
+ if(!rows.length)return null;const H=rows.shift().map(h=>BMAP[bkn(h)]||"");if(H.filter(Boolean).length<2)return null;
+ return rows.map(r=>{const o={};H.forEach((k,i)=>{if(k&&r[i]&&r[i].trim())o[k]=r[i].trim();});return botFill(o,[]);});
 }
 function botJSON(t){
  const j=JSON.parse(t),a=Array.isArray(j)?j:(j.shops||j.boutiques||j.businesses||[j]);
- const one=(k,x)=>{if(x==null)return"";if(typeof x!=="object")return String(x);
-  if(k==="zones"){const g=(...n)=>{for(const f of n)if(x[f]!=null&&x[f]!=="")return x[f];return null;},nm=g("city","ville","name","nom","department","departement","region")||(g("scope","type")==="france"?"Toute la France":""),fe=g("fee","frais"),mi=g("min_order","minimum"),de=g("delay","delai");
-   const sp=[fe==null?"":(+fe===0?"gratuite":fe+" €"),mi==null?"":"minimum "+mi+" €",de||""].filter(Boolean).join(", ");return nm+(sp?" ("+sp+")":"");}
-  return x.url||x.lien||x.link||x.value||x.valeur||Object.values(x).filter(y=>typeof y==="string").join(" ");};
- return a.map(x=>{const o={},put=(m,v)=>{if(v)o[m]=o[m]?o[m]+(MULTI.has(m)?"\n":", ")+v:v;};
-  Object.entries(x||{}).forEach(([k,v])=>{const m=bkm(k);if(!m||v==null||v==="")return;
-   if(Array.isArray(v))put(m,v.map(y=>one(m,y)).filter(Boolean).join(MULTI.has(m)?"\n":", "));
-   else if(typeof v==="object"){if(m==="links")Object.entries(v).forEach(([kk,vv])=>put(bkm(kk)||"links",one("links",vv)));else if(m==="hours")Object.entries(v).forEach(([kk,vv])=>put("hours",kk+" "+one("hours",vv)));else put(m,one(m,v));}
-   else put(m,String(v));});
-  return botFill(o,[]);});
+ return a.map(x=>{const o={};Object.entries(x||{}).forEach(([k,v])=>{const m=BMAP[bkn(k)];if(m&&v!=null&&v!=="")o[m]=Array.isArray(v)?v.join(", "):String(v);});return botFill(o,[]);});
 }
 function botParse(text,fname){
  const ext=(fname||"").split(".").pop().toLowerCase();let l=null;
@@ -954,64 +832,42 @@ function botParse(text,fname){
  if(!l&&(ext==="csv"||ext==="tsv"||!fname))l=botCSV(text);
  return(l||botText(text)).filter(s=>s.name);
 }
-const botSeed=s=>({b:{name:s.name,address:s.address,postal_code:s.postal_code,city:s.city,region_code:s.region_code||null,department_code:s.department_code||null,latitude:s.lat,longitude:s.lon,phone:s.phone,email:s.email,website:s.website,short_description:s.short_description,description:s.description,services:s.services,specialties:s.specialties},lk:s.links,hr:s.hr,cn:s.categories,zs:s.zones,pv:{v:1,siret:s.siret,photos_src:s.photos,hrs:s.hours,dc:s.zinfo,offer:"Gratuit",pay:"À régler",pnote:("Importée via l’espace Bots"+(s.photosMore.length?"\nAutres photos : "+s.photosMore.join(" ; "):"")+(s.notes.length?"\nNon classé : "+s.notes.join(" | "):"")).slice(0,700)}});
-async function botGeo(s){
- if(s.lat!=null||!(s.address||s.city))return;
- const tryQ=async q=>{try{const j=await(await fetch("https://api-adresse.data.gouv.fr/search/?limit=1&q="+encodeURIComponent(q))).json(),c=j.features&&j.features[0]&&j.features[0].geometry.coordinates;if(c){s.lon=c[0];s.lat=c[1];return true;}}catch(e){}return false;};
- if(!(await tryQ([s.address,s.postal_code,s.city].filter(Boolean).join(" ")))&&s.address)await tryQ([s.postal_code,s.city].filter(Boolean).join(" "));
-}
-async function botZoneDeps(s){
- const todo=s.zones.filter(z=>z.scope==="city"&&z.assumed&&z.city);
- for(let i=0;i<todo.length;i+=6)await Promise.all(todo.slice(i,i+6).map(async z=>{try{
-  const j=await(await fetch("https://api-adresse.data.gouv.fr/search/?type=municipality&limit=1&q="+encodeURIComponent(z.city)+(s.lat!=null?"&lat="+s.lat+"&lon="+s.lon:""))).json(),f=j.features&&j.features[0];
-  if(f&&f.properties&&zk(f.properties.city||f.properties.name||"")===zk(z.city)){const c=String(f.properties.context||"").split(",")[0].trim();if(c){z.department_code=c;z.assumed=false;}}}catch(e){}}));
-}
+const botSeed=s=>({b:{name:s.name,address:s.address,postal_code:s.postal_code,city:s.city,region_code:s.region_code||null,department_code:s.department_code||null,latitude:s.lat,longitude:s.lon,phone:s.phone,email:s.email,website:s.website,short_description:s.short_description,services:s.services,specialties:s.specialties},lk:s.links,cn:s.categories,zs:s.zones.map(c=>({scope:"city",city:c,department_code:s.department_code||null})),pv:{v:1,siret:s.siret,photos_src:s.photos,hrs:s.hours,dc:s.zinfo,offer:"Gratuit",pay:"À régler",pnote:"Importée via l’espace Bots"}});
+async function botGeo(s){if(s.lat!=null||!(s.address||s.city))return;try{const q=[s.address,s.postal_code,s.city].filter(Boolean).join(" "),j=await(await fetch("https://api-adresse.data.gouv.fr/search/?limit=1&q="+encodeURIComponent(q))).json(),c=j.features&&j.features[0]&&j.features[0].geometry.coordinates;if(c){s.lon=c[0];s.lat=c[1];}}catch(e){}}
 async function tBots(){
- $("aPane").innerHTML='<div class="card"><h3>Coller un texte</h3><p class="meta" style="margin-bottom:10px">Collez les infos d’une ou plusieurs boutiques. Le bot reconnaît : nom, adresse, téléphone, e-mail, <b>tous les liens</b> (Instagram, Snapchat, WhatsApp, Telegram, TikTok, Facebook, site… un par ligne ou séparés par des virgules), les <b>horaires</b> et les <b>zones de livraison</b> (villes, départements par nom ou numéro, régions, « toute la France », avec frais, minimum et délai facultatifs). Pour plusieurs boutiques, séparez-les par une ligne <b>---</b>.</p><textarea id="botTxt" rows="10" placeholder="Nom : Green Shop&#10;Adresse : 12 rue de la Paix, 38000 Grenoble&#10;Téléphone : 04 76 00 00 00&#10;Instagram : @greenshop38&#10;Snapchat : greenshop&#10;WhatsApp : 06 12 34 56 78&#10;Site : https://greenshop.fr&#10;Horaires : Lun-Sam 10h-19h, Dim fermé&#10;Livraison : Grenoble (5 €, min 30 €, 24h), Voiron, Isère, 69, toute la France"></textarea><div class="row" style="margin-top:10px"><button class="btn p" data-bot="txt">Analyser le texte</button></div></div><div class="card"><h3>Importer un fichier</h3><p class="meta" style="margin-bottom:10px">Fichier .txt, .csv ou .json. Pour un CSV : une boutique par ligne, avec des colonnes comme nom, adresse, code postal, ville, téléphone, instagram, whatsapp, livraison, horaires… (plusieurs colonnes « lien » ou « instagram » sont toutes lues). Depuis Excel : « Enregistrer sous » puis CSV.</p><input id="botFile" type="file" accept=".txt,.csv,.tsv,.json,.md,text/plain,text/csv,application/json"></div><div id="botOut"></div>';
+ $("aPane").innerHTML='<div class="card"><h3>Coller un texte</h3><p class="meta" style="margin-bottom:10px">Collez les infos d’une ou plusieurs boutiques (« Nom : … », « Adresse : … », « Ville : … », « Téléphone : … », « Instagram : … », « Livraison : … »). Pour plusieurs boutiques, séparez-les par une ligne <b>---</b>.</p><textarea id="botTxt" rows="8" placeholder="Nom : Green Shop&#10;Adresse : 12 rue de la Paix, 38000 Grenoble&#10;Téléphone : 04 76 00 00 00&#10;Instagram : @greenshop38&#10;Livraison : Grenoble, Voiron, Échirolles"></textarea><div class="row" style="margin-top:10px"><button class="btn p" data-bot="txt">Analyser le texte</button></div></div><div class="card"><h3>Importer un fichier</h3><p class="meta" style="margin-bottom:10px">Fichier .txt, .csv ou .json. Pour un CSV : une boutique par ligne, avec des colonnes comme nom, adresse, code postal, ville, téléphone… (depuis Excel : « Enregistrer sous » puis CSV).</p><input id="botFile" type="file" accept=".txt,.csv,.tsv,.json,.md,text/plain,text/csv,application/json"></div><div id="botOut"></div>';
  if(BOT.length)drawBots();
 }
 function botRun(text,fname){
  BOT=botParse(text,fname);
  if(BOT.length)drawBots();else $("botOut").innerHTML='<p class="msg err">Aucune boutique reconnue. Il faut au moins un nom (ex. « Nom : … » ou le nom sur la première ligne).</p>';
 }
-const zLbl=z=>z.scope==="france"?"Toute la France":z.scope==="region"?(regName(z.region_code)||z.region_code):z.scope==="department"?"Dép. "+(depName(z.department_code)||z.department_code):z.city;
-const zSp=z=>[z.fee==null?"":(+z.fee===0?"gratuite":z.fee+" €"),z.min_order==null?"":"min "+z.min_order+" €",z.delay||""].filter(Boolean).join(", ");
 function drawBots(){
  const o=$("botOut");if(!o)return;if(!BOT.length){o.innerHTML="";return;}
- o.innerHTML='<h3 class="sub">'+BOT.length+' boutique(s) reconnue(s)</h3>'+BOT.map((s,i)=>{
-  const w=[!s.address&&"adresse",!s.postal_code&&"code postal",!s.city&&"ville",!s.phone&&"téléphone",!s.links.length&&!s.website&&"liens",!s.zones.length&&"zones de livraison",!s.hr.length&&"horaires"].filter(Boolean),nl=s.links.length+(s.website?1:0);
-  const short=u=>u.replace(/^https?:\/\/(?:www\.)?/i,"").slice(0,46);
-  return '<div class="card ar"><div style="flex:1;min-width:240px"><b>'+esc(s.name)+'</b><div class="meta">'+esc([s.address,[s.postal_code,s.city].filter(Boolean).join(" ")].filter(Boolean).join(" – ")||"Adresse non reconnue")+(s.phone?" · "+esc(s.phone):"")+(s.email?" · "+esc(s.email):"")+'</div>'
-   +(nl?'<div class="meta"><b>'+nl+' lien(s)</b><br>'+[s.website?"Site · "+esc(short(s.website)):""].concat(s.links.map(l=>esc(LK[l.kind]||l.kind)+" · "+esc(short(l.url)))).filter(Boolean).join("<br>")+'</div>':'')
-   +(s.zones.length?'<div class="meta"><b>'+s.zones.length+' zone(s) de livraison</b></div><div class="zl" style="margin:4px 0 6px">'+s.zones.map(z=>'<span class="tag">'+esc(zLbl(z))+(zSp(z)?' <small>('+esc(zSp(z))+')</small>':'')+'</span>').join("")+'</div>':'')
-   +(s.hr.length?'<div class="meta"><b>Horaires</b> : '+esc(hrSum(s.hr))+'</div>':'')
-   +(s.photos?'<div class="meta">Photos : lien reconnu'+(s.photosMore.length?" (+"+s.photosMore.length+" autre(s) en note)":"")+'</div>':'')
-   +(s.warn.length?'<div class="meta">⚠ À vérifier : '+esc(s.warn.join(" ; "))+'</div>':'')
-   +(w.length?'<div class="meta">Non trouvé : '+esc(w.join(", "))+'</div>':'')
-   +'</div><div class="row"><button class="btn" data-bot="edit" data-i="'+i+'">Modifier</button><button class="btn" data-bot="del" data-i="'+i+'">Retirer</button></div></div>';}).join("")
+ o.innerHTML='<h3 class="sub">'+BOT.length+' boutique(s) reconnue(s)</h3>'+BOT.map((s,i)=>{const w=[!s.address&&"adresse",!s.postal_code&&"code postal",!s.city&&"ville",!s.phone&&"téléphone"].filter(Boolean);
+  return '<div class="card ar"><div><b>'+esc(s.name)+'</b><div class="meta">'+esc([s.address,[s.postal_code,s.city].filter(Boolean).join(" ")].filter(Boolean).join(" – ")||"Adresse non reconnue")+(s.phone?" · "+esc(s.phone):"")+(s.email?" · "+esc(s.email):"")+'</div>'+(s.links.length||s.website?'<div class="meta">Liens : '+esc([s.website&&"site"].concat(s.links.map(l=>l.kind)).filter(Boolean).join(", "))+'</div>':'')+(s.zones.length?'<div class="meta">'+s.zones.length+' ville(s) de livraison</div>':'')+(w.length?'<div class="meta">À compléter : '+esc(w.join(", "))+'</div>':'')+'</div><div class="row"><button class="btn" data-bot="edit" data-i="'+i+'">Modifier</button><button class="btn" data-bot="del" data-i="'+i+'">Retirer</button></div></div>';}).join("")
   +'<label style="grid-auto-flow:column;align-items:center;justify-content:start;gap:8px;margin:12px 0"><input type="checkbox" id="botPub"> Publier tout de suite (sinon : en attente, à valider)</label><button class="btn p" data-bot="go">Créer '+BOT.length+' boutique(s)</button>';
 }
 async function botCreate(){
- const pub=$("botPub")&&$("botPub").checked,cats=(await sb.from("categories").select("id,name")).data||[],ko=[],wn=[];let ok=0;
+ const pub=$("botPub")&&$("botPub").checked,cats=(await sb.from("categories").select("id,name")).data||[],ko=[];let ok=0;
  for(const s of BOT.slice()){
   try{
-   note("Création de « "+s.name+" »…");await botGeo(s);await botZoneDeps(s);
+   note("Création de « "+s.name+" »…");await botGeo(s);
    let b=null;const base=slug(s.name)||"boutique";
    for(let k=0;k<4&&!b;k++){
-    const r=await sb.from("businesses").insert({name:s.name,slug:k?base+"-"+Math.random().toString(36).slice(2,6):base,short_description:s.short_description||null,description:s.description||null,address:s.address||null,postal_code:s.postal_code||null,city:s.city||null,region_code:s.region_code||null,department_code:s.department_code||null,latitude:s.lat,longitude:s.lon,phone:s.phone||null,email:s.email||null,website:s.website||null,specialties:s.specialties||null,services:s.services||null,status:pub?"published":"pending"}).select("id").single();
+    const r=await sb.from("businesses").insert({name:s.name,slug:k?base+"-"+Math.random().toString(36).slice(2,6):base,short_description:s.short_description||null,address:s.address||null,postal_code:s.postal_code||null,city:s.city||null,region_code:s.region_code||null,department_code:s.department_code||null,latitude:s.lat,longitude:s.lon,phone:s.phone||null,email:s.email||null,website:s.website||null,specialties:s.specialties||null,services:s.services||null,status:pub?"published":"pending"}).select("id").single();
     if(!r.error)b=r.data;else if(r.error.code!=="23505")throw r.error;}
    if(!b)throw new Error("nom déjà pris");
    const id=b.id;
-   if(s.links.length){const rows=s.links.map((l,i)=>({business_id:id,kind:l.kind,label:l.label||null,url:l.url,sort_order:i}));let q=await sb.from("business_links").insert(rows);if(q.error)q=await sb.from("business_links").insert(rows.map(x=>({...x,kind:"other",label:x.label||LK[x.kind]||null})));if(q.error)wn.push(s.name+" : liens non enregistrés");}
-   if(s.zones.length){const zr=s.zones.map((z,i)=>({business_id:id,scope:z.scope,city:z.scope==="city"?z.city:null,department_code:z.scope==="city"||z.scope==="department"?(z.department_code||null):null,region_code:z.scope==="region"?z.region_code:null,fee:z.fee==null?null:z.fee,min_order:z.min_order==null?null:z.min_order,delay:z.delay||null,sort_order:i}));const q=await sb.from("business_delivery_zones").insert(zr);if(q.error)wn.push(s.name+" : zones de livraison non enregistrées");}
-   if(s.hr.length){const q=await sb.from("business_hours").insert(s.hr.map(h=>({business_id:id,weekday:h.weekday,closed:h.closed,opens:h.opens,closes:h.closes})));if(q.error)wn.push(s.name+" : horaires non enregistrés");}
-   const tx=norm(s.catText),cs=cats.filter(c=>{const n=norm(c.name);return s.categories.some(x=>norm(x)===n)||(n.length>=3&&tx.includes(n));});if(cs.length)await sb.from("business_categories").insert(cs.map(c=>({business_id:id,category_id:c.id})));
+   if(s.links.length)await sb.from("business_links").insert(s.links.map((l,i)=>({business_id:id,kind:l.kind,url:l.url,sort_order:i})));
+   if(s.zones.length)await sb.from("business_delivery_zones").insert(s.zones.map((c,i)=>({business_id:id,scope:"city",city:c,department_code:s.department_code||null,sort_order:i})));
+   const cs=cats.filter(c=>s.categories.some(n=>norm(n)===norm(c.name)));if(cs.length)await sb.from("business_categories").insert(cs.map(c=>({business_id:id,category_id:c.id})));
    await sb.from("business_moderation").upsert({business_id:id,compliance_verified:false,note:JSON.stringify(botSeed(s).pv)});
    await audit("create","business",id,"Import espace Bots");ok++;BOT.splice(BOT.indexOf(s),1);
   }catch(e){ko.push(s.name+" ("+(e.message||"erreur")+")");}
  }
  await loadBiz();drawBots();if(pub&&ok)refreshPublic();
- note(ok+" boutique(s) créée(s)"+(ok?(pub?" et publiée(s).":", en attente : ouvrez « Boutiques clients » pour les valider."):".")+(wn.length?" Attention : "+wn.join(" ; ")+".":"")+(ko.length?" Échecs : "+ko.join(", ")+".":""),ko.length&&!ok);
+ note(ok+" boutique(s) créée(s)"+(ok?(pub?" et publiée(s).":", en attente : ouvrez « Boutiques clients » pour les valider."):".")+(ko.length?" Échecs : "+ko.join(", ")+".":""),ko.length&&!ok);
 }
 document.addEventListener("change",async e=>{
  if(e.target.id!=="botFile")return;const f=e.target.files[0];if(!f)return;
@@ -1023,7 +879,7 @@ document.addEventListener("click",async e=>{
  try{
   if(a==="txt"){const v=$("botTxt").value.trim();if(!v)return note("Collez d’abord un texte.",1);note("");botRun(v);}
   else if(a==="del"){BOT.splice(i,1);drawBots();}
-  else if(a==="edit"){const s=BOT.splice(i,1)[0];note("Recherche des coordonnées…");await botGeo(s);await botZoneDeps(s);note("");await editor(null,botSeed(s));}
+  else if(a==="edit"){const s=BOT.splice(i,1)[0];note("Recherche des coordonnées…");await botGeo(s);note("");await editor(null,botSeed(s));}
   else if(a==="go"){t.disabled=true;await botCreate();}
  }catch(x){note(x.message||"Erreur",1);if(t.isConnected)t.disabled=false;}
 });
@@ -1048,6 +904,7 @@ document.addEventListener("click",async e=>{
   if(t.dataset.tab)openTab(t.dataset.tab);
   else if(a==="out"){await sb.auth.signOut();location.reload();}
   else if(a==="push")await enablePush();
+  else if(a==="partreset"){if(confirm("Rétablir tous les textes d’origine de la page partenaire ?"))await savePart($("sf4"),true);}
   else if(a==="new")await editor();
   else if(a==="edit")await editor(id);
   else if(a==="back")openTab("biz");
@@ -1080,7 +937,7 @@ document.addEventListener("change",async e=>{
 });
 document.addEventListener("submit",async e=>{
  const f=e.target;if(!f.closest("#adminBox")||f.id==="loginForm")return;e.preventDefault();
- try{if(f.id==="bf")await saveBiz(f);else if(f.id==="sf2")await saveSite(f);else if(f.id==="sf3")await saveTxt(f);}catch(err){note(err.message||"Erreur",1);}
+ try{if(f.id==="bf")await saveBiz(f);else if(f.id==="sf2")await saveSite(f);else if(f.id==="sf3")await saveTxt(f);else if(f.id==="sf4")await savePart(f);}catch(err){note(err.message||"Erreur",1);}
 });
 document.addEventListener("dragover",e=>{const z=e.target.closest("#dz");if(z){e.preventDefault();z.classList.add("hv");}});
 document.addEventListener("dragleave",e=>{const z=e.target.closest("#dz");if(z)z.classList.remove("hv");});
@@ -1469,12 +1326,7 @@ async function openPinMode(){
  }
  drawPins(true);setTimeout(()=>PM&&PM.invalidateSize(),60);
 }
-function setMode(m){
- MM=m;$("zoneMode").hidden=m!=="reg";$("pinMode").hidden=m!=="pin";
- document.querySelectorAll("[data-mm]").forEach(b=>b.classList.toggle("p",b.dataset.mm===m));
- if(m==="pin")openPinMode();else if(GEO)setVB();
-}
-function mapEnter(){if(!loaded)return;if(!MM)setMode(DATA.some(validGeo)?"pin":"reg");else if(MM==="pin"&&PM)setTimeout(()=>PM.invalidateSize(),60);}
+function mapEnter(){if(GEO)setTimeout(setVB,30);}
 document.addEventListener("click",e=>{const t=e.target.closest("[data-mm]");if(t)setMode(t.dataset.mm);});
 document.addEventListener("change",e=>{
  const i=e.target.id,v=e.target.value;
