@@ -1284,7 +1284,7 @@ document.addEventListener("error",e=>{const i=e.target;if(i.tagName!=="IMG"||!i.
 var RET=null;
 (function(){const q=new URLSearchParams(location.search);if(q.get("pro"))RET="#/pro";else if(q.get("rv"))RET="#/boutique/"+encodeURIComponent(q.get("rv"));
  if(RET||q.get("subscribed")){if(q.get("subscribed")&&!RET)RET="#/pro";history.replaceState(null,"",location.pathname+location.hash);}
- if(sb)sb.auth.onAuthStateChange((ev)=>{if(ev==="SIGNED_IN"&&RET){const h=RET;RET=null;setTimeout(()=>{if(location.hash!==h)location.hash=h;else route();},0);}});})();
+ if(sb)sb.auth.onAuthStateChange((ev)=>{if(ev==="SIGNED_IN"&&!ADMON)setTimeout(()=>{autoAdmin().catch(()=>{});},0);if(ev==="SIGNED_IN"&&RET){const h=RET;RET=null;setTimeout(()=>{if(location.hash!==h)location.hash=h;else route();},0);}});})();
 
 function seoList(){
  if(!/^#\/(boutiques|categorie)/.test(location.hash))return;
