@@ -291,6 +291,16 @@ a.vit.v4{border:1.5px solid transparent;background:linear-gradient(var(--bg2),va
 body:has(#dot.ko) .sk{display:none}
 @media(max-width:760px){.car .grid,.car .vgrid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;margin-inline:-16px;padding:4px 16px 14px;scrollbar-width:none}.car .grid::-webkit-scrollbar,.car .vgrid::-webkit-scrollbar{display:none}.car .grid>*,.car .vgrid>*{flex:0 0 82%;scroll-snap-align:center}}
 @media(prefers-reduced-motion:reduce){.hero::before,.hero::after,.sk{animation:none}.rvj .sec,.kpis{transition:none}}
+/* ---- Admin : navigation par catégories (mobile) ---- */
+.agrp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}@media(min-width:760px){.agrp{grid-template-columns:repeat(6,1fr)}}
+.agrp .gt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:68px;padding:8px 4px;font-size:.8rem;line-height:1.15;text-align:center}.agrp .gt i{font-style:normal;font-size:1.5rem}
+.asub{position:sticky;top:64px;z-index:10;background:rgba(7,11,22,.93);backdrop-filter:blur(10px);margin:0 -4px 8px;padding:8px 4px;border-bottom:1px solid var(--line)}
+.abc{font-size:.85rem;color:var(--mut);margin-bottom:6px}.abc b{color:var(--tx)}
+.apl{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}.apl::-webkit-scrollbar{display:none}.apl .btn{flex:0 0 auto;min-height:40px;white-space:nowrap}.apl .up{margin-left:auto;color:var(--c1)}
+#aPane input,#aPane select,#aPane textarea{max-width:100%;font-size:16px}#aPane img{max-width:100%}#aPane table{display:block;overflow-x:auto;max-width:100%}
+@media(max-width:760px){#aPane .fg{grid-template-columns:1fr}#aPane .card{padding:14px}#aPane .btn{min-height:44px}}
+#aPane .acc>h3{cursor:pointer;display:flex;justify-content:space-between;align-items:center;min-height:44px;margin:0}
+#aPane .acc>h3::after{content:"▾";color:var(--c1);transition:transform .2s}#aPane .acc.shut>h3::after{transform:rotate(-90deg)}#aPane .acc.shut>*:not(h3){display:none}
 </style>
 </head>
 <body>
@@ -600,6 +610,25 @@ $("map").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.classList&&
  }
  document.addEventListener("click",e=>{const r=e.target.closest("[data-qr]");if(r)return go({region:r.dataset.qr});if(e.target.closest("[data-qn]")){const g=$("geo");if(g){g.scrollIntoView({behavior:"smooth",block:"center"});g.click();}}});
 })();
+/* ---- Admin : catégories / sous-catégories, sections repliables ---- */
+const AG=[["pil","📊","Pilotage",[["dash","Tableau de bord"],["log","Journal"],["exp","Export"]]],
+ ["shop","🏪","Boutiques",[["biz","Boutiques clients"],["bots","Import (bots)"],["qual","Qualité des fiches"],["cat","Catégories CBD"],["med","Médias"]]],
+ ["pub","📣","Publicité",[["ads","Publicités"],["promo","Mises en avant"]]],
+ ["site","🎨","Site",[["sec","Accueil"],["site","Site & identité"],["txt","Textes & pages"],["part","Page partenaire"]]]],AL={};
+function drawNav(){
+ const g=AG.find(x=>x[3].some(y=>y[0]===TAB))||AG[0],sb2=g[3].find(y=>y[0]===TAB)||g[3][0];AL[g[0]]=sb2[0];
+ $("agrp").innerHTML=AG.map(x=>'<button class="btn gt'+(x===g?' p':'')+'" data-tab="'+(AL[x[0]]||x[3][0][0])+'"><i>'+x[1]+'</i>'+x[2]+'</button>').join("")+'<button class="btn gt" data-a="push"><i>🔔</i>Alertes</button><button class="btn gt" data-a="out"><i>↩︎</i>Quitter</button>';
+ $("asub").innerHTML='<div class="abc">'+g[1]+' '+g[2]+' › <b>'+sb2[1]+'</b></div><div class="apl">'+g[3].map(y=>'<button class="btn tb'+(y[0]===TAB?' p':'')+'" data-tab="'+y[0]+'">'+y[1]+'</button>').join("")+'<button class="btn up" data-a="up">↑ Menu</button></div>';
+}
+const _ot=openTab;openTab=function(t){TAB=t;drawNav();_ot(t);};
+function accInit(){
+ const cs=[...document.querySelectorAll("#aPane form>.card")].filter(c=>c.firstElementChild&&c.firstElementChild.tagName==="H3");
+ if(cs.length<3)return;
+ cs.forEach((c,i)=>{if(c.classList.contains("acc"))return;c.classList.add("acc");if(i)c.classList.add("shut");const h=c.firstElementChild;h.setAttribute("role","button");h.tabIndex=0;});
+}
+document.addEventListener("click",e=>{const h=e.target.closest("#aPane .acc>h3");if(h)h.parentElement.classList.toggle("shut");if(e.target.closest("[data-a=up]"))$("agrp").scrollIntoView({behavior:"smooth",block:"start"});});
+document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches("#aPane .acc>h3")){e.preventDefault();e.target.click();}});
+document.addEventListener("invalid",e=>{const c=e.target.closest&&e.target.closest(".acc");if(c)c.classList.remove("shut");},true);
 /* ===== Phase 4 : fiches boutiques ===== */
 const DAYS=["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
 const LK={website:"Site Internet",instagram:"Instagram",facebook:"Facebook",tiktok:"TikTok",snapchat:"Snapchat",telegram:"Telegram",whatsapp:"WhatsApp",youtube:"YouTube",phone:"Téléphone",other:"Lien"};
@@ -675,8 +704,8 @@ async function audit(action,entity,id,detail){try{await sb.from("audit_logs").in
 function refreshPublic(){init();}
 async function autoAdmin(){if(!sb)return;const {data}=await sb.auth.getSession();if(!data.session)return;const {data:ok}=await sb.rpc("is_admin");if(ok)showAdmin();}
 function showAdmin(){ADMON=true;
- const T=[["dash","Tableau de bord"],["biz","Boutiques clients"],["bots","Bots"],["ads","Publicités"],["promo","Mises en avant"],["qual","Qualité des fiches"],["log","Journal"],["exp","Export"],["sec","Accueil"],["site","Site & identité"],["txt","Textes & pages"],["part","Page partenaire"],["cat","Catégories"],["med","Médias"]];
- $("adminBox").innerHTML='<div class="tabs">'+T.map(t=>'<button class="btn tb" data-tab="'+t[0]+'">'+t[1]+'</button>').join("")+'<button class="btn" data-a="push">🔔 Activer les alertes</button><button class="btn" data-a="out">Déconnexion</button></div><p class="msg" id="aNote" role="status"></p><div id="aPane"></div>';
+ $("adminBox").innerHTML='<nav class="agrp" id="agrp" aria-label="Catégories de l’admin"></nav><div class="asub" id="asub"></div><p class="msg" id="aNote" role="status"></p><div id="aPane"></div>';
+ new MutationObserver(accInit).observe($("aPane"),{childList:true});
  openTab(TAB);
 }
 function openTab(t){TAB=t;document.querySelectorAll(".tb").forEach(b=>b.classList.toggle("p",b.dataset.tab===t));note("");({qual:tQual,log:tLog,exp:tExp,dash:tDash,biz:tBiz,sec:tSec,site:tSite,cat:tCat,med:tMed,ads:tAds,promo:tPromo,txt:tTxt,part:tPart,bots:tBots})[t]().catch(e=>note(e.message||"Erreur",1));}
