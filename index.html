@@ -99,7 +99,7 @@ a.shop .ph0{display:grid;place-items:center;font:700 3rem var(--fh);color:rgba(2
 .pf{max-width:820px}.pf .card{margin-bottom:14px}.pf h3{margin-bottom:12px}
 .tip{position:absolute;z-index:6;pointer-events:none;padding:8px 12px;border-radius:12px;background:rgba(var(--ink),.94);border:1px solid var(--line);font-size:.9rem;white-space:nowrap;opacity:0;transform:translate(-50%,-135%);transition:opacity var(--d1) var(--ease)}.tip.on{opacity:1}.tip b{display:block}.tip span{color:var(--c1t)}
 .leg{display:flex;align-items:center;gap:10px;padding:10px 12px 2px;row-gap:6px;flex-wrap:wrap;color:var(--mut);font-size:.82rem}.leg u{flex:0 0 100px;height:8px;border-radius:9px;background:linear-gradient(90deg,color-mix(in srgb,var(--c1) 10%,var(--surface-1)),var(--c1))}.leg .pl{color:var(--c1t);margin-left:auto;flex:1 1 100%}
-#map .pin{fill:var(--c1);stroke:#04101c;stroke-width:1px;vector-effect:non-scaling-stroke;pointer-events:none}
+
 #map .lb .z{fill:var(--mut);font-weight:500}#map .lb .c{fill:var(--c1t);font-weight:700}
 .tabs{display:flex;gap:8px;overflow-x:auto;position:sticky;top:64px;z-index:10;background:rgba(var(--ink),.94);padding:10px 0;margin-bottom:6px}
 
@@ -121,18 +121,18 @@ a.shop,a.vit,.tlt,.sc,.card.lift{transition:transform var(--d2) var(--ease)}
 .hl::after,a.vit.v4::after{content:"";position:absolute;inset:2px;border-radius:calc(var(--r) - 2px);background:var(--surface-2);z-index:-1}
 @keyframes hlr{to{transform:rotate(200deg)}}
 .mapcard{padding:10px;overflow:hidden;background:radial-gradient(120% 90% at 50% 0%,color-mix(in srgb,var(--c3) 22%,transparent),transparent 70%),linear-gradient(rgba(var(--tint),.05) 1px,transparent 1px) 0 0/34px 34px,linear-gradient(90deg,rgba(var(--tint),.05) 1px,transparent 1px) 0 0/34px 34px,var(--surface-1)}
-#map .ring{fill:none;stroke:var(--c1);stroke-width:1.5px;vector-effect:non-scaling-stroke;pointer-events:none;transform-box:fill-box;transform-origin:center;animation:ring 2.4s ease-in-out infinite}@keyframes ring{from{transform:scale(1);opacity:.9}to{transform:scale(4);opacity:0}}
+@keyframes ring{from{transform:scale(1);opacity:.9}to{transform:scale(4);opacity:0}}
 
 /* ===== Carte de France : un seul bloc ===== */
-#map{width:100%;height:min(78vh,820px);display:block;position:relative;touch-action:none;cursor:grab}
+#map{width:100%;height:min(78vh,820px);display:block;position:relative;touch-action:pan-y;cursor:grab}
 .mapsh{position:absolute;left:8%;right:8%;bottom:5%;height:14%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.4),transparent);pointer-events:none}
 #map .rg,#map .dp{fill-rule:evenodd;stroke-linejoin:round;vector-effect:non-scaling-stroke;cursor:pointer;outline:none;transform-box:fill-box;transform-origin:center;stroke:rgba(var(--mapl),.8);animation:pop var(--d3) var(--ease) backwards;animation-delay:calc(var(--k)*30ms);transition:opacity var(--d2) var(--ease)}
-#map .rg{fill:color-mix(in srgb,var(--c1) calc(10% + var(--i)*40%),var(--surface-1));stroke-width:1px}
-#map .dp{fill:color-mix(in srgb,var(--c3) calc(14% + var(--i)*45%),var(--surface-1));stroke-width:.8px}
+#map .rg{fill:color-mix(in srgb,var(--c1) calc(8% + var(--i)*72%),var(--surface-1));stroke-width:1px}
+#map .dp{fill:color-mix(in srgb,var(--c3) calc(8% + var(--i)*72%),var(--surface-1));stroke-width:.8px}
 #map .rg:hover,#map .rg:focus-visible,#map .dp:hover,#map .dp:focus-visible{fill:color-mix(in srgb,var(--c2) 55%,var(--surface-1));stroke:var(--c1);stroke-width:2px}
 #map .rg.dim{opacity:.4}
-#map .rg.sel{opacity:.6;pointer-events:none;fill:color-mix(in srgb,var(--fr-bleu) 65%,var(--surface-1));stroke:var(--fr-blanc);stroke-width:2px;stroke-dasharray:7 5}
-#map .dp.on{fill:color-mix(in srgb,var(--c1) 55%,var(--surface-1));stroke:var(--tx);stroke-dasharray:7 5}
+#map .rg.sel{opacity:.6;pointer-events:none;fill:color-mix(in srgb,var(--fr-bleu) 65%,var(--surface-1));stroke:none}
+#map .dp.on{fill:color-mix(in srgb,var(--c1) 55%,var(--surface-1));stroke:none}
 #map .ex{fill:var(--map-ex);stroke:var(--map-ex);stroke-width:4px;fill-rule:evenodd;stroke-linejoin:round;vector-effect:non-scaling-stroke;pointer-events:none;transform:translate(calc(var(--ex)*.4px),calc(var(--ex)*1.6px));animation:exin var(--d3) var(--ease) backwards;animation-delay:calc(var(--k)*30ms)}
 @keyframes pop{from{opacity:0;transform:scale(calc(1 - .06*var(--m)))}}@keyframes exin{from{opacity:0}}
 /* ===== Images boutiques ===== */
@@ -265,7 +265,7 @@ body:has(#dot.ko) .sk{display:none}
 html[data-anim=reduced],html[data-anim=none]{--m:0;scroll-behavior:auto}
 html[data-anim=none] *,html[data-anim=none] ::before,html[data-anim=none] ::after{animation:none!important;transition:none!important}
 html[data-anim=reduced] :is(.hlogo,.hmark,.wm){animation:lin var(--d4) var(--ease) both}
-html[data-anim=reduced] :is(.dr,.ring,.cb2),html[data-anim=reduced] body::before,html[data-anim=reduced] .hl::before,html[data-anim=reduced] a.vit.v4::before{animation:none}
+html[data-anim=reduced] :is(.dr,.cb2,.xh,.op,.tri),html[data-anim=reduced] body::before,html[data-anim=reduced] .hl::before,html[data-anim=reduced] a.vit.v4::before{animation:none}
 html[data-anim=reduced] .btn.p::after,html[data-anim=none] .btn.p::after{display:none}
 html[data-paused] *,html[data-paused] ::before,html[data-paused] ::after,.fx-off,.fx-off *,.fx-off ::before,.fx-off ::after{animation-play-state:paused!important}
 html[data-paused] body::before{animation-play-state:paused}
@@ -455,6 +455,40 @@ html[data-anim=reduced] .isteps li,html[data-anim=reduced] .isteps .ic::after{an
  #toasts{bottom:calc(76px + env(safe-area-inset-bottom))}
  .hero .hmap{width:min(100%,360px)}
 }
+/* ===== Carte de France : filtres, légende, repères, états des pins ===== */
+.mbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 12px}
+.mbar .chip[aria-pressed=true]{background:linear-gradient(120deg,var(--c1),var(--c2));color:#04101c;border-color:transparent;font-weight:700}
+.mbar select{min-height:44px;max-width:100%;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:rgba(var(--ink),.7);color:var(--tx);font:1rem var(--fb)}
+.mz{display:inline-flex;gap:8px}.mz[hidden]{display:none}.mz input{min-height:44px;width:min(220px,60vw)}
+.mcount{flex:1 1 100%;margin:0;min-height:1.4em;color:var(--mut);font-size:.9rem}
+#mapLeg u{flex:0 0 120px;background:linear-gradient(90deg,color-mix(in srgb,var(--c1) 8%,var(--surface-1)),color-mix(in srgb,var(--c1) 80%,var(--surface-1)))}
+#mapLeg.d u{background:linear-gradient(90deg,color-mix(in srgb,var(--c3) 8%,var(--surface-1)),color-mix(in srgb,var(--c3) 80%,var(--surface-1)))}
+#mapLeg .lo i{display:inline-block;width:10px;height:10px;margin-right:6px;border-radius:50%;background:#34d399}#mapLeg .lo i.ox{background:none;border:2px solid var(--c2)}
+#map:focus-visible{outline-offset:-4px}
+#map .mk{transition:opacity var(--d2) var(--ease)}#map .mk.dm{opacity:.2}
+#map .tri{pointer-events:none;animation:tri 2.4s ease-in-out infinite alternate}
+#map .tri path{fill:none;stroke-width:3px;vector-effect:non-scaling-stroke;stroke-dasharray:9 18;stroke-linejoin:round}
+#map .tri .t1{stroke:var(--fr-bleu)}#map .tri .t2{stroke:var(--fr-blanc);stroke-dashoffset:-9}#map .tri .t3{stroke:var(--fr-rouge);stroke-dashoffset:-18}
+html[data-theme=light] #map .tri .t2{stroke:#7f93c4}
+@keyframes tri{from{opacity:.55}to{opacity:1}}
+#map .sp.cl{opacity:.55;fill:color-mix(in srgb,var(--c1) 35%,var(--mut))}#map .sp.f.cl{fill:color-mix(in srgb,var(--c2) 35%,var(--mut))}
+#map .og{fill:#34d399;stroke:#fff;stroke-width:1.5px}
+#map .op{fill:#34d399;opacity:0;transform-box:fill-box;transform-origin:center}
+#map .op.pu{animation:opp 2.4s ease-in-out infinite}@keyframes opp{from{transform:scale(1);opacity:.7}to{transform:scale(2.8);opacity:0}}
+#map .xh{fill:none;stroke:var(--c2);stroke-width:3px;transform-box:fill-box;transform-origin:center;animation:xh 3.6s ease-in-out infinite alternate}@keyframes xh{from{transform:scale(.92);opacity:.15}to{transform:scale(1.25);opacity:.65}}
+#fxg{pointer-events:none}
+#map .rp{fill:none;stroke:var(--c1);stroke-width:3px;transform-box:fill-box;transform-origin:center;animation:rpp var(--d4) var(--ease) forwards}@keyframes rpp{from{transform:scale(.7);opacity:.85}to{transform:scale(3);opacity:0}}
+#map .bo{transform-box:fill-box}
+#map .mk.bn .bo{animation:bnc var(--d4) var(--ease)}@keyframes bnc{30%{transform:translateY(calc(-18px*var(--m)))}55%{transform:translateY(0)}75%{transform:translateY(calc(-7px*var(--m)))}}
+#map.cas .mi{animation-name:mdrop}@keyframes mdrop{from{transform:translateY(calc(-28px*var(--m)));opacity:0}}
+#map.dbg *{animation:none!important;transition:none!important}
+.mapcard .fsb{position:absolute;right:14px;bottom:14px;z-index:5;min-height:44px;padding:0 16px}
+.mini{position:absolute;left:14px;bottom:14px;z-index:5;width:clamp(84px,24%,132px);padding:6px;border-radius:12px;background:rgba(var(--ink),.88);border:1px solid var(--line);cursor:pointer}.mini[hidden]{display:none}
+.mini svg{display:block;width:100%;height:auto}.mini path{fill:color-mix(in srgb,var(--c1) 22%,var(--surface-1));stroke:rgba(var(--mapl),.55);stroke-width:.6px;vector-effect:non-scaling-stroke}.mini .mv{fill:rgba(var(--tint),.15);stroke:var(--fr-rouge);stroke-width:1.5px;vector-effect:non-scaling-stroke}
+.mapcard.fs{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;border-radius:0;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.mapcard.fs #map{height:auto;flex:1;min-height:0;touch-action:none}
+html.mfs{overflow:hidden}
+a.shop.glow::after{content:"";position:absolute;inset:-2px;border-radius:inherit;pointer-events:none;box-shadow:0 0 0 2px var(--c1),0 0 26px var(--c1);animation:glw 1.5s ease-in-out both}@keyframes glw{0%,100%{opacity:0}25%,65%{opacity:1}}
 </style>
 </head>
 <body>
@@ -486,7 +520,7 @@ html[data-anim=reduced] .isteps li,html[data-anim=reduced] .isteps .ic::after{an
 </div>
 <div class="wrap about" data-reveal="up"><div class="card"><h2>À quoi sert Plug 2 France ?</h2><p>Plug 2 France est l’annuaire national des boutiques CBD physiques. Notre but : vous permettre de trouver en quelques secondes une boutique près de chez vous, par région, département ou ville, avec toutes les infos utiles : photos, horaires, produits, zones de livraison et contacts directs.</p><div class="grid" data-reveal="stagger"><div class="card tlt"><h3>Pour les clients</h3><p class="meta">Repérez les boutiques sur la carte, contactez-les ou lancez l’itinéraire en un clic.</p></div><div class="card tlt"><h3>Pour les boutiques</h3><p class="meta">Créez votre fiche avec un abonnement : elle est préparée automatiquement dès le paiement, puis vérifiée par notre équipe avant publication.</p></div><div class="card tlt"><h3>Des fiches contrôlées</h3><p class="meta">Chaque boutique est validée avant d’apparaître : uniquement des commerces physiques spécialisés CBD.</p></div></div><a class="btn p" href="#/partenaire">Référencer ma boutique</a></div></div>
 <div class="wrap" id="sections"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div></section>
-<section class="view" id="v-carte"><div class="wrap page"><h2 data-set="map_title">Carte de France</h2><p class="meta" data-set="map_intro" style="max-width:60ch;margin-bottom:12px">Touchez une région pour voir ses départements, puis ses boutiques.</p><div id="zoneMode"><div class="head" id="crumb"></div><div class="card mapcard" data-loop><div class="mapsh" aria-hidden="true"></div><p class="msg" id="mapMsg">Chargement de la carte…</p><svg id="map" role="group" aria-label="Carte interactive de la France : régions puis départements"></svg><div class="zoom" id="zoomBox"><button class="btn" data-z="1.4" aria-label="Zoom avant">+</button><button class="btn" data-z="0.7" aria-label="Zoom arrière">−</button><button class="btn" data-z="0" aria-label="Recentrer">⟲</button><button class="btn" data-z="loc" aria-label="Ma position">◎</button></div><div class="tip" id="tip"></div><div class="zh" id="zhint" role="status"></div><div class="leg"><span>Peu de boutiques</span><u></u><span>Beaucoup</span><span class="pl">◉ Groupe · 📍 Boutique · ★ Mise en avant</span></div></div><h3 class="sub" id="zTitle"></h3><div id="zoneList"></div><div id="mapShops"></div></div></div></section>
+<section class="view" id="v-carte"><div class="wrap page"><h2 data-set="map_title">Carte de France</h2><p class="meta" data-set="map_intro" style="max-width:60ch;margin-bottom:12px">Touchez une région pour voir ses départements, puis ses boutiques.</p><div id="zoneMode"><div class="head" id="crumb"></div><div class="mbar" id="mapBar" role="group" aria-label="Filtres de la carte"><button class="btn chip" type="button" data-mf="open" aria-pressed="false" data-hx="mf_open"></button><button class="btn chip" type="button" id="mfDel" data-mf="deliver" aria-pressed="false" aria-expanded="false" data-hx="mf_deliver"></button><span class="mz" id="mfZ" hidden><input id="mfZip" type="text" maxlength="60" autocomplete="off"><button class="btn chip" type="button" data-mf="zipok" data-hx="mf_ok"></button></span><select id="mfCat"></select><button class="btn chip" type="button" data-mf="part" aria-pressed="false" data-hx="mf_part"></button><p class="mcount" id="mapCount" role="status" aria-live="polite"></p></div><div class="card mapcard" id="mapCard" data-loop><div class="mapsh" aria-hidden="true"></div><p class="msg" id="mapMsg">Chargement de la carte…</p><svg id="map" role="group" tabindex="0" aria-label="Carte interactive de la France : régions puis départements"></svg><div class="zoom" id="zoomBox"><button class="btn" data-z="1.4" aria-label="Zoom avant">+</button><button class="btn" data-z="0.7" aria-label="Zoom arrière">−</button><button class="btn" data-z="0" aria-label="Recentrer">⟲</button><button class="btn" data-z="loc" aria-label="Ma position">◎</button></div><div class="mini" id="mini" hidden></div><button class="btn fsb" id="fsBtn" type="button" aria-pressed="false"></button><div class="tip" id="tip"></div><div class="zh" id="zhint" role="status"></div><div class="leg" id="mapLeg"></div></div><h3 class="sub" id="zTitle"></h3><div id="zoneList"></div><div id="mapShops"></div></div></div></section>
 <section class="view" id="v-boutiques"><div class="wrap page"><h2 data-set="list_title">Boutiques CBD</h2><div class="fbar" id="fbar"></div><div class="head" id="listHead"></div><div id="list"></div></div></section>
 <section class="view" id="v-partenaire"><div class="wrap page"><h2 data-set="partner_title">Devenir partenaire</h2>
 <div class="grid pf" id="pTiles" data-reveal="stagger" style="margin-bottom:14px"><div class="card tlt"><h3 data-set="partner_t1_title">Visible sur la carte</h3><p class="meta" data-set="partner_t1_text">Votre boutique apparaît par région, département et ville.</p></div><div class="card tlt"><h3 data-set="partner_t2_title">Mise à la une</h3><p class="meta" data-set="partner_t2_text">Passez devant les autres sur l’accueil et les listes.</p></div><div class="card tlt"><h3 data-set="partner_t3_title">Fiche complète</h3><p class="meta" data-set="partner_t3_text">Photos, horaires, zones de livraison et liens directs.</p></div></div>
@@ -814,47 +848,112 @@ async function loadMap(){
   if(!GEO.reg.length)throw 0;
   const u=GEO.reg.map(x=>x.B),x0=Math.min(...u.map(b=>b[0]))-10,y0=Math.min(...u.map(b=>b[1]))-10;
   VB0=[x0,y0,Math.max(...u.map(b=>b[2]))+10-x0,Math.max(...u.map(b=>b[3]))+10-y0];VB=VB0.slice();
-  m.style.display="none";drawMap();setVB();
+  m.style.display="none";drawMap();setVB();if(DBG)setTimeout(mapTest,900);
  }catch(e){GEOP=null;m.className="msg err";m.textContent="Carte indisponible (données géographiques non chargées). Utilisez la liste ci-dessous.";}
  renderZone();
 }
-var K=1,LBL=[],lbRaf=0,TW=0,SHT=0;
+var K=1,LBL=[],TW=0,LT=0,LL=0,MW=new Map(),CX=null,CAS=0,LG=[0,0],MN=0,MZ=null,BH=null,MF={open:0,zip:"",zo:0,cat:"",part:0};
+const DBG=new URLSearchParams(location.search).has("debug");
+/* Mesure réelle du texte (canvas, mise en cache) : sert à tous les calques d’étiquettes */
+const mw=(t,w,s)=>{const k=w+s+t;let v=MW.get(k);if(v==null){CX=CX||document.createElement("canvas").getContext("2d");CX.font=w+" "+s+"px Inter,system-ui,sans-serif";v=CX.measureText(t).width;MW.set(k,v);}return v;};
+const ov=(a,b)=>a[0]<b[0]+b[2]&&a[0]+a[2]>b[0]&&a[1]<b[1]+b[3]&&a[1]+a[3]>b[1];
+const hit=(a,l)=>l.some(u=>ov(a,u));
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{MW.clear();sched();});
 function lbl(x,y,t,c,z){return '<text'+(z?' class="z"':'')+' x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'">'+esc(t)+(c?'<tspan x="'+x.toFixed(1)+'" dy="1.2em" class="n">'+c+'</tspan>':'')+'</text>';}
 function drawMap(){
  if(!GEO)return;
- const cr=count("region_code"),cd=count("department_code"),mr=Math.max(1,...Object.values(cr)),md=Math.max(1,...Object.values(cd));
- let h=GEO.reg.map((x,j)=>'<path class="ex" style="--k:'+j+'" d="'+x.d+'"/>').join("")+(sel.region?GEO.dep.filter(x=>(DEPS.find(d=>d.code===x.code)||{}).region_code===sel.region).map((x,j)=>'<path class="ex" style="--k:'+j+'" d="'+x.d+'"/>').join(""):"");LBL=[];
+ const cr=count("region_code"),cd=count("department_code"),ds=sel.region?GEO.dep.filter(x=>(DEPS.find(d=>d.code===x.code)||{}).region_code===sel.region):[],
+  v=sel.region?ds.map(x=>cd[x.code]||0):GEO.reg.map(x=>cr[x.code]||0),mn=v.length?Math.min(...v):0,mx=v.length?Math.max(...v):0,ti=n=>mx>mn?Math.sqrt((n-mn)/(mx-mn)).toFixed(2):(mx?1:0),ex=(x,j)=>'<path class="ex" style="--k:'+j+'" d="'+x.d+'"/>';
+ let h=GEO.reg.map(ex).join("")+ds.map(ex).join("");LBL=[];LG=[mn,mx];
  GEO.reg.forEach((x,j)=>{const on=sel.region===x.code,n=cr[x.code]||0;
-  h+='<path class="rg'+(sel.region?(on?' sel':' dim'):'')+'" style="--i:'+(n/mr).toFixed(2)+';--k:'+j+'" data-r="'+x.code+'" data-n="'+esc(x.name)+'" data-c="'+n+'" d="'+x.d+'"'+(sel.region&&on?'':' tabindex="0" role="button" aria-label="'+esc(x.name)+', '+n+' boutique(s)"')+'/>';
+  h+='<path class="rg'+(sel.region?(on?' sel':' dim'):'')+'" style="--i:'+ti(n)+';--k:'+j+'" data-r="'+x.code+'" data-n="'+esc(x.name)+'" data-c="'+n+'" d="'+x.d+'"'+(sel.region&&on?'':' tabindex="0" role="button" aria-label="'+esc(x.name)+', '+n+' boutique(s)"')+'/>';
   if(!sel.region)LBL.push({x:x.L[0],y:x.L[1],t:x.name,n,w:x.W});});
- if(sel.region)GEO.dep.filter(x=>(DEPS.find(d=>d.code===x.code)||{}).region_code===sel.region).forEach((x,j)=>{const n=cd[x.code]||0;
-  h+='<path class="dp'+(sel.dept===x.code?' on':'')+'" style="--i:'+(n/md).toFixed(2)+';--k:'+j+'" data-d="'+x.code+'" data-n="'+esc(x.name)+'" data-c="'+n+'" d="'+x.d+'" tabindex="0" role="button" aria-label="'+esc(x.name)+', '+n+' boutique(s)"/>';
-  LBL.push({x:x.L[0],y:x.L[1],t:x.code,n,w:x.W});});
- $("map").innerHTML=h+'<g class="lb" id="lbg"></g><g id="shg"></g>';setVB();
+ ds.forEach((x,j)=>{const n=cd[x.code]||0;
+  h+='<path class="dp'+(sel.dept===x.code?' on':'')+'" style="--i:'+ti(n)+';--k:'+j+'" data-d="'+x.code+'" data-n="'+esc(x.name)+'" data-c="'+n+'" d="'+x.d+'" tabindex="0" role="button" aria-label="'+esc(x.name)+', '+n+' boutique(s)"/>';
+  LBL.push({x:x.L[0],y:x.L[1],t:x.name,n,w:x.W});});
+ const o=sel.dept?GEO.dep.find(x=>x.code===sel.dept):sel.region?GEO.reg.find(x=>x.code===sel.region):null;
+ if(o)h+='<g class="tri" aria-hidden="true"><path class="t1" d="'+o.d+'"/><path class="t2" d="'+o.d+'"/><path class="t3" d="'+o.d+'"/></g>';
+ $("map").innerHTML=h+'<g class="lb" id="lbg"></g><g id="shg"></g><g id="fxg"></g>';legend();setVB();
 }
-function placeLabels(){
- const g=$("lbg"),s=$("map");if(!g)return;
- const W=s.clientWidth,H=s.clientHeight,ox=(W-VB[2]*K)/2,oy=(H-VB[3]*K)/2,fs=11,used=[];let h="";
- const hit=a=>used.some(u=>a[0]<u[0]+u[2]&&a[0]+a[2]>u[0]&&a[1]<u[1]+u[3]&&a[1]+a[3]>u[1]);
+/* Légende : vraies valeurs minimale et maximale du niveau affiché (régions, puis départements) */
+function legend(){const l=$("mapLeg");if(!l)return;l.classList.toggle("d",!!sel.region);
+ l.innerHTML=DATA.length?'<span>'+LG[0]+'</span><u></u><span>'+LG[1]+'</span><span>'+esc(T("mf_leg_unit"))+'</span><span class="lo"><i></i>'+esc(T("mf_leg_open"))+'</span><span class="lo"><i class="ox"></i>'+esc(T("mf_leg_ex"))+'</span><span class="pl">'+esc(T("mf_leg_pins"))+'</span>':'<span>'+esc(T("mf_leg_none"))+'</span>';}
+const hk=s=>{let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return(h>>>0).toString(36);};
+/* Moteur de placement unique : une seule liste de rectangles occupés (écran, en px) pour tous les calques.
+   Priorité : fiche ouverte > regroupements et pins > noms de villes > régions (plus de boutiques d’abord) > départements > autres fiches. */
+function layout(force){
+ const g=$("lbg"),sg=$("shg"),sv=$("map");if(!g||!sg||!GEO)return;
+ const W=sv.clientWidth,H=sv.clientHeight;if(!W)return;
+ const ox=(W-VB[2]*K)/2,oy=(H-VB[3]*K)/2,zf=VB0[2]/VB[2],S=(x,y)=>[(x-VB[0])*K+ox,(y-VB[1])*K+oy],hz=$("zhint"),occ=[],idle=zf<2.2&&!sel.region,tn=nowFR().t;
+ if(!ZL)loadZones();geoFix();
+ const R=n=>n<10?17:n<50?21:26,stt=b=>HRS&&HRS[b.id]?isOpen(HRS[b.id],tn):null,
+  gm=o=>{const n=o.a.length;o.n=n;o.x=o.a.reduce((t,p)=>t+p.x,0)/n;o.y=o.a.reduce((t,p)=>t+p.y,0)/n;const s=S(o.x,o.y),r=R(n);o.sx=s[0];o.sy=s[1];o.r=n>1?[o.sx-r,o.sy-r,2*r,2*r]:[o.sx-13,o.sy-36,26,36];},cardR=o=>[o.sx-120,o.sy-140,240,96];
+ let G=[],P=[];
+ if(!idle){
+  DATA.forEach(b=>{const q=pos(b);if(!q||(sel.region&&b.region_code!==sel.region)||(sel.dept&&b.department_code!==sel.dept))return;const s=S(q[0],q[1]);if(s[0]>-50&&s[1]>-50&&s[0]<W+50&&s[1]<H+50)P.push({b,x:q[0],y:q[1]});});
+  P.sort((a,b)=>(b.b.id===SELB)-(a.b.id===SELB)||tierOf(b.b)-tierOf(a.b)||(+!!b.b.featured)-(+!!a.b.featured));
+  const cell=zf<2.2?0:zf<5?86:zf<8?56:0,C=new Map();
+  P.forEach(p=>{const s=S(p.x,p.y),k=cell?Math.round(s[0]/cell)+"_"+Math.round(s[1]/cell):p.b.id;(C.get(k)||C.set(k,[]).get(k)).push(p);});
+  G=[...C.values()].map(a=>({a}));G.forEach(gm);
+  /* deux repères qui se touchent fusionnent en un regroupement : aucune boutique n’est perdue */
+  for(let pass=0,ch=1;ch&&pass<8;pass++){ch=0;for(let i=0;i<G.length;i++)for(let j=i+1;j<G.length;j++)if(ov(G[i].r,G[j].r)){G[i].a=G[i].a.concat(G[j].a);gm(G[i]);G.splice(j,1);j--;ch=1;}}
+ }
+ const so=G.find(o=>o.n===1&&o.a[0].b.id===SELB);
+ if(so){so.k=1;occ.push(cardR(so));}
+ G=G.filter(o=>o===so||!so||!ov(o.r,occ[0]));
+ G.forEach(o=>{occ.push(o.r);o.k=o.k||0;});
+ G.forEach(o=>{if(o.n>1){const cs=[...new Set(o.a.map(p=>p.b.city).filter(Boolean))];o.cs=cs;if(cs.length===1&&zf>=3){const w=mw(cs[0],600,12)+8,rr=[o.sx-w/2,o.sy+R(o.n)+2,w,17];if(!hit(rr,occ)){occ.push(rr);o.lb=1;}}}});
+ /* noms de régions / départements : nom + compteur, sinon compteur seul, sinon rien (nom au survol ou au toucher) */
+ const fs=11,lh=[];
  LBL.slice().sort((a,b)=>b.n-a.n||b.w-a.w).forEach(l=>{
-  const sx=(l.x-VB[0])*K+ox,sy=(l.y-VB[1])*K+oy;if(sx<0||sy<0||sx>W||sy>H)return;
-  const tw=l.t.length*fs*.6+10,aw=l.w*K*.85,two=[sx-tw/2,sy-fs*1.3,tw,fs*(l.n?2.8:1.8)],cw=[sx-13,sy-fs,26,fs*1.8];
-  if(tw<=aw&&!hit(two)){used.push(two);h+=lbl(l.x,l.y,l.t,l.n,!l.n);}
-  else if(l.n&&aw>=18&&!hit(cw)){used.push(cw);h+='<text class="c" x="'+l.x.toFixed(1)+'" y="'+(l.y+fs*.35/K).toFixed(1)+'">'+l.n+'</text>';}
+  const s=S(l.x,l.y);if(s[0]<0||s[1]<0||s[0]>W||s[1]>H)return;
+  const aw=l.w*K*.9,tw=mw(l.t,600,fs)+8,cw=l.n?mw(String(l.n),700,fs)+8:0,bw=Math.max(tw,cw),two=[s[0]-bw/2,s[1]-fs*1.05,bw,l.n?fs*2.5:fs*1.4],one=[s[0]-cw/2,s[1]-fs*.7,cw,fs*1.4];
+  if(tw<=aw&&!hit(two,occ)){occ.push(two);lh.push(lbl(l.x,l.y,l.t,l.n,!l.n));}
+  else if(l.n&&cw<=aw&&!hit(one,occ)){occ.push(one);lh.push('<text class="c" x="'+l.x.toFixed(1)+'" y="'+(l.y+fs*.35/K).toFixed(1)+'">'+l.n+'</text>');}
  });
- g.innerHTML=h;
+ g.innerHTML=lh.join("");
+ const CD=zf>=8||!!sel.dept||(!!sel.region&&P.length<=6);
+ G.forEach(o=>{if(o.n===1&&!o.k&&CD){const c=cardR(o);if(!hit(c,occ)){occ.push(c);o.k=1;}}});
+ const mon=!!(MF.open||MF.zip||MF.cat||MF.part),txt=idle?"Zoomez ou touchez une région : les boutiques apparaissent":P.length+" boutique(s) dans la vue";
+ if(hz.textContent!==txt){hz.textContent=txt;hz.classList.add("on");clearTimeout(hz._t);hz._t=setTimeout(()=>hz.classList.remove("on"),3800);}
+ let np=0;
+ G.forEach(o=>{o.dm=mon&&!o.a.some(p=>mfOk(p.b));if(o.n>1)o.sg="c"+o.n+":"+hk(o.a.map(p=>p.b.id).sort().join());
+  else{const b=o.a[0].b;o.st=stt(b);o.pu=o.st===true&&np++<14;o.tx=tierOf(b)>=4;o.sg="s"+b.id+(o.k?"k":"")+(o.st===true?"o":o.st===false?"c":"")+(o.pu?"p":"")+(o.tx?"x":"");}});
+ if(force){[...sg.children].forEach(e=>e.remove());}
+ const have=new Map([...sg.children].filter(e=>!e.classList.contains("gone")).map(e=>[e.dataset.sg,e])),keep=new Set(),base=Math.max(0,CAS-performance.now());let h="",i=0;
+ G.sort((a,b)=>a.k-b.k).forEach(o=>{keep.add(o.sg);const e=have.get(o.sg);if(e){e.classList.toggle("dm",!!o.dm);return;}
+  const at='class="mk'+(o.dm?' dm':'')+'" data-sg="'+o.sg+'" data-x="'+o.x.toFixed(1)+'" data-y="'+o.y.toFixed(1)+'" transform="translate('+o.x.toFixed(1)+' '+o.y.toFixed(1)+') scale('+(1/K).toFixed(4)+')" tabindex="0" style="--d:'+(base+Math.min(i++*30,900))+'ms"';
+  if(o.n>1){const r=R(o.n),a=o.a,bb=[Math.min(...a.map(p=>p.x)),Math.min(...a.map(p=>p.y)),Math.max(...a.map(p=>p.x)),Math.max(...a.map(p=>p.y))],cs=o.cs||[],nm=o.a.filter(p=>mfOk(p.b)).length;
+   h+='<g '+at+' data-bb="'+bb.map(v=>v.toFixed(1))+'" data-n="'+esc(cs.slice(0,3).join(", ")||o.n+" boutiques")+'" data-s="'+(mon?nm+" sur "+o.n+" correspondent":o.n+" boutiques")+' · cliquez pour zoomer" role="button" aria-label="'+o.n+' boutiques, zoomer"><g class="bo"><g class="mi"><circle class="cb2" r="'+r+'"/><circle class="cb" r="'+r+'"/><text class="ct">'+o.n+'</text></g></g>'+(o.lb?'<text class="sl" y="'+(r+15)+'" text-anchor="middle">'+esc(cs[0])+'</text>':'')+'</g>';}
+  else{const b=o.a[0].b,f=b.featured?" f":"",id=esc(b.id),kd=o.k,sd=cut1((b.short_description||"").replace(/\s+/g," ").trim(),28),dv=dlv(b);
+   h+='<g '+at+' data-h="'+esc(hrefB(b))+'" data-n="'+esc(b.name)+'" data-s="'+esc(b.city||"")+'" data-id="'+id+'" role="link" aria-label="'+esc(b.name)+'"><g class="bo"><g class="mi">'+(kd?"":o.tx?'<circle class="xh" cy="-23" r="19"/>':b.featured?'<circle class="cb2" cy="-22" r="11"/>':'')
+   +(kd?'<rect class="kc'+f+'" x="-120" y="-140" width="240" height="96" rx="16"/><circle class="kl" cx="-84" cy="-106" r="23"/>'
+    +(safe(b.logo_url)?'<clipPath id="lc'+id+'"><circle cx="-84" cy="-106" r="22"/></clipPath><image href="'+esc(b.logo_url)+'" x="-106" y="-128" width="44" height="44" clip-path="url(#lc'+id+')" preserveAspectRatio="xMidYMid slice"/>':'<text class="kt" x="-84" y="-106">'+esc((b.name||"?")[0].toUpperCase())+'</text>')
+    +'<text class="kn" x="-52" y="-117">'+esc(cut1(b.name||"",19))+'</text><text class="ki" x="-52" y="-100">'+esc(cut1([catOf(b),b.city].filter(Boolean).join(" · "),28))+'</text>'+(sd?'<text class="ki" x="-52" y="-84">'+esc(sd)+'</text>':'')
+    +'<text class="kd2" x="-106" y="-58">'+esc(cut1(dv?"🚚 Livre : "+dv:"📍 "+loc(b),36))+'</text><text class="kgo" x="104" y="-96">›</text>':'')
+   +'<path class="sp'+f+(o.st===false?' cl':'')+'" d="M0 0C-9-11-13-17-13-23a13 13 0 1 1 26 0C13-17 9-11 0 0Z"/><circle cy="-23" r="4.6" fill="#04101c"/>'
+   +(o.st===true?'<circle class="op'+(o.pu?' pu':'')+'" cx="11" cy="-33" r="5"/><circle class="og" cx="11" cy="-33" r="5"/>':'')+'</g></g></g>';}});
+ have.forEach((e,k)=>{if(!keep.has(k)){e.classList.add("gone");setTimeout(()=>e.remove(),260);}});
+ sg.insertAdjacentHTML("beforeend",h);
 }
-function setVB(){const s=$("map");s.setAttribute("viewBox",VB.map(v=>v.toFixed(1)).join(" "));K=Math.min(s.clientWidth/VB[2],s.clientHeight/VB[3])||1;s.style.setProperty("--fs",(11/K).toFixed(2));s.style.setProperty("--ex",(3.2/K).toFixed(2));s.querySelectorAll(".pin,.ring").forEach(p=>p.setAttribute("r",(4.5/K).toFixed(2)));cancelAnimationFrame(lbRaf);lbRaf=requestAnimationFrame(placeLabels);s.querySelectorAll(".mk").forEach(m=>m.setAttribute("transform","translate("+m.dataset.x+" "+m.dataset.y+") scale("+(1/K).toFixed(4)+")"));clearTimeout(SHT);SHT=setTimeout(shopsLayer,140);}
-(function(){const s=$("map"),tip=$("tip"),mc=s.parentElement;
- s.addEventListener("mousemove",e=>{const t=e.target.closest("[data-n]");if(!t){tip.classList.remove("on");return;}const r=mc.getBoundingClientRect();tip.style.left=(e.clientX-r.left)+"px";tip.style.top=(e.clientY-r.top)+"px";tip.innerHTML="<b>"+esc(t.dataset.n)+"</b><span>"+esc(t.dataset.s||t.dataset.c+" boutique(s)")+"</span>";tip.classList.add("on");});
- s.addEventListener("mouseleave",()=>tip.classList.remove("on"));})();
-function fly(to,dur){const from=VB.slice(),t0=performance.now(),id=++TW;dur=matchMedia("(prefers-reduced-motion:reduce)").matches?0:dur;
- (function f(n){if(id!==TW)return;const k=dur?Math.min(1,(n-t0)/dur):1,e=1-Math.pow(1-k,3);VB=from.map((v,i)=>v+(to[i]-v)*e);setVB();if(k<1)requestAnimationFrame(f);})(t0);
+function sched(){if(LT)return;LT=setTimeout(()=>{LT=0;LL=performance.now();layout();},Math.max(0,90-(performance.now()-LL)));}
+/* Mini-carte de repère (bas à gauche) quand on est zoomé */
+function mini(){const m=$("mini");if(!m||!GEO)return;const z=VB0[2]/VB[2];m.hidden=z<1.3;if(m.hidden)return;
+ if(!MN){MN=1;m.innerHTML='<svg viewBox="'+VB0.map(v=>v.toFixed(1)).join(" ")+'" aria-hidden="true">'+GEO.reg.map(x=>'<path d="'+x.d+'"/>').join("")+'<rect class="mv"/></svg>';}
+ const r=m.querySelector(".mv");["x","y","width","height"].forEach((a,i)=>r.setAttribute(a,VB[i].toFixed(1)));}
+function setVB(){const s=$("map");s.setAttribute("viewBox",VB.map(v=>v.toFixed(1)).join(" "));K=Math.min(s.clientWidth/VB[2],s.clientHeight/VB[3])||1;s.style.setProperty("--fs",(11/K).toFixed(2));s.style.setProperty("--ex",(3.2/K).toFixed(2));s.querySelectorAll(".mk").forEach(m=>m.setAttribute("transform","translate("+m.dataset.x+" "+m.dataset.y+") scale("+(1/K).toFixed(4)+")"));mini();sched();}
+(function(){const s=$("map"),tip=$("tip"),mc=s.parentElement,show=(e,t,ms)=>{const r=mc.getBoundingClientRect();tip.style.left=(e.clientX-r.left)+"px";tip.style.top=(e.clientY-r.top)+"px";tip.innerHTML="<b>"+esc(t.dataset.n)+"</b><span>"+esc(t.dataset.s||t.dataset.c+" boutique(s)")+"</span>";tip.classList.add("on");if(ms){clearTimeout(tip._t);tip._t=setTimeout(()=>tip.classList.remove("on"),ms);}};
+ s.addEventListener("mousemove",e=>{const t=e.target.closest("[data-n]");if(!t){tip.classList.remove("on");return;}show(e,t);});
+ s.addEventListener("mouseleave",()=>tip.classList.remove("on"));
+ s.addEventListener("pointerdown",e=>{if(e.pointerType!=="touch")return;const t=e.target.closest("[data-n]");if(t)show(e,t,1800);});})();
+function fly(to,dur){const from=VB.slice(),t0=performance.now(),id=++TW,m=FX.mode();dur=m==="none"?0:m==="reduced"?Math.min(dur,240):dur;
+ (function f(n){if(id!==TW)return;const k=dur?Math.min(1,(n-t0)/dur):1,e=1-Math.pow(1-k,4);VB=from.map((v,i)=>v+(to[i]-v)*e);setVB();if(k<1)requestAnimationFrame(f);})(t0);
 }
-function fit(b){const p=Math.max(b[2]-b[0],b[3]-b[1])*.08,w=Math.max(b[2]-b[0]+2*p,VB0[2]/90),h=Math.max(b[3]-b[1]+2*p,VB0[3]/90);fly([(b[0]+b[2])/2-w/2,(b[1]+b[3])/2-h/2,w,h],650);}
+function fitBox(b){const p=Math.max(b[2]-b[0],b[3]-b[1])*.08,w=Math.max(b[2]-b[0]+2*p,VB0[2]/90),h=Math.max(b[3]-b[1]+2*p,VB0[3]/90);return[(b[0]+b[2])/2-w/2,(b[1]+b[3])/2-h/2,w,h];}
+function fit(b,d){fly(fitBox(b),d||650);}
 function pick(r,d){
- sel={region:r||"",dept:d||""};drawMap();
- if(GEO){const o=d?GEO.dep.find(x=>x.code===d):r?GEO.reg.find(x=>x.code===r):null;fit(o?o.B:[VB0[0],VB0[1],VB0[0]+VB0[2],VB0[1]+VB0[3]]);}
+ sel={region:r||"",dept:d||""};CAS=performance.now()+800;const m=$("map");drawMap();m.classList.add("cas");clearTimeout(m._c);m._c=setTimeout(()=>m.classList.remove("cas"),1700);
+ if(GEO){const o=d?GEO.dep.find(x=>x.code===d):r?GEO.reg.find(x=>x.code===r):null;fit(o?o.B:[VB0[0],VB0[1],VB0[0]+VB0[2],VB0[1]+VB0[3]],800);}
  renderZone();
 }
 function renderZone(){
@@ -866,6 +965,7 @@ function renderZone(){
  $("zoneList").innerHTML=l.length?chips(l):emptyHTML("Aucune zone disponible","Exécutez supabase.sql pour créer les départements.");
  const s=DATA.filter(b=>dep?b.department_code===dep.code:reg?b.region_code===reg.code:false),nm=esc(dep?dep.name:reg?reg.name:"");
  $("mapShops").innerHTML=!reg?emptyHTML("Sélectionnez une région","Touchez la carte ou la liste pour voir les boutiques."):s.length?'<h3 class="sub">'+s.length+' boutique(s) – '+nm+'</h3>'+grid(s):emptyHTML("Aucune boutique pour le moment",dep?"Aucune boutique publiée dans ce département.":"Aucune boutique publiée dans cette région.");
+ tagList(s);mfCount();mapBar();
  if(reg)placeAd($("mapShops"),dep?["department"]:["region"],reg.code,dep?dep.code:"","",(dep?"Partenaires – ":"Partenaires – ")+(dep?dep.name:reg.name));else $("mapShops").dataset.k="";
 }
 (function(){
@@ -878,10 +978,18 @@ function renderZone(){
   if(P.size===1){const dx=e.clientX-o[0],dy=e.clientY-o[1];moved+=Math.abs(dx)+Math.abs(dy);if(moved>14){VB[0]-=dx/m.a;VB[1]-=dy/m.a;setVB();}}
   else{const q=[...P.entries()].find(z=>z[0]!==e.pointerId)[1],d0=Math.hypot(o[0]-q[0],o[1]-q[1]),d1=Math.hypot(e.clientX-q[0],e.clientY-q[1]);moved=99;if(d0&&d1){const c=pt((e.clientX+q[0])/2,(e.clientY+q[1])/2);zoom(d1/d0,c.x,c.y);}}
   P.set(e.pointerId,[e.clientX,e.clientY]);});
+ let lt=0,lx=0,ly=0;
+ s.addEventListener("pointerup",e=>{if(e.pointerType==="mouse"||moved>14||P.size>1||e.target.closest("[data-r],[data-d],.mk")){lt=0;return;}
+  if(e.timeStamp-lt<320&&Math.hypot(e.clientX-lx,e.clientY-ly)<30){const c=pt(e.clientX,e.clientY);moved=99;zoom(2,c.x,c.y,420);lt=0;}else{lt=e.timeStamp;lx=e.clientX;ly=e.clientY;}});
  ["pointerup","pointercancel","pointerleave"].forEach(n=>s.addEventListener(n,e=>P.delete(e.pointerId)));
  s.addEventListener("wheel",e=>{e.preventDefault();const c=pt(e.clientX,e.clientY);zoom(e.deltaY<0?1.35:1/1.35,c.x,c.y,220);},{passive:false});
  s.addEventListener("click",e=>{if(moved>14)return;const t=e.target.closest("[data-r],[data-d]");if(!t)return;t.dataset.r?pick(t.dataset.r):pick(sel.region,t.dataset.d);});
- s.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.dataset&&(e.target.dataset.r||e.target.dataset.d)){e.preventDefault();moved=0;e.target.dispatchEvent(new MouseEvent("click",{bubbles:true}));}});
+ s.addEventListener("keydown",e=>{const k=e.key,t=e.target;
+  if((k==="Enter"||k===" ")&&t.dataset&&(t.dataset.r||t.dataset.d)){e.preventDefault();moved=0;t.dispatchEvent(new MouseEvent("click",{bubbles:true}));return;}
+  const cx=VB[0]+VB[2]/2,cy=VB[1]+VB[3]/2;
+  if(k==="+"||k==="=")zoom(1.4,cx,cy,240);else if(k==="-"||k==="_"||k==="−")zoom(1/1.4,cx,cy,240);else if(k==="0")pick(sel.region,sel.dept);
+  else if(k.startsWith("Arrow")){const dx=k==="ArrowLeft"?-1:k==="ArrowRight"?1:0,dy=k==="ArrowUp"?-1:k==="ArrowDown"?1:0;fly([VB[0]+dx*VB[2]*.2,VB[1]+dy*VB[3]*.2,VB[2],VB[3]],240);}
+  else return;e.preventDefault();});
  $("zoomBox").addEventListener("click",e=>{const f=e.target.dataset.z;if(!f||!GEO)return;if(f==="0")pick(sel.region,sel.dept);else if(f==="loc"){navigator.geolocation?navigator.geolocation.getCurrentPosition(q=>{const w=VB0[2]/22,h=w*VB[3]/VB[2];fly([PX(q.coords.longitude)-w/2,PY(q.coords.latitude)-h/2,w,h],1000);},()=>{$("zhint").textContent="Position indisponible";$("zhint").classList.add("on");}):0;}else zoom(+f,VB[0]+VB[2]/2,VB[1]+VB[3]/2,320);});
  document.addEventListener("click",e=>{const t=e.target.closest("#v-carte [data-pick]");if(t)pick(t.dataset.pick,t.dataset.dep);});
  addEventListener("resize",()=>{if(GEO)setVB();});
@@ -890,42 +998,82 @@ function renderZone(){
 var GC={},GQ=0;try{GC=JSON.parse(localStorage.getItem("p2f_gc")||"{}");}catch(e){}
 const pos=b=>{if(validGeo(b))return[PX(+b.longitude),PY(+b.latitude)];const c=GC[b.id];if(c)return[PX(c[0]),PY(c[1])];const d=GEO&&GEO.dep.find(z=>z.code===b.department_code);if(!d)return null;let h=0;for(const ch of String(b.id))h=(h*31+ch.charCodeAt(0))|0;return[d.L[0]+(h%9-4)*2.2,d.L[1]+((h>>4)%9-4)*2.2];};
 async function geoFix(){if(GQ||!DATA.length)return;GQ=1;let ch=0;for(const b of DATA){if(validGeo(b)||GC[b.id]||!(b.city||b.postal_code))continue;try{const j=await(await fetch("https://api-adresse.data.gouv.fr/search/?limit=1&q="+encodeURIComponent([b.address,b.postal_code,b.city].filter(Boolean).join(" "))+(b.postal_code?"&postcode="+b.postal_code:""))).json(),f=j.features&&j.features[0];if(f&&f.properties.score>.4){GC[b.id]=f.geometry.coordinates;ch=1;}}catch(e){}}
- if(ch){try{localStorage.setItem("p2f_gc",JSON.stringify(GC));}catch(e){}$("shg").innerHTML="";shopsLayer();}}
+ if(ch){try{localStorage.setItem("p2f_gc",JSON.stringify(GC));}catch(e){}layout(1);}}
 var ZD=null,ZL=0,SELB="";
 const cut1=(t,n)=>t.length>n?t.slice(0,n-1)+"…":t;
 const dlv=b=>{const e=ZD&&ZD[b.id];if(!e)return"";const d=[...e.d],r=[...e.r].map(c=>(REGIONS.find(x=>x.code===c)||{}).name).filter(Boolean),t=d.slice(0,3).map(c=>depName(c)||c).concat(r.slice(0,1));return t.join(", ")+(d.length>3?" +"+(d.length-3):"");};
-async function loadZones(){ZL=1;try{let a=[],o=0,q;do{q=await sb.from("business_delivery_zones").select("business_id,scope,department_code,region_code").range(o,o+999);if(q.error)throw q.error;a=a.concat(q.data);o+=1000;}while(q.data.length===1000&&o<10000);
- ZD={};a.forEach(z=>{const e=ZD[z.business_id]||(ZD[z.business_id]={d:new Set(),r:new Set()});if(z.department_code)e.d.add(z.department_code);if(z.scope==="region"&&z.region_code)e.r.add(z.region_code);});$("shg").innerHTML="";shopsLayer();}catch(e){ZD={};}}
-function shopsLayer(){
- const g=$("shg");if(!g||!GEO)return;
- const sv=$("map"),W=sv.clientWidth,H=sv.clientHeight;if(!W)return;
- const ox=(W-VB[2]*K)/2,oy=(H-VB[3]*K)/2,zf=VB0[2]/VB[2],P=[];
- DATA.forEach(b=>{const q=pos(b);if(!q||(sel.region&&b.region_code!==sel.region)||(sel.dept&&b.department_code!==sel.dept))return;
-  const x=q[0],y=q[1],sx=(x-VB[0])*K+ox,sy=(y-VB[1])*K+oy;if(sx>-50&&sy>-50&&sx<W+50&&sy<H+50)P.push({b,x,y,sx,sy});});
- const cell=zf<2.2?0:zf<5?86:zf<8?56:0,C=new Map(),hz=$("zhint"),CD=zf>=8||!!sel.dept||(!!sel.region&&P.length<=6),pl=[],cardOK=p=>{const r=[p.sx-120,p.sy-140,240,96];if(p.b.id!==SELB&&pl.some(u=>r[0]<u[0]+u[2]&&r[0]+r[2]>u[0]&&r[1]<u[1]+u[3]&&r[1]+r[3]>u[1]))return false;pl.push(r);return true;};if(!ZL)loadZones();geoFix();
- if(zf<2.2&&!sel.region){C.clear();hz.textContent="Zoomez ou touchez une région : les boutiques apparaissent";}
- else{hz.textContent=P.length+" boutique(s) dans la vue";P.sort((a,b)=>(b.b.id===SELB)-(a.b.id===SELB)||(+!!b.b.featured)-(+!!a.b.featured));P.forEach(p=>{const k=cell?Math.round(p.sx/cell)+"_"+Math.round(p.sy/cell):p.b.id;(C.get(k)||C.set(k,[]).get(k)).push(p);});}
- hz.classList.add("on");clearTimeout(hz._t);hz._t=setTimeout(()=>hz.classList.remove("on"),3800);
- const have=new Map([...g.children].filter(e=>!e.classList.contains("gone")).map(e=>[e.dataset.sg,e])),keep=new Set();let h="",i=0;
- C.forEach((a,k)=>{const n=a.length,x=a.reduce((t,p)=>t+p.x,0)/n,y=a.reduce((t,p)=>t+p.y,0)/n,kd=n===1&&(CD||a[0].b.id===SELB)&&cardOK(a[0]),sg=n>1?"c"+k+":"+n:"s"+a[0].b.id+(kd?"k":"");keep.add(sg);if(have.has(sg))return;
-  const at='class="mk" data-sg="'+sg+'" data-x="'+x.toFixed(1)+'" data-y="'+y.toFixed(1)+'" transform="translate('+x.toFixed(1)+' '+y.toFixed(1)+') scale('+(1/K).toFixed(4)+')" tabindex="0" style="--d:'+Math.min(i++*28,700)+'ms"';
-  if(n>1){const r=n<10?17:n<50?21:26,cs=[...new Set(a.map(p=>p.b.city).filter(Boolean))],bb=[Math.min(...a.map(p=>p.x)),Math.min(...a.map(p=>p.y)),Math.max(...a.map(p=>p.x)),Math.max(...a.map(p=>p.y))];
-   h+='<g '+at+' data-bb="'+bb.map(v=>v.toFixed(1))+'" data-n="'+esc(cs.slice(0,3).join(", ")||n+" boutiques")+'" data-s="'+n+' boutiques · cliquez pour zoomer" role="button" aria-label="'+n+' boutiques, zoomer"><g class="mi"><circle class="cb2" r="'+r+'"/><circle class="cb" r="'+r+'"/><text class="ct">'+n+'</text></g>'+(cs.length===1&&zf>=3?'<text class="sl" y="'+(r+15)+'" text-anchor="middle">'+esc(cs[0])+'</text>':'')+'</g>';}
-  else{const b=a[0].b,f=b.featured?" f":"",id=esc(b.id),sd=cut1((b.short_description||"").replace(/\s+/g," ").trim(),28),dv=dlv(b);
-   h+='<g '+at+' data-h="'+esc(hrefB(b))+'" data-n="'+esc(b.name)+'" data-s="'+esc(b.city||"")+'" data-id="'+id+'" role="link" aria-label="'+esc(b.name)+'"><g class="mi">'+(b.featured&&!kd?'<circle class="cb2" cy="-22" r="11"/>':'')
-   +(kd?'<rect class="kc'+f+'" x="-120" y="-140" width="240" height="96" rx="16"/><circle class="kl" cx="-84" cy="-106" r="23"/>'
-    +(safe(b.logo_url)?'<clipPath id="lc'+id+'"><circle cx="-84" cy="-106" r="22"/></clipPath><image href="'+esc(b.logo_url)+'" x="-106" y="-128" width="44" height="44" clip-path="url(#lc'+id+')" preserveAspectRatio="xMidYMid slice"/>':'<text class="kt" x="-84" y="-106">'+esc((b.name||"?")[0].toUpperCase())+'</text>')
-    +'<text class="kn" x="-52" y="-117">'+esc(cut1(b.name||"",19))+'</text><text class="ki" x="-52" y="-100">'+esc(cut1([catOf(b),b.city].filter(Boolean).join(" · "),28))+'</text>'+(sd?'<text class="ki" x="-52" y="-84">'+esc(sd)+'</text>':'')
-    +'<text class="kd2" x="-106" y="-58">'+esc(cut1(dv?"🚚 Livre : "+dv:"📍 "+loc(b),36))+'</text><text class="kgo" x="104" y="-96">›</text>':'')
-   +'<path class="sp'+f+'" d="M0 0C-9-11-13-17-13-23a13 13 0 1 1 26 0C13-17 9-11 0 0Z"/><circle cy="-23" r="4.6" fill="#04101c"/></g></g>';}});
- have.forEach((e,sg)=>{if(!keep.has(sg)){e.classList.add("gone");setTimeout(()=>e.remove(),260);}});
- g.insertAdjacentHTML("beforeend",h);
-}
+async function loadZones(){ZL=1;try{let a=[],o=0,q;do{q=await sb.from("business_delivery_zones").select("business_id,scope,city,department_code,region_code").range(o,o+999);if(q.error)throw q.error;a=a.concat(q.data);o+=1000;}while(q.data.length===1000&&o<10000);
+ ZD={};a.forEach(z=>{const e=ZD[z.business_id]||(ZD[z.business_id]={d:new Set(),r:new Set(),c:new Set(),f:0});if(z.department_code)e.d.add(z.department_code);if(z.city)e.c.add(norm(z.city));if(z.scope==="france")e.f=1;if(z.scope==="region"&&z.region_code)e.r.add(z.region_code);});MZ=null;mfCount();layout(1);}catch(e){ZD={};}}
 $("map").addEventListener("click",e=>{const m=e.target.closest(".mk");if(!m)return;
- if(m.dataset.bb)fit(m.dataset.bb.split(",").map(Number));
+ if(m.dataset.bb){ring(m);fit(m.dataset.bb.split(",").map(Number));}
  else if(m.querySelector(".kc"))location.href=m.dataset.h;
- else{SELB=m.dataset.id;const x=+m.dataset.x,y=+m.dataset.y,w=Math.min(VB[2],VB0[2]/10),h=w*VB[3]/VB[2];fly([x-w/2,y-h*.62,w,h],800);shopsLayer();}});
+ else{SELB=m.dataset.id;const x=+m.dataset.x,y=+m.dataset.y,w=Math.min(VB[2],VB0[2]/10),h=w*VB[3]/VB[2];fly([x-w/2,y-h*.62,w,h],800);layout();listTo(SELB);}});
 $("map").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.classList&&e.target.classList.contains("mk"))e.target.dispatchEvent(new MouseEvent("click",{bubbles:true}));});
+/* Anneau qui se propage depuis un regroupement cliqué (mode « complètes » uniquement) */
+function ring(m){const fx=$("fxg"),c=m.querySelector(".cb");if(!fx||!c||FX.mode()!=="full")return;
+ fx.insertAdjacentHTML("beforeend",'<g class="mk" data-x="'+m.dataset.x+'" data-y="'+m.dataset.y+'" transform="'+m.getAttribute("transform")+'"><circle class="rp" r="'+c.getAttribute("r")+'"/></g>');const g=fx.lastElementChild;setTimeout(()=>g.remove(),720);}
+/* Liste sous la carte <-> pins : le survol d’une carte fait bondir le pin, le clic sur un pin fait défiler la liste */
+function tagList(s){document.querySelectorAll("#mapShops a.shop").forEach((a,i)=>{if(s[i])a.dataset.bid=s[i].id;});}
+function listTo(id){const a=[...document.querySelectorAll("#mapShops a.shop")].find(x=>x.dataset.bid===id);if(!a)return;
+ a.scrollIntoView({block:"center",behavior:FX.mode()==="full"?"smooth":"auto"});a.classList.remove("glow");void a.offsetWidth;a.classList.add("glow");clearTimeout(a._g);a._g=setTimeout(()=>a.classList.remove("glow"),1500);}
+function bounce(e){const a=e.target.closest&&e.target.closest("#mapShops a.shop[data-bid]");if(!a||a===BH)return;BH=a;
+ const m=[...$("shg").children].find(x=>x.dataset.id===a.dataset.bid&&!x.classList.contains("gone"));if(!m)return;
+ m.classList.remove("bn");void m.getBoundingClientRect();m.classList.add("bn");clearTimeout(m._b);m._b=setTimeout(()=>m.classList.remove("bn"),720);}
+document.addEventListener("mouseover",bounce);document.addEventListener("focusin",bounce);
+document.addEventListener("mouseout",e=>{if(BH&&!BH.contains(e.relatedTarget))BH=null;});
+$("mini").addEventListener("click",e=>{const v=e.currentTarget.querySelector("svg");if(!v)return;const q=v.createSVGPoint();q.x=e.clientX;q.y=e.clientY;const c=q.matrixTransform(v.getScreenCTM().inverse());fly([c.x-VB[2]/2,c.y-VB[3]/2,VB[2],VB[3]],420);});
+/* Plein écran : capte pincement, double toucher et glisser ; hors plein écran la page défile normalement */
+function fs(on){$("mapCard").classList.toggle("fs",!!on);document.documentElement.classList.toggle("mfs",!!on);mapBar();setVB();if(on)$("map").focus({preventScroll:true});}
+$("fsBtn").addEventListener("click",()=>fs(!$("mapCard").classList.contains("fs")));
+addEventListener("keydown",e=>{if(e.key==="Escape"&&$("mapCard").classList.contains("fs"))fs(0);});
+addEventListener("hashchange",()=>{if($("mapCard").classList.contains("fs"))fs(0);});
+/* Filtres : les pins hors filtre s’estompent, le compteur dit combien correspondent */
+function zoneOf(v){const q=norm(v),cp=/^\d{5}$/.test(q)?q:"";let d="";
+ if(cp)d=cp.slice(0,2)==="20"?(cp<"20200"?"2A":"2B"):/^9[78]/.test(cp)?cp.slice(0,3):cp.slice(0,2);
+ else{const m=DATA.find(b=>norm(b.city)===q);d=m&&m.department_code||"";}
+ return{c:cp?"":q,cp,d,r:(DEPS.find(x=>x.code===d)||{}).region_code||""};}
+function mfOk(b){
+ if(MF.open&&!(HRS&&HRS[b.id]&&isOpen(HRS[b.id],nowFR().t)===true))return false;
+ if(MF.cat&&!(b.cats||[]).includes(MF.cat))return false;
+ if(MF.part&&tierOf(b)<2)return false;
+ if(MF.zip){const z=MZ||(MZ=zoneOf(MF.zip)),e=ZD&&ZD[b.id];
+  if(!((z.c&&norm(b.city)===z.c)||(z.cp&&b.postal_code===z.cp)||(e&&(e.f||(z.c&&e.c.has(z.c))||(z.d&&e.d.has(z.d))||(z.r&&e.r.has(z.r))))))return false;}
+ return true;}
+function mfCount(){const el=$("mapCount");if(!el)return;
+ if(!(MF.open||MF.zip||MF.cat||MF.part)){el.textContent="";return;}
+ const n=DATA.filter(b=>(!sel.region||b.region_code===sel.region)&&(!sel.dept||b.department_code===sel.dept)&&mfOk(b)).length;
+ el.textContent=n?T(n>1?"mf_cn":"mf_c1").replace("{n}",n):T("mf_c0");}
+function mfApply(){MZ=null;if(MF.zip&&!ZL)loadZones();mapBar();mfCount();sched();}
+function mapBar(){
+ const z=$("mfZip"),c=$("mfCat");if(!z||!MF)return;
+ z.placeholder=T("mf_zip");z.setAttribute("aria-label",T("mf_zip"));$("map").setAttribute("aria-label",T("mf_aria"));
+ const nm=[...new Set(CATS.map(x=>x.name).concat(DATA.flatMap(b=>b.cats||[])))].filter(Boolean).sort((a,b)=>a.localeCompare(b,"fr")),sg=nm.join("|")+"~"+T("mf_cat");
+ if(c.dataset.sg!==sg){c.dataset.sg=sg;c.setAttribute("aria-label",T("mf_cat"));c.innerHTML='<option value="">'+esc(T("mf_cat"))+'</option>'+nm.map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("");c.value=MF.cat;}
+ const st={open:!!MF.open,deliver:!!MF.zip,part:!!MF.part};
+ document.querySelectorAll("#mapBar [data-mf]").forEach(b=>{if(b.dataset.mf in st)b.setAttribute("aria-pressed",st[b.dataset.mf]);});
+ $("mfDel").setAttribute("aria-expanded",!!MF.zo);$("mfZ").hidden=!MF.zo;
+ const on=$("mapCard").classList.contains("fs"),f=$("fsBtn");f.textContent=T(on?"mf_full_x":"mf_full");f.setAttribute("aria-pressed",on);
+ legend();}
+document.addEventListener("click",e=>{const b=e.target.closest("#mapBar [data-mf]");if(!b)return;const k=b.dataset.mf;
+ if(k==="open"){MF.open=MF.open?0:1;if(MF.open&&!HRS)loadHours();}
+ else if(k==="part")MF.part=MF.part?0:1;
+ else if(k==="deliver"){if(MF.zip){MF.zip="";MF.zo=0;$("mfZip").value="";}else MF.zo=MF.zo?0:1;if(MF.zo)setTimeout(()=>$("mfZip").focus(),0);}
+ else if(k==="zipok")MF.zip=$("mfZip").value.trim();
+ mfApply();});
+$("mfZip").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();MF.zip=e.target.value.trim();mfApply();}});
+$("mfCat").addEventListener("change",e=>{MF.cat=e.target.value;mfApply();});
+/* Test de développement (?debug=1) : zooms 1, 2, 4 et 8 sur chaque région, collisions mesurées sur le DOM réel */
+async function mapTest(){
+ const sv=$("map");if(!GEO||!sv.clientWidth)return console.warn("[p2f carte] ouvrez #/carte avant le test");
+ const fr=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))),s0=sel,v0=VB.slice(),rows=[];let tot=0;sv.classList.add("dbg");
+ for(const r of GEO.reg)for(const z of[1,2,4,8]){
+  sel={region:r.code,dept:""};drawMap();const f=fitBox(r.B),cx=f[0]+f[2]/2,cy=f[1]+f[3]/2;VB=[cx-f[2]/z/2,cy-f[3]/z/2,f[2]/z,f[3]/z];setVB();layout(1);await fr();
+  const q=[...sv.querySelectorAll("#lbg text,#shg .sp,#shg .cb,#shg .kc,#shg .sl")].map(x=>x.getBoundingClientRect()).filter(b=>b.width>0);let n=0;
+  for(let i=0;i<q.length;i++)for(let j=i+1;j<q.length;j++){const a=q[i],b=q[j];if(a.left<b.right-1&&a.right>b.left+1&&a.top<b.bottom-1&&a.bottom>b.top+1)n++;}
+  tot+=n;rows.push({region:r.name,zoom:z,elements:q.length,collisions:n});}
+ sv.classList.remove("dbg");sel=s0;drawMap();VB=v0;setVB();
+ console.table(rows);console.log("[p2f carte] collisions restantes : "+tot+(tot?" ✗":" ✓"));return tot;}
+if(DBG)window.p2fMapTest=mapTest;
 /* ---- Accueil : raccourcis, compteurs, mini-carte, apparition au scroll, carrousels mobiles, bande des nouveautés ---- */
 (function(){
  const rh=renderHome;
@@ -2077,6 +2225,7 @@ document.addEventListener("click",async e=>{
 /* ===== Étape 1 : textes modifiables (admin > Site > Accueil), hero, horaires, avis, installation, contact ===== */
 /* [clé, libellé admin, texte par défaut, "ta" = zone de texte] ; champ vide dans l’admin = texte par défaut */
 const HX=[
+ ["Carte de France",[["mf_open","Puce « Ouvert maintenant »","Ouvert maintenant"],["mf_deliver","Puce « Livre chez moi »","Livre chez moi"],["mf_zip","Champ ville ou code postal","Ville ou code postal"],["mf_ok","Bouton de validation du champ","Valider"],["mf_cat","Menu des catégories (libellé par défaut)","Catégorie"],["mf_part","Puce « Partenaires »","Partenaires"],["mf_c1","Compteur : une boutique ({n} = nombre)","{n} boutique correspond"],["mf_cn","Compteur : plusieurs boutiques ({n} = nombre)","{n} boutiques correspondent"],["mf_c0","Compteur : aucune boutique","Aucune boutique ne correspond"],["mf_full","Bouton plein écran","Plein écran"],["mf_full_x","Bouton de sortie du plein écran","Quitter le plein écran"],["mf_leg_unit","Légende : unité du dégradé","boutique(s) par zone"],["mf_leg_pins","Légende : types de repères","◉ Groupe · 📍 Boutique · ★ Mise en avant"],["mf_leg_open","Légende : pastille verte","Ouverte maintenant"],["mf_leg_ex","Légende : halo","Partenaire Exclusif"],["mf_leg_none","Légende si aucune boutique n’est publiée","Aucune boutique référencée pour le moment."],["mf_aria","Description de la carte (lecteurs d’écran)","Carte interactive de la France : régions puis départements. Touches + et − pour zoomer, 0 pour recentrer, flèches pour déplacer la carte.","ta"]]],
  ["Mini-carte du hero",[["hm_caption","Légende sous la mini-carte","Touchez une région pour voir ses boutiques."],["hm_empty","Légende si aucune boutique n’est publiée","Aucune boutique publiée pour le moment : les régions s’allumeront dès les premières fiches.","ta"],["hm_label","Nom accessible de la mini-carte","Mini-carte de France : touchez une région pour ouvrir la carte"],["hm_fail","Message si la mini-carte ne charge pas","Mini-carte indisponible pour le moment. Utilisez la recherche ci-dessus.","ta"]]],
  ["Recherche et compteurs",[["around_btn","Bouton « Autour de moi »","Autour de moi"],["kpi_open","Compteur « ouvertes maintenant »","ouvertes maintenant"],["kpi_open_empty","Compteur si aucun horaire n’est renseigné","horaires non renseignés"]]],
  ["Comment ça marche (3 étapes)",[["how_1_t","Étape 1 – titre","Cherchez"],["how_1_x","Étape 1 – texte","Tapez une ville ou un code postal, ou touchez une région sur la carte.","ta"],["how_2_t","Étape 2 – titre","Comparez"],["how_2_x","Étape 2 – texte","Ouvrez les fiches : photos, horaires, produits et zones de livraison.","ta"],["how_3_t","Étape 3 – titre","Contactez"],["how_3_x","Étape 3 – texte","Appelez la boutique, écrivez-lui ou lancez l’itinéraire en un clic.","ta"]]],
@@ -2090,7 +2239,7 @@ const HX=[
 const HXD={};HX.forEach(g=>g[1].forEach(x=>{HXD[x[0]]=x[2];}));
 const T=k=>CFG[k]||HXD[k]||"";
 var HXV={};
-function applyHX(){document.querySelectorAll("[data-hx]").forEach(e=>{e.textContent=T(e.dataset.hx);});if($("legalBox"))legalDraw();}
+function applyHX(){document.querySelectorAll("[data-hx]").forEach(e=>{e.textContent=T(e.dataset.hx);});if($("legalBox"))legalDraw();mapBar();}
 function legalDraw(){const t=T("legal_text").trim();$("legalBox").innerHTML=t?'<div class="card"><p style="white-space:pre-line">'+esc(t)+'</p></div>':emptyHTML(esc(T("legal_empty_t")),esc(T("legal_empty_x")));}
 function hxForm(){
  const f=x=>x[3]==="ta"?TA(x[0],x[1],HXV[x[0]]||x[2]):FI(x[0],x[1],HXV[x[0]]||x[2]);
@@ -2145,7 +2294,7 @@ async function loadHours(){
  const w=nowFR().wd;if(!sb||(HRS&&HRD===w))return;
  try{let a=[],o=0,q;do{q=await sb.from("business_hours").select("business_id,opens,closes,closed").eq("weekday",w).range(o,o+999);if(q.error)throw q.error;a=a.concat(q.data);o+=1000;}while(q.data.length===1000&&o<10000);
   HRS={};a.forEach(r=>{HRS[r.business_id]=r;});HRD=w;}catch(e){HRS=HRS||{};}
- openUI();
+ openUI();mfCount();if(GEO)sched();
 }
 function openPill(b){const s=HRS?isOpen(HRS[b.id],nowFR().t):null;return s==null?"":'<span class="opn '+(s?'y':'n')+'">'+(s?'Ouvert':'Fermé')+'</span>';}
 function openUI(){
