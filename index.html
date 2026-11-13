@@ -6,6 +6,12 @@
 <title>Plug 2 France – Annuaire national des boutiques CBD</title>
 <meta name="description" content="Plug 2 France : trouvez les boutiques physiques spécialisées dans le CBD, partout en France.">
 <meta name="theme-color" content="#070b16">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://VOTRE-DOMAINE.fr/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Plug 2 France"><meta property="og:locale" content="fr_FR"><meta property="og:title" content="Plug 2 France – Annuaire national des boutiques CBD"><meta property="og:description" content="Plug 2 France : trouvez les boutiques physiques spécialisées dans le CBD, partout en France."><meta property="og:url" content="https://VOTRE-DOMAINE.fr/"><meta property="og:image" content="https://VOTRE-DOMAINE.fr/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Plug 2 France – annuaire des boutiques CBD">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Plug 2 France – Annuaire national des boutiques CBD"><meta name="twitter:description" content="Trouvez les boutiques CBD physiques partout en France."><meta name="twitter:image" content="https://VOTRE-DOMAINE.fr/og-image.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Plug 2 France","url":"https://VOTRE-DOMAINE.fr/","inLanguage":"fr-FR"}</script>
+
 <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Plug 2 France">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23070b16'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%2322d3ee'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -665,6 +671,22 @@ html[data-style=cartoon] .plan:is(.on,:has(input:checked)){border-color:var(--oc
 html[data-style=cartoon] .plan:has(input:focus-visible){outline:3px solid var(--fc);outline-offset:3px}
 html[data-style=cartoon] a.shop.glow::after{box-shadow:0 0 0 var(--ow) var(--c1)}
 html[data-style=cartoon] .cmpc::before{display:none}
+/* ===== Couche responsive : tablette et grands écrans (ajoutée) ===== */
+img,svg,video,canvas{max-width:100%}
+@media(min-width:761px) and (max-width:1099.98px){
+ header .bar{gap:4px}
+ #nav{gap:0;min-width:0}
+ #nav a{padding:9px 7px;font-size:.84rem;white-space:nowrap}
+ header .logo #siteName{font-size:1.05rem!important}
+ .hc{gap:2px}
+}
+@media(min-width:761px) and (max-width:899.98px){
+ #nav a{padding:9px 5px;font-size:.8rem}
+ .hc .ibtn{width:38px;height:38px}
+ header .logo #siteName{font-size:.98rem!important}
+}
+@media(min-width:1440px){.wrap{width:min(1320px,100% - 80px)}}
+@media(min-width:1920px){.wrap{width:min(1560px,100% - 120px)}}
 </style>
 </head>
 <body>
@@ -1565,7 +1587,7 @@ async function tDash(){
 }
 async function tBiz(){
  await loadBiz();
- $("aPane").innerHTML='<div class="row"><input id="bq" type="search" placeholder="Filtrer par nom, ville, département…" style="flex:1"><select id="bs"><option value="">Tous statuts</option>'+opt(Object.entries(ST),"")+'</select><button class="btn p" data-a="new">Ajouter une boutique</button></div><div id="bl" style="margin-top:14px"></div>';
+ $("aPane").innerHTML='<div class="row"><input id="bq" type="search" placeholder="Filtrer par nom, ville, département…" style="flex:1"><select id="bs"><option value="">Tous statuts</option>'+opt(Object.entries(ST),"")+'</select><button class="btn p" data-a="new">+ CRÉER UNE BOUTIQUE</button></div><div id="bl" style="margin-top:14px"></div>';
  fillBiz();
 }
 function fillBiz(){
@@ -1603,7 +1625,7 @@ async function vfPurge(id){
  const o={...pv,v:1,vd:new Date().toISOString()};delete o.vp;delete o.vg;delete o.vt;
  const u=await sb.from("business_moderation").update({note:JSON.stringify(o)}).eq("business_id",id);if(u.error)throw u.error;
 }
-const OFFERS=["Gratuit","Visibilité 3 jours","Visibilité 1 semaine","Visibilité 2 semaines","Visibilité 1 mois","Sur mesure"];
+const OFFERS=["Gratuit","Offert par l’administrateur","Visibilité 3 jours","Visibilité 1 semaine","Visibilité 2 semaines","Visibilité 1 mois","Sur mesure"];
 const PVF=[["owner","Responsable"],["owner_phone","Téléphone du responsable","tel"],["owner_email","E-mail du responsable","email"],["siret","SIRET"],["contract_from","Début de contrat","date"],["contract_to","Fin de contrat","date"]];
 const parsePV=n=>{try{const o=JSON.parse(n);return o&&o.v===1?o:{pnote:n||""};}catch(e){return{pnote:n||""};}};
 const ZS=[["city","Ville"],["department","Département entier"],["region","Région entière"],["france","Toute la France"]];
@@ -1615,7 +1637,7 @@ async function editor(id,seed){
   if(x.error)throw x.error;b=x.data;lk=l.data||[];hr=h.data||[];cs=(c.data||[]).map(r=>r.category_id);mod=m.data||{};pv=parsePV(mod.note);zs=z.error?[]:(z.data||[]);}else if(seed){zs=seed.zs||[];hr=seed.hr||[];b={...b,...seed.b};lk=seed.lk||[];pv=seed.pv||{};cs=cats.filter(c=>(seed.cn||[]).includes(c.name)).map(c=>c.id);}
  const chk=(n,v,l)=>'<label style="grid-auto-flow:column;align-items:center;justify-content:start;gap:8px"><input type="checkbox" name="'+n+'"'+(v?' checked':'')+(n==="cat"?' value="'+esc(l[0])+'"':'')+'>'+esc(n==="cat"?l[1]:l)+'</label>';
  const zcard='<div class="card"><h3>Zones de livraison</h3>'+(ZOK?'<input type="hidden" name="zok" value="1"><p class="meta" style="margin-bottom:10px">Villes, départements ou régions où cette boutique livre. Elles s’affichent sur sa fiche publique.</p><label>Ajouter plusieurs villes d’un coup (département de la boutique appliqué)<textarea id="zbulk" rows="2" placeholder="Grenoble, Voiron, Échirolles…"></textarea></label><div class="row" style="margin:8px 0 14px"><button type="button" class="btn" data-a="zbulk">Ajouter ces villes</button><button type="button" class="btn" data-a="zadd">+ Zone détaillée</button></div><div id="zrows">'+zs.map(zrow).join("")+'</div>':'<p class="msg err">Zones de livraison indisponibles : la mise à jour de la base n’est pas encore faite.</p>')+'</div>';
- const dossier='<div class="card"><h3>Dossier client (privé, jamais affiché au public)</h3><div class="fg">'+PVF.map(x=>FI("pv_"+x[0],x[1],pv[x[0]],x[2])).join("")+'<label>Offre souscrite<select name="pv_offer">'+opt(OFFERS.map(o=>[o,o]),pv.offer||"Gratuit")+'</select></label><label>Paiement<select name="pv_pay">'+opt(["À régler","Reçu","Offert"].map(o=>[o,o]),pv.pay||"À régler")+'</select></label></div>'+FI("pv_photos_src","Lien des photos fournies par le client",pv.photos_src,"url")+(pv.hrs?'<p class="meta" style="margin-top:8px">Horaires indiqués par le client : '+esc(pv.hrs)+'</p><input type="hidden" name="pv_hrs" value="'+esc(pv.hrs)+'">':'')+(pv.dc?'<p class="meta" style="margin-top:8px">Livraison indiquée par le client : '+esc(pv.dc)+'</p><input type="hidden" name="pv_dc" value="'+esc(pv.dc)+'">':'')+vfCard(pv)+TA("pv_pnote","Notes internes",pv.pnote)+'</div>';
+ const adm=(!id&&!seed)||pv.origin==="admin";const dossier='<div class="card"><h3>Dossier client (privé, jamais affiché au public)</h3>'+(adm?'<input type="hidden" name="pv_origin" value="admin"><p class="msg">Boutique créée par l’administration : aucun abonnement, aucun paiement et aucun checkout Stripe ne sont nécessaires. Elle est marquée « Offert par l’administrateur » dans ce dossier ; vous pouvez changer l’offre, la durée et le statut à tout moment.</p>':'')+'<div class="fg">'+PVF.map(x=>FI("pv_"+x[0],x[1],pv[x[0]],x[2])).join("")+'<label>Offre souscrite<select name="pv_offer">'+opt(OFFERS.map(o=>[o,o]),pv.offer||(id||seed?"Gratuit":"Offert par l’administrateur"))+'</select></label><label>Paiement<select name="pv_pay">'+opt(["À régler","Reçu","Offert"].map(o=>[o,o]),pv.pay||(id||seed?"À régler":"Offert"))+'</select></label></div>'+FI("pv_photos_src","Lien des photos fournies par le client",pv.photos_src,"url")+(pv.hrs?'<p class="meta" style="margin-top:8px">Horaires indiqués par le client : '+esc(pv.hrs)+'</p><input type="hidden" name="pv_hrs" value="'+esc(pv.hrs)+'">':'')+(pv.dc?'<p class="meta" style="margin-top:8px">Livraison indiquée par le client : '+esc(pv.dc)+'</p><input type="hidden" name="pv_dc" value="'+esc(pv.dc)+'">':'')+vfCard(pv)+TA("pv_pnote","Notes internes",pv.pnote)+'</div>';
  $("aPane").innerHTML='<p><button class="btn" data-a="back">← Retour aux boutiques</button></p><form id="bf" class="wide" data-id="'+esc(id||"")+'">'+
  '<div class="card"><h3>Informations</h3><div class="fg">'+FI("name","Nom de la boutique",b.name,"text","required minlength=2")+FI("slug","Adresse de la fiche (slug)",b.slug,"text",'placeholder="auto"')+'<label>Statut<select name="status">'+opt(Object.entries(ST),b.status)+'</select></label>'+chk("featured",b.featured,"Mettre à la une")+'</div>'+TA("short_description","Description courte",b.short_description)+TA("description","Description complète",b.description)+'</div>'+
  '<div class="card"><h3>Localisation</h3><div class="fg">'+FI("address","Adresse",b.address)+FI("postal_code","Code postal",b.postal_code,"text",'pattern="[0-9]{5}" inputmode="numeric"')+FI("city","Ville",b.city)+'<label>Région<select name="region_code"><option value="">—</option>'+opt(REGIONS.map(r=>[r.code,r.name]),b.region_code)+'</select></label><label>Département<select name="department_code" id="depSel"></select></label>'+FI("latitude","Latitude",b.latitude,"number",'step="any" min="-90" max="90"')+FI("longitude","Longitude",b.longitude,"number",'step="any" min="-180" max="180"')+'</div><div class="row" style="margin-top:10px"><button type="button" class="btn" data-a="mypos">Utiliser ma position</button><button type="button" class="btn" data-a="osm">Vérifier sur la carte</button></div></div>'+
@@ -1628,6 +1650,10 @@ async function editor(id,seed){
  fillDeps(b.region_code,b.department_code);if(id)loadImgs(id);if(pv.vp)vfShow(pv.vp);
 }
 async function saveBiz(f){
+ if(f.dataset.busy)return;f.dataset.busy="1";const sbt=f.querySelector("[type=submit]"),lab=sbt&&sbt.textContent;if(sbt){sbt.disabled=true;sbt.textContent="Enregistrement…";}
+ try{await saveBiz0(f);}finally{if(document.body.contains(f)){delete f.dataset.busy;if(sbt){sbt.disabled=false;sbt.textContent=lab;}}}
+}
+async function saveBiz0(f){
  const d=new FormData(f),id=f.dataset.id,g=n=>(d.get(n)||"").toString().trim(),nul=n=>g(n)||null,num=n=>g(n)===""?null:+g(n);
  const row={name:g("name"),slug:slug(g("slug")||g("name")),short_description:nul("short_description"),description:nul("description"),address:nul("address"),postal_code:nul("postal_code"),city:nul("city"),region_code:nul("region_code"),department_code:nul("department_code"),latitude:num("latitude"),longitude:num("longitude"),phone:nul("phone"),email:nul("email"),website:nul("website"),specialties:nul("specialties"),services:nul("services"),extra_info:nul("extra_info"),status:g("status"),featured:d.has("featured"),updated_at:new Date().toISOString()};
  const ver=d.has("verified"),kinds=d.getAll("lk"),lbls=d.getAll("ll"),lks=d.getAll("lu").map((u,i)=>({kind:kinds[i],label:lbls[i]||null,url:u.trim(),sort_order:i})).filter(x=>x.url);
@@ -1637,9 +1663,9 @@ async function saveBiz(f){
  const r=id?await sb.from("businesses").update(row).eq("id",id).select("id").single():await sb.from("businesses").insert(row).select("id").single();
  if(r.error)return note(r.error.code==="23505"?"Cette adresse de fiche (slug) existe déjà : modifiez-la.":r.error.message,1);
  const bid=r.data.id;
- await sb.from("business_categories").delete().eq("business_id",bid);const cs=d.getAll("cat");if(cs.length)await sb.from("business_categories").insert(cs.map(c=>({business_id:bid,category_id:c})));
+ {const e1=(await sb.from("business_categories").delete().eq("business_id",bid)).error;if(e1)throw e1;const cs=d.getAll("cat");if(cs.length){const e2=(await sb.from("business_categories").insert(cs.map(c=>({business_id:bid,category_id:c})))).error;if(e2)throw e2;}}
  const hrs=[1,2,3,4,5,6,7].filter(k=>d.has("h"+k+"c")||g("h"+k+"o")||g("h"+k+"f")).map(k=>({business_id:bid,weekday:k,closed:d.has("h"+k+"c"),opens:d.has("h"+k+"c")?null:nul("h"+k+"o"),closes:d.has("h"+k+"c")?null:nul("h"+k+"f")}));
- await sb.from("business_hours").delete().eq("business_id",bid);if(hrs.length)await sb.from("business_hours").insert(hrs);
+ {const e3=(await sb.from("business_hours").delete().eq("business_id",bid)).error;if(e3)throw e3;if(hrs.length){const e4=(await sb.from("business_hours").insert(hrs)).error;if(e4)throw e4;}}
  await sb.from("business_links").delete().eq("business_id",bid);if(lks.length){let q=await sb.from("business_links").insert(lks.map(x=>({...x,business_id:bid})));if(q.error)q=await sb.from("business_links").insert(lks.map(x=>({...x,kind:"other",label:x.label||LK[x.kind],business_id:bid})));if(q.error)throw q.error;}
  if(d.has("zok")){const zc=d.getAll("zs"),zn=d.getAll("zc"),zd=d.getAll("zd"),zg=d.getAll("zg"),zf=d.getAll("zf"),zm=d.getAll("zm"),zl=d.getAll("zl");
  const zr=zc.map((sc,i)=>({business_id:bid,scope:sc,city:sc==="city"?(zn[i]||"").trim():null,department_code:sc==="city"||sc==="department"?(zd[i]||null):null,region_code:sc==="region"?(zg[i]||null):null,fee:zf[i]===""?null:+zf[i],min_order:zm[i]===""?null:+zm[i],delay:(zl[i]||"").trim()||null,sort_order:i})).filter(x=>x.scope==="france"||(x.scope==="city"&&x.city)||(x.scope==="department"&&x.department_code)||(x.scope==="region"&&x.region_code));
