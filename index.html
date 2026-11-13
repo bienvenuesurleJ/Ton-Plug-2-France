@@ -596,7 +596,7 @@ html[data-anim=reduced] .pic *{animation:none}
 #adBody .dz,.pav .dz{position:relative}.dz input[type=file]{position:absolute;width:1px;height:1px;opacity:0}.dz:focus-within{outline:2px solid var(--c1);outline-offset:2px}.pvh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}label.btn:focus-within{outline:2px solid var(--c1);outline-offset:2px}.pdone>.wrap>*:not(#pOk){display:none!important}.pfiche{display:grid;gap:8px;font-size:.9rem}.pfiche p{margin:0}.pfiche .tag{margin:0 4px 4px 0}
 #pTiles{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}@media(min-width:900px){#pTiles{grid-template-columns:repeat(3,1fr)}}
 /* ===== Style Cartoon (BD / sticker) : fondations — tout passe par des variables ; « Classique » n’est jamais touché ===== */
-html[data-style=cartoon]{--ow:3px;--px:4px;--oc:var(--ocl,#0b1020);--sc:var(--oc);--r:var(--rcu,26px);--line:var(--oc);--fld:var(--oc);--hg1:var(--tx);--hg2:var(--tx);--fc:var(--hg2);--mut:var(--tx);--sh1:3px 3px 0 var(--sc);--sh2:var(--px) var(--px) 0 var(--sc)}
+html[data-style=cartoon]{--ow:3px;--ows:2px;--px:4px;--oc:var(--ocl,#0b1020);--sc:var(--oc);--r:var(--rcu,26px);--line:var(--oc);--fld:var(--oc);--hg1:var(--tx);--hg2:var(--tx);--fc:var(--hg2);--mut:var(--tx);--sh1:3px 3px 0 var(--sc);--sh2:var(--px) var(--px) 0 var(--sc)}
 html[data-style=cartoon]:not([data-theme=light]){--oc:var(--ocd,#c9d6ff);--sc:#000;--mut:#9aa6c8;--fc:var(--c1)}
 html[data-style=cartoon] :focus-visible{outline:3px solid var(--fc);outline-offset:3px}
 html[data-style=cartoon] :is(h2,h3){background:none;-webkit-background-clip:border-box;background-clip:border-box;color:var(--tx)}
@@ -625,6 +625,46 @@ html[data-style=cartoon] footer{padding-top:8px}
 html[data-style=cartoon] footer::before{height:16px;margin-bottom:36px;border:var(--ow) solid var(--oc);border-radius:999px;box-shadow:3px 3px 0 var(--sc)}
 html[data-style=cartoon] footer .ft a:hover,html[data-style=cartoon] footer .fl:hover{color:var(--tx);text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:5px}
 html[data-style=cartoon] footer .ftn{font-family:"Titan One",var(--fh);font-weight:400}
+/* ===== Style Cartoon : boutons, champs, stickers, cartes ===== */
+html[data-style=cartoon] .btn{border:var(--ow) solid var(--oc);border-radius:999px;background:var(--surface-1);box-shadow:var(--sh2);font-weight:700;transition:transform var(--d1) var(--ease),translate var(--d1) var(--ease)}
+html[data-style=cartoon] .btn.p{background:var(--c1);color:#04101c}
+html[data-style=cartoon] .btn.p::after{display:none}
+html[data-style=cartoon] .hero .row .btn:nth-child(3){box-shadow:none;border-color:transparent}
+html[data-style=cartoon] :is(.btn,.chp)[aria-pressed=true],html[data-style=cartoon] .chp.on,html[data-style=cartoon] .mbar .chip[aria-pressed=true],html[data-style=cartoon] .itabs .btn[aria-pressed=true]{background:var(--c1);color:#04101c;border-color:var(--oc)}
+html[data-style=cartoon] .chp{border:var(--ows) solid var(--oc);box-shadow:var(--sh1)}
+/* Pop : survol = le bouton ou la carte se soulève, appui = elle s’enfonce (l’ombre dure se réduit) */
+@media(hover:hover){html[data-style=cartoon] :is(.btn,a.shop,a.vit,.tlt,.sc,.card.lift):hover{transform:translate(calc(var(--m)*-2px),calc(var(--m)*-2px));box-shadow:calc(var(--px) + var(--m)*2px) calc(var(--px) + var(--m)*2px) 0 var(--sc);border-color:var(--oc)}}
+html[data-style=cartoon] :is(.btn,a.shop,a.vit,.tlt,.sc,.card.lift):active{transform:translate(calc(var(--m)*var(--px)),calc(var(--m)*var(--px)));box-shadow:calc(var(--px)*(1 - var(--m))) calc(var(--px)*(1 - var(--m))) 0 var(--sc)}
+/* Champs */
+html[data-style=cartoon] :is(input:not([type=checkbox],[type=radio],[type=file],[type=range],[type=color]),select,textarea){border:var(--ows) solid var(--fld);border-radius:16px;background:var(--surface-1);color:var(--tx);box-shadow:var(--sh1)}
+html[data-style=cartoon] ::placeholder{color:color-mix(in srgb,var(--tx) 62%,transparent);opacity:1}
+html[data-style=cartoon] label{font-weight:600}
+html[data-style=cartoon] input:is([type=checkbox],[type=radio]){accent-color:var(--c2)}
+/* Stickers : étiquettes, compteurs, niveaux (Standard, Sponsorisé, Premium, Exclusif) */
+html[data-style=cartoon] :is(.tag,.cnt,.lvl,.bdg,.opn,.p2pz){border:var(--ows) solid var(--oc);box-shadow:2px 2px 0 var(--sc);font-weight:700}
+html[data-style=cartoon] :is(.tag,.cnt){background:var(--c1);color:#04101c}
+html[data-style=cartoon] :is(.lvl,.bdg){background:var(--surface-1);color:var(--tx)}
+html[data-style=cartoon] .bdg{transform:rotate(-3deg)}
+html[data-style=cartoon] :is(.lvl.l2,.bdg.t2){background:var(--c3);color:#04101c}
+html[data-style=cartoon] :is(.lvl.l3,.bdg.t3){background:var(--c2);color:#04101c}
+html[data-style=cartoon] :is(.lvl.l4,.bdg.t4){background:var(--surface-1);color:var(--tx)}
+html[data-style=cartoon] :is(.lvl.l4,.bdg.t4)::before{width:20px;height:12px;border:1px solid var(--oc)}
+html[data-style=cartoon] .cmpc .rib{top:-16px;background:var(--c1);border:var(--ows) solid var(--oc);box-shadow:2px 2px 0 var(--sc);transform:translateX(-50%) rotate(-3deg)}
+html[data-style=cartoon] .p2hf{border:var(--ows) solid var(--oc);background:var(--surface-1);box-shadow:2px 2px 0 var(--sc)}
+html[data-style=cartoon] .p2hf:not(.on){color:var(--tx)}
+/* Cartes */
+html[data-style=cartoon] :is(.card,a.shop,a.vit,.cmpc,.plan,.faq details){border-width:var(--ow);box-shadow:var(--sh2)}
+html[data-style=cartoon] a.shop .ph{border-bottom:var(--ow) solid var(--oc)}
+html[data-style=cartoon] a.vit .vl{border:var(--ows) solid var(--oc);border-radius:20px;background:var(--surface-2)}
+html[data-style=cartoon] a.vit:is(.v2,.v3){border-color:var(--oc)}
+html[data-style=cartoon] a.vit.v2{background:color-mix(in srgb,var(--c3) 24%,var(--surface-1))}
+html[data-style=cartoon] a.vit.v3{background:color-mix(in srgb,var(--c2) 30%,var(--surface-2))}
+html[data-style=cartoon] :is(.hl,a.vit.v4){border:var(--ow) solid var(--oc)!important;box-shadow:var(--sh2)}
+html[data-style=cartoon] :is(.hl,a.vit.v4)::after{inset:4px;border-radius:calc(var(--r) - 7px)}
+html[data-style=cartoon] .plan:is(.on,:has(input:checked)){border-color:var(--oc);background:color-mix(in srgb,var(--c1) 28%,var(--surface-1));box-shadow:calc(var(--px) + 2px) calc(var(--px) + 2px) 0 var(--sc)}
+html[data-style=cartoon] .plan:has(input:focus-visible){outline:3px solid var(--fc);outline-offset:3px}
+html[data-style=cartoon] a.shop.glow::after{box-shadow:0 0 0 var(--ow) var(--c1)}
+html[data-style=cartoon] .cmpc::before{display:none}
 </style>
 </head>
 <body>
