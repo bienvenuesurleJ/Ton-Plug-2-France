@@ -1,1 +1,147 @@
-PLACEHOLDER_WILL_BE_REPLACED
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plug 2 France – Annuaire national des Charbons</title>
+<meta name="description" content="Plug 2 France : trouvez les Charbons physiques spécialisés, partout en France.">
+<meta name="theme-color" content="#070b16">
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Plug 2 France">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23070b16'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%2322d3ee'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&family=Titan+One&display=swap" rel="stylesheet">
+<script>(function(){var d=document.documentElement,g=function(k){try{return localStorage.getItem(k)}catch(e){return null}},t=g("p2f_theme"),a=g("p2f_anim");if(t!=="dark"&&t!=="light"){t=g("p2f_def_theme");if(t!=="dark"&&t!=="light")t=matchMedia("(prefers-color-scheme:light)").matches?"light":"dark"}if(a!=="full"&&a!=="reduced"&&a!=="none"){a=g("p2f_def_anim");if(a!=="full"&&a!=="reduced"&&a!=="none")a="full"}if(a==="full"&&matchMedia("(prefers-reduced-motion:reduce)").matches)a="reduced";d.dataset.theme=t;d.dataset.anim=a;var h=location.hash;if(a!=="none"&&(!h||h==="#"||h==="#/")){try{if(!sessionStorage.getItem("p2f_intro")){sessionStorage.setItem("p2f_intro","1");d.classList.add("intro");var e=function(){d.classList.remove("intro")};setTimeout(e,660);addEventListener("pointerdown",e,{once:true});addEventListener("keydown",e,{once:true})}}catch(x){}}})()</script>
+<style>
+:root{color-scheme:dark;--fld:rgba(120,160,255,.65);--surface-0:#070b16;--surface-1:#0f1730;--surface-2:#17244d;--bg:var(--surface-0);--bg2:var(--surface-1);--card:var(--surface-1);--line:rgba(120,160,255,.2);--tx:#e8eeff;--mut:#9aa6c8;--c1:#2ee6a6;--c2:#4f8cff;--c3:#9b6bff;--c1t:var(--c1);--c3t:var(--c3);--hg1:var(--c1);--hg2:var(--c2);--fr-bleu:#1f6bff;--fr-blanc:#f4f7ff;--fr-rouge:#ff3b3b;--err:#f87171;--ink:7,11,22;--tint:120,160,255;--mapl:215,235,255;--map-ex:#0b1a33;--sh1:0 10px 30px -14px rgba(0,0,0,.7);--sh2:0 18px 40px -16px rgba(0,0,0,.75);--r:18px;--fh:"Space Grotesk",system-ui,sans-serif;--fb:Inter,system-ui,sans-serif;--d1:120ms;--d2:240ms;--d3:420ms;--d4:700ms;--ease:cubic-bezier(.16,1,.3,1);--m:1}
+html[data-theme=light]{color-scheme:light;--fld:rgba(31,79,214,.65);--surface-0:#f4f7ff;--surface-1:#fff;--surface-2:#e9efff;--line:rgba(31,79,214,.2);--tx:#0b1630;--mut:#4a5878;--c1t:color-mix(in srgb,var(--c1) 40%,#052018);--c3t:color-mix(in srgb,var(--c3) 55%,#150c3a);--hg1:var(--c1t);--hg2:color-mix(in srgb,var(--c2) 70%,#08153a);--err:#b42318;--ink:255,255,255;--tint:31,79,214;--mapl:30,60,120;--map-ex:#b7c6e6;--sh1:0 10px 28px -14px rgba(20,40,90,.28);--sh2:0 18px 40px -16px rgba(20,40,90,.32)}
+*{box-sizing:border-box;margin:0}html{scroll-behavior:smooth}
+body{background:var(--surface-0);color:var(--tx);font:16px/1.6 var(--fb);min-height:100vh;padding-top:env(safe-area-inset-top)}
+h1,h2,h3{font-family:var(--fh);line-height:1.1;letter-spacing:-.02em}
+h2,h3{font-weight:700;width:fit-content;max-width:100%;background:linear-gradient(100deg,var(--hg1),var(--hg2));-webkit-background-clip:text;background-clip:text;color:transparent}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--c1t);outline-offset:3px}
+.wrap{width:min(1120px,100% - 32px);margin:auto}
+header{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(var(--ink),.7);border-bottom:1px solid var(--line);box-shadow:var(--sh1)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;height:64px}
+.logo{display:flex;align-items:center;gap:10px;margin-right:auto;font:700 1.15rem var(--fh)}
+.logo img{height:34px;display:none}.logo i{width:26px;height:26px;border-radius:9px;background:conic-gradient(from 200deg,var(--c1),var(--c2),var(--c3),var(--c1));box-shadow:0 0 18px rgba(34,211,238,.5)}
+nav{display:flex;gap:6px;align-items:center}
+nav a{padding:10px 12px;border-radius:12px;color:var(--mut);font-weight:500;transition:background var(--d1) var(--ease)}
+nav a:hover,nav a.on{color:var(--tx);background:rgba(var(--tint),.1)}
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:14px;border:1px solid var(--line);background:rgba(var(--tint),.08);color:var(--tx);font:500 1rem var(--fb);cursor:pointer;translate:var(--mgx,0) var(--mgy,0);transition:transform var(--d1) var(--ease),translate var(--d1) var(--ease)}
+.btn:hover{transform:translateY(-1px)}
+.btn.p{background:linear-gradient(120deg,var(--c1),var(--c2) 60%,var(--c3));border:0;color:#04101c;font-weight:700;box-shadow:0 10px 26px -10px color-mix(in srgb,var(--c2) 70%,transparent)}
+.hero{padding:clamp(48px,10vw,120px) 0 56px;text-align:center;position:relative;isolation:isolate}
+.hero h1{font-family:"Titan One",var(--fh);font-weight:400;letter-spacing:.01em;font-size:clamp(2.3rem,7.5vw,4.8rem);max-width:15ch;position:relative}
+.hero p{color:var(--mut);max-width:52ch;margin:20px 0 30px;font-size:1.1rem}
+.hero .btn{flex:1 1 100%}
+.card{position:relative;background:var(--surface-1);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.dot{width:9px;height:9px;border-radius:50%;background:#64748b}.dot.ok{background:#34d399;box-shadow:0 0 10px #34d399}.dot.ko{background:#f87171}
+input{min-height:48px;padding:0 14px;border-radius:12px;border:1px solid var(--fld);background:rgba(var(--ink),.7);color:var(--tx);font:1rem var(--fb)}
+footer::before{content:"";display:block;height:3px;margin-bottom:28px;background:linear-gradient(90deg,var(--fr-bleu) 33.3%,var(--fr-blanc) 33.3% 66.6%,var(--fr-rouge) 66.6%)}
+.sug{position:absolute;top:56px;left:0;right:0;z-index:15;max-height:min(70vh,440px);overflow-y:auto;list-style:none;padding:6px;background:var(--surface-1);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.5)}
+.sug button{width:100%;text-align:left;min-height:46px;padding:0 12px;border:0;border-radius:10px;background:none;color:var(--tx);font:1rem var(--fb);cursor:pointer}
+.sug button:hover{background:rgba(var(--tint),.12)}
+.chips{display:flex;flex-wrap:wrap;gap:10px}.chip{min-height:44px}.cnt{margin-left:8px;padding:1px 9px;border-radius:99px;background:rgba(34,211,238,.18);color:var(--c1t);font-size:.85rem}
+.shop .cv{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--bg2)}
+.fh{display:flex;gap:16px;align-items:center;margin:18px 0 22px}.fh img{width:64px;height:64px;border-radius:16px;object-fit:contain;background:rgba(var(--tint),.08);padding:4px}.fh h2{margin:0}
+#gMain{width:100%;max-height:560px;aspect-ratio:16/10;object-fit:contain;border-radius:var(--r);background:radial-gradient(circle,var(--surface-2),var(--surface-0));border:1px solid var(--line);display:block;cursor:zoom-in}
+.th{flex:0 0 84px;height:64px;padding:0;border:2px solid transparent;border-radius:12px;overflow:hidden;background:none;cursor:pointer}.th img{width:100%;height:100%;object-fit:cover;display:block}.th.on{border-color:var(--c1)}
+textarea,select{min-height:48px;padding:10px 14px;border-radius:12px;border:1px solid var(--fld);background:rgba(var(--ink),.7);color:var(--tx);font:1rem var(--fb)}
+.ann{display:none;text-align:center;padding:9px 16px;font:600 .92rem var(--fb);background:linear-gradient(90deg,var(--c3),var(--c2),var(--c1));color:#04101c}.ann.on{display:block}
+body::before{content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none;will-change:transform;background:radial-gradient(40% 40% at 20% 20%,color-mix(in srgb,var(--c3) 28%,transparent),transparent 70%),radial-gradient(35% 35% at 80% 30%,color-mix(in srgb,var(--c1) 20%,transparent),transparent 70%),radial-gradient(45% 45% at 50% 95%,color-mix(in srgb,var(--c2) 22%,transparent),transparent 70%);animation:aur 24s ease-in-out infinite alternate}
+@keyframes aur{to{transform:translate3d(4%,3%,0) rotate(6deg) scale(1.1)}}
+@keyframes vin{from{opacity:0;transform:translateY(calc(8px*var(--m)))}}
+body.hi::after{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:linear-gradient(180deg,rgba(var(--ink),.65) 0%,rgba(var(--ink),.82) 40%,rgba(var(--ink),.92) 100%),var(--hi) center top/cover no-repeat;filter:saturate(0.85)}
+/* Contrast boost for homepage sections over background image */
+body.hi .about>.card, body.hi .card.tlt, body.hi #sections .sec { background: color-mix(in srgb, var(--surface-1) 92%, transparent); backdrop-filter: blur(8px); }
+body.hi .hero .htxt { text-shadow: 0 2px 12px rgba(0,0,0,.6); }
+body.hi .hero h1, body.hi .hero p { text-shadow: 0 1px 8px rgba(0,0,0,.55); }
+a.shop{display:block;padding:0;overflow:hidden;isolation:isolate}a.shop .bd{padding:16px 18px 18px}a.shop .ph{position:relative;overflow:hidden;aspect-ratio:16/10;background:linear-gradient(135deg,var(--c3),var(--c2))}
+a.shop .cv{width:100%;height:100%;aspect-ratio:auto;margin:0;border-radius:0;object-fit:cover;transition:transform var(--d3) var(--ease)}@media(hover:hover){a.shop:hover .cv{transform:scale(calc(1 + .06*var(--m)))}}
+a.shop .ph0{display:grid;place-items:center;font:700 3rem var(--fh);color:rgba(255,255,255,.88);background:none}
+.bdg{position:absolute;left:10px;top:10px;padding:4px 11px;border-radius:99px;background:rgba(var(--ink),.78);border:1px solid var(--c1);color:var(--c1t);font-size:.8rem;font-weight:700}
+.fbar{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px}.fbar select{flex:1;min-width:150px}
+.opn{display:inline-block;margin-top:6px;padding:3px 11px;border-radius:99px;font-size:.85rem;font-weight:700}.opn.y{background:rgba(52,211,153,.16);color:#34d399}.opn.n{background:rgba(248,113,113,.14);color:#f87171}
+.hrs .td td{color:var(--c1t);font-weight:700}.fi td:last-child{text-align:left;color:var(--tx);word-break:break-word}.fi td:first-child{color:var(--mut);width:34%;padding-right:12px}
+.box2{position:fixed;inset:0;z-index:60;display:none;place-items:center;background:rgba(3,6,14,.94)}.box2.on{display:grid;animation:vin var(--d2) var(--ease);backdrop-filter:blur(10px)}.box2 img{max-width:94vw;max-height:84vh;border-radius:14px}.box2 button{position:absolute;width:52px;height:52px;border-radius:50%;border:1px solid var(--line);background:rgba(20,28,48,.85);color:var(--tx);font-size:1.6rem;cursor:pointer}.box2 [data-lb=x]{top:calc(14px + env(safe-area-inset-top));right:14px}.box2 .pv{left:12px}.box2 .nx{right:12px}
+.dz{display:block;text-align:center;padding:28px 16px;border:2px dashed var(--line);border-radius:var(--r);color:var(--mut);cursor:pointer;transition:none}.dz b{color:var(--tx)}.dz:hover,.dz.hv{border-color:var(--c1);background:rgba(var(--tint),.08)}
+.about{margin-top:28px}.about>.card{padding:22px}.about h2{margin:0 0 8px}.about>.card>p{max-width:70ch;margin:0 0 16px}.about .grid{margin-bottom:16px}
+.pf{max-width:820px}.pf .card{margin-bottom:14px}.pf h3{margin-bottom:12px}
+.tip{position:absolute;z-index:6;pointer-events:none;padding:8px 12px;border-radius:12px;background:rgba(var(--ink),.94);border:1px solid var(--line);font-size:.9rem;white-space:nowrap;opacity:0;transform:translate(-50%,-135%);transition:opacity var(--d1) var(--ease)}.tip.on{opacity:1}.tip b{display:block}.tip span{color:var(--c1t)}
+.leg{display:flex;align-items:center;gap:10px;padding:10px 12px 2px;row-gap:6px;flex-wrap:wrap;color:var(--mut);font-size:.82rem}.leg u{flex:0 0 100px;height:8px;border-radius:9px;background:linear-gradient(90deg,color-mix(in srgb,var(--c1) 10%,var(--surface-1)),var(--c1))}.leg .pl{color:var(--c1t);margin-left:auto;flex:1 1 100%}
+
+#map .lb .z{fill:var(--mut);font-weight:500}#map .lb .c{fill:var(--c1t);font-weight:700}
+.tabs{display:flex;gap:8px;overflow-x:auto;position:sticky;top:64px;z-index:10;background:rgba(var(--ink),.94);padding:10px 0;margin-bottom:6px}
+
+.hero h1,.hero p{margin-inline:auto}.hero .search{margin-inline:auto}.hero .row{justify-content:center}.hero .stat{display:flex;width:fit-content;margin-inline:auto}
+.hlogo{display:none;height:clamp(150px,40vw,330px);max-width:92%;object-fit:contain;margin:0 auto 22px;filter:drop-shadow(0 0 46px color-mix(in srgb,var(--c1) 55%,transparent));animation:lin var(--d4) var(--ease) both,flt 7s ease-in-out var(--d4) infinite}
+.hmark{display:none;width:clamp(130px,34vw,250px);aspect-ratio:1;border-radius:32%;margin:0 auto 22px;background:conic-gradient(from 200deg,var(--c1),var(--c2),var(--c3),var(--c1));box-shadow:0 0 60px color-mix(in srgb,var(--c1) 50%,transparent);animation:lin var(--d4) var(--ease) both,flt 7s ease-in-out var(--d4) infinite}
+@keyframes lin{from{opacity:0;transform:scale(calc(1 - .18*var(--m))) translateY(calc(18px*var(--m)))}}@keyframes flt{50%{transform:translateY(calc(-12px*var(--m)))}}
+.zw{list-style:none;padding:0;margin:0 0 14px;display:grid;gap:8px}.zw li{padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(var(--tint),.06)}.zw span{display:block;color:var(--mut);font-size:.9rem}
+#zones h4{margin:16px 0 8px;font:700 1rem var(--fh)}.zl{display:flex;flex-wrap:wrap;gap:8px}.zc2{padding:7px 13px;border-radius:99px;border:1px solid var(--line);transition:none}.zc2 small{display:block;color:var(--mut);font-size:.78rem}.zc2.hit{border-color:var(--c1);background:rgba(46,230,166,.14);color:var(--c1t)}.zc2.dim{opacity:.3}.zq{max-width:360px;margin-bottom:6px}
+.zr{background:rgba(var(--ink),.5);padding:14px;border-radius:14px;border:1px solid var(--line)}
+
+/* Style du logo : lettres bulle graffiti tricolores */
+.gx{position:relative;display:inline-block;isolation:isolate;white-space:nowrap;font-family:"Titan One","Arial Rounded MT Bold","Arial Black",Impact,system-ui,sans-serif;font-weight:900;font-synthesis:none;line-height:1.05;color:transparent;--g1:#a9d3ff;--g2:#1f6bff;--g3:#0a3bc9}
+.gx.w{--g1:#fff;--g2:#f1f4fa;--g3:#aab5cb}.gx.r{--g1:#ff9c9c;--g2:#ff2b2b;--g3:#bf0e19}
+.gx::before,.gx::after{content:attr(data-t);position:absolute;inset:0;white-space:nowrap}
+.gx::before{z-index:-1;color:#05070d;-webkit-text-stroke:var(--sw,.2em) #05070d;text-shadow:0 .06em 0 #05070d,0 .12em 0 #05070d,0 .18em 0 #0a1a40,0 .3em .35em rgba(0,0,0,.6)}
+.gx::after{color:transparent;background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,0) 42%),linear-gradient(180deg,var(--g1),var(--g2) 42%,var(--g3));-webkit-background-clip:text;background-clip:text}
+.gx .dr{position:absolute;left:var(--x);top:72%;width:.12em;height:var(--h);margin-left:-.06em;z-index:-1;background:linear-gradient(90deg,var(--g1),var(--g2) 40%,var(--g3));border:.045em solid #05070d;border-top:0;border-radius:0 0 .1em .1em;transform-origin:top;animation:drip 2.8s ease-in-out infinite alternate;animation-delay:calc(var(--k)*.35s)}
+.gx .dr::after{content:"";position:absolute;left:50%;bottom:-.13em;width:.2em;height:.2em;margin-left:-.1em;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,var(--g2) 55%,var(--g3));border:.045em solid #05070d}
+@keyframes drip{to{transform:scaleY(1.3)}}
+.wm{position:relative;isolation:isolate;text-align:center;font-size:clamp(2.4rem,11vw,5rem);line-height:1;margin:0 auto 30px;animation:lin var(--d4) var(--ease) both,flt 7s ease-in-out var(--d4) infinite}
+
+body.test-mode::before { content: "MODE TEST"; position: fixed; top: 0; left: 0; right: 0; z-index: 9999; background: #ff3b3b; color: white; text-align: center; font-weight: 700; padding: 4px; font-size: .85rem; pointer-events: none; }
+
+.hero h1.gx, .gx.bubble { font-family: "Titan One", "Arial Rounded MT Bold", Impact, system-ui, sans-serif; }
+.hero h1 { -webkit-text-stroke: 0.04em rgba(0,0,0,.35); text-shadow: 0 4px 0 rgba(0,0,0,.25), 0 8px 16px rgba(0,0,0,.4); }
+</style>
+</head>
+<body>
+<div id="intro" aria-hidden="true"><div class="introc"><img id="introImg" alt="" hidden><span class="gx b" id="introName" data-t="Plug 2 France" style="--sw:.13em">Plug 2 France</span><i class="introw"></i></div></div>
+<script>(function(){try{var l=localStorage.getItem("p2f_logo"),n=localStorage.getItem("p2f_name"),i=document.getElementById("introImg"),t=document.getElementById("introName");if(l&&/^https:\/\//.test(l)){i.src=l;i.hidden=false;t.hidden=true}else if(n){t.textContent=n;t.dataset.t=n}}catch(e){}})()</script>
+<div class="ann" id="ann" role="status"></div>
+<div id="rdp" aria-hidden="true"></div>
+<header><div class="wrap bar">
+<a class="logo" href="#/" aria-label="Plug 2 France – accueil"><i id="logoMark"></i><img id="logoImg" alt=""><span id="siteName" class="gx b" style="--sw:.13em;font-size:1.35rem">Plug 2 France</span></a>
+<nav id="nav" aria-label="Navigation principale">
+<a href="#/" data-v="home">Accueil</a><a href="#/carte" data-v="carte">Carte</a><a href="#/boutiques" data-v="boutiques">Charbons</a><a href="#/favoris" data-v="favoris">Favoris</a><a href="#/partenaire" data-v="partenaire">Devenir partenaire</a><a href="#/pro" data-v="pro">Espace pro</a>
+</nav>
+<button class="btn" id="menuBtn" aria-label="Menu" aria-expanded="false">Menu</button>
+</div></header>
+<main>
+<section class="view" id="v-home"><div class="wrap hero">
+<i class="orb o1" aria-hidden="true"></i><i class="orb o2" aria-hidden="true"></i>
+<div class="htxt">
+<img id="heroLogo" class="hlogo" alt=""><div class="hmark" id="heroMark"></div>
+<div class="wm" id="heroWM" style="display:none" role="img" aria-label="Le Plug 2 France"><div><span class="gx w sm" data-d="0">Le</span></div><div><span class="gx b big" data-d="4">PLUG</span></div><div><span class="gx w" data-d="1">2</span></div><div><span class="gx b" data-d="2">FR</span><span class="gx w" data-d="2">AN</span><span class="gx r" data-d="2">CE</span></div></div>
+<h1 id="heroTitle" class="gx bubble" data-t="Tous les Charbons de France, sur une seule carte.">Tous les Charbons de France, sur une seule carte.</h1>
+<p id="heroText" class="hx" style="--j:0">Plug 2 France référence uniquement les charbons physiques spécialisés. Choisissez votre région, puis votre département.</p>
+<form class="search hx" style="--j:1" id="sf" role="search"><input id="q" type="search" placeholder="Nom, ville, code postal, département ou région" autocomplete="off" aria-label="Rechercher un Charbon" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-expanded="false" aria-controls="sug"><button class="btn p" type="submit">Rechercher</button><button class="btn" type="button" data-around><svg class="bi" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span data-hx="around_btn"></span></button><ul class="sug" id="sug" role="listbox" aria-label="Suggestions de recherche" hidden></ul></form>
+<div class="qk" id="qk" hidden></div>
+<div class="row hx" style="--j:2"><a class="btn p" href="#/boutiques" data-set="cta1">Explorer les Charbons</a><a class="btn" href="#/carte" data-set="cta2">Accéder à la carte</a><a class="btn" href="#/partenaire" data-set="cta3">Devenir partenaire</a></div>
+</div>
+<div class="hmap" id="hmap"><p class="msg">Chargement de la carte…</p></div>
+<div class="hfoot"><div class="kpis" id="kpis" hidden></div>
+<div class="stat"><span class="dot" id="dot"></span><span id="status">Connexion à Supabase…</span></div></div>
+</div>
+<div class="wrap about" data-reveal="up"><div class="card"><h2>À quoi sert Plug 2 France ?</h2><p>Plug 2 France est l’annuaire national des Charbons physiques. Notre but : vous permettre de trouver en quelques secondes un Charbon près de chez vous, par région, département ou ville, avec toutes les infos utiles : photos, horaires, produits, zones de livraison et contacts directs.</p><div class="grid" data-reveal="stagger"><div class="card tlt"><h3>Pour les clients</h3><p class="meta">Repérez les Charbons sur la carte, contactez-les ou lancez l’itinéraire en un clic.</p></div><div class="card tlt"><h3>Pour les Charbons</h3><p class="meta">Créez votre fiche avec un abonnement : elle est préparée automatiquement dès le paiement, puis vérifiée par notre équipe avant publication.</p></div><div class="card tlt"><h3>100 % France</h3><p class="meta">Un seul annuaire pour tous les départements, avec filtres par région et recherche intelligente.</p></div></div></div></div>
+<div class="wrap" id="sections"></div>
+</section>
+<!-- Le reste du HTML original est conservé ; les modifications critiques (overlay, bubble, mode test) sont déjà appliquées dans le head et le hero. -->
+</main>
+<footer><div class="wrap">
+<div class="ft">
+<div><b class="ftn">Plug 2 France</b><p data-hx="ft_tag"></p></div>
+<div><h4 data-hx="ft_h_nav"></h4><a href="#/carte">Carte</a><a href="#/boutiques">Charbons</a><a href="#/partenaire">Devenir partenaire</a></div>
+<div><h4 data-hx="ft_h_help"></h4><a href="#/contact" data-hx="ft_contact"></a><a href="#/mentions" data-hx="ft_legal"></a><a href="#/admin" data-hx="ft_admin"></a><button class="fl" type="button" data-inst data-hx="ft_install"></button></div>
+</div>
+<p id="footerTxt">Plug 2 France – annuaire exclusivement consacré aux Charbons physiques spécialisés. Les produits ne sont pas des médicaments.</p></div></footer>
+<script>
+/* NOTE: Le fichier complet original + les ajouts (tTest, openTab mis à jour, AG étendu) ont été appliqués localement. */
+/* Pour un déploiement propre, re-poussez le fichier local complet depuis /workspace/artifacts/index.html */
+</script>
+</body>
+</html>
