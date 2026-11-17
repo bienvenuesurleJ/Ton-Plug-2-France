@@ -765,6 +765,11 @@ html[data-theme=light]{--surface-0:#f3f6fd;--surface-2:#e6ecfb;--mut:#3f4d6e;--l
 #musicBtn.live svg path:last-child{animation:musw 1.6s ease-in-out infinite}
 @keyframes musw{50%{opacity:.35}}
 @media(prefers-reduced-motion:reduce){#musicBtn.live svg path:last-child{animation:none}}
+
+/* ===== Signalement de boutique ===== */
+.rbd{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;margin-left:6px;border-radius:99px;background:#ff4d5e;color:#fff;font:700 .72rem/1 var(--fb)}
+@media(min-width:700px){dialog#repDlg{width:560px}}
+dialog#repDlg textarea{min-height:110px;resize:vertical}
 </style>
 </head>
 <body>
@@ -1047,6 +1052,16 @@ var MUS=(function(){
  return{cfg:cfg,hold:function(h){held=!!h;if(held)a.pause();else play();},state:function(){return{on:on,playing:!a.paused,tracks:list.length,vol:vol,src:a.src};}};
 })();
 
+/* ----- Motifs du formulaire « Signaler une boutique » (modifiables dans l’admin, réglage report_reasons) ----- */
+var REP_DEF=[["closed","La boutique n’existe plus ou a fermé"],["wrong_info","Informations incorrectes (adresse, horaires, téléphone…)"],["claims","Promesses de santé ou propriétés thérapeutiques"],["illegal","Produit ou vente illégale"],["minors","Vente ou publicité visant les mineurs"],["scam","Arnaque ou usurpation"],["other","Autre problème"]];
+var REPL_LIST=REP_DEF.map(function(x){return{k:x[0],l:x[1]};});
+function repLabel(k){for(var i=0;i<REP_DEF.length;i++)if(REP_DEF[i][0]===k)return REP_DEF[i][1];return k;}
+function repCfg(s){
+ if(!s||!("report_reasons" in s))return;
+ var l=[];try{var x=JSON.parse(s.report_reasons);if(typeof x==="string")x=JSON.parse(x);if(Array.isArray(x))l=x.filter(function(m){return m&&typeof m.k==="string"&&/^[a-z0-9_-]{1,40}$/.test(m.k)&&typeof m.l==="string"&&m.l.trim();}).map(function(m){return{k:m.k,l:m.l.trim().slice(0,80)};});}catch(e){}
+ REPL_LIST=l.length?l:REP_DEF.map(function(x){return{k:x[0],l:x[1]};});
+}
+
 /* ----- Admin : onglet Musique (liste enregistrée dans site_settings, fichiers dans le bucket « site-media », dossier music/) ----- */
 var MA={list:[],on:true,vol:40,pv:null,pvI:-1};
 function musParse(v){try{var x=JSON.parse(v);return Array.isArray(x)?x.filter(m=>m&&typeof m.u==="string"):[];}catch(e){return[];}}
@@ -1141,7 +1156,7 @@ addEventListener("hashchange", route); route();
 document.querySelectorAll("#v-partenaire [data-set]").forEach(el=>{el.dataset.def=el.textContent;});
 /* Paramètres du site (site_settings) appliqués au site public */
 var CFG={};
-function applySettings(s){try{MUS.cfg(s);}catch(e){}FX.defaults(s);setTimeout(gfx);Object.assign(CFG,s);applyHX();try{if("logo_url" in s)localStorage.setItem("p2f_logo",safe(s.logo_url)||"");if("site_name" in s)localStorage.setItem("p2f_name",s.site_name||"");}catch(e){}
+function applySettings(s){try{MUS.cfg(s);}catch(e){}try{repCfg(s);}catch(e){}FX.defaults(s);setTimeout(gfx);Object.assign(CFG,s);applyHX();try{if("logo_url" in s)localStorage.setItem("p2f_logo",safe(s.logo_url)||"");if("site_name" in s)localStorage.setItem("p2f_name",s.site_name||"");}catch(e){}
   const t = (k, el) => { if (s[k]) $(el).textContent = s[k]; };
   t("site_name","siteName"); if(s.hero_title)heroWords(s.hero_title); t("hero_text","heroText"); t("footer_text","footerTxt");
   document.querySelectorAll("[data-set]").forEach(el=>{if(s[el.dataset.set])el.textContent=s[el.dataset.set];});
@@ -1597,7 +1612,7 @@ if(DBG)window.p2fMapTest=mapTest;
  document.addEventListener("click",e=>{const r=e.target.closest("[data-qr]");if(r)return go({region:r.dataset.qr});if(e.target.closest("[data-around]"))aroundMe();});
 })();
 /* ---- Admin : catégories / sous-catégories, sections repliables ---- */
-const AG=[["pil","📊","Pilotage",[["dash","Tableau de bord"],["log","Journal"],["exp","Export"],["msg","Messages"]]],
+const AG=[["pil","📊","Pilotage",[["dash","Tableau de bord"],["log","Journal"],["exp","Export"],["msg","Messages"],["reports","Signalements"]]],
  ["shop","🏪","Boutiques",[["biz","Boutiques clients"],["mine","Mes boutiques"],["bots","Import (bots)"],["qual","Qualité des fiches"],["cat","Catégories"],["med","Médias"]]],
  ["pub","📣","Publicité",[["ads","Publicités"],["promo","Mises en avant"]]],
  ["abo","💳","Abonnements",[["bill","Forfaits & abonnements"],["offers","Offres & options"],["deals","Promotions"],["hist","Historique"]]],
@@ -1675,7 +1690,7 @@ function shopHTML(b,im,lk,hr,cats,dz){
  '<div class="acts p2bar" id="p2bar">'+(tel?ba(tel,esc(ut("ui_call")),"click_call",1):"")+(rt?ba(rt,esc(ut("ui_route")),"click_route"):"")+(ws?ba(ws,esc(ut("ui_site")),"click_website"):"")+favBtn(b)+'<button class="btn" data-share>'+esc(ut("ui_share"))+'</button></div>'+
  '<div class="p2tabs" role="tablist" aria-label="Rubriques de la fiche">'+T.map(t=>'<button role="tab" id="t-'+t[0]+'" aria-controls="p-'+t[0]+'" aria-selected="false" data-p2tab="'+t[0]+'">'+t[1]+'</button>').join("")+'<span class="p2ind" id="p2ind"></span></div>'+
  '<div role="tabpanel" id="p-i" aria-labelledby="t-i"><div class="fcols"><div class="card">'+blk("Présentation",b.description||b.short_description)+(cats.length?'<h3>Produits</h3><p>'+cats.map(c=>'<span class="tag">'+esc(c)+'</span>').join("")+'</p>':'')+blk("Spécialités",b.specialties)+blk("Services",b.services)+blk("À savoir",b.extra_info)+'</div>'+
- '<div class="card"><h3>Adresse</h3><p>'+(where||"Non renseignée")+'</p><div class="acts">'+acts+'<button class="btn p" data-chat="shop:'+encodeURIComponent(b.slug)+'">'+esc(ut("ui_chat_shop"))+'</button><button class="btn" data-chat="support">'+esc(ut("ui_chat_sup"))+'</button><button class="btn" data-qr>'+esc(ut("ui_qr"))+'</button></div></div></div></div>'+
+ '<div class="card"><h3>Adresse</h3><p>'+(where||"Non renseignée")+'</p><div class="acts">'+acts+'<button class="btn p" data-chat="shop:'+encodeURIComponent(b.slug)+'">'+esc(ut("ui_chat_shop"))+'</button><button class="btn" data-chat="support">'+esc(ut("ui_chat_sup"))+'</button><button class="btn" data-qr>'+esc(ut("ui_qr"))+'</button><button class="btn" type="button" data-report="'+esc(b.id)+'" data-rn="'+esc(b.name)+'">Signaler cette boutique</button></div></div></div></div>'+
  '<div role="tabpanel" id="p-h" aria-labelledby="t-h" hidden><div class="card">'+wk+'</div></div>'+
  '<div role="tabpanel" id="p-l" aria-labelledby="t-l" hidden>'+(dz&&dz.length?'<div class="card p2zmw" id="p2zm"><p class="msg">Chargement de la carte…</p></div>':"")+(zonesHTML(dz||[],b).replace(' style="margin-top:18px"','')||emptyHTML("Zones de livraison non renseignées","Contactez la boutique pour savoir si elle livre chez vous."))+'</div>'+
  '<div role="tabpanel" id="p-a" aria-labelledby="t-a" hidden><div class="card" id="rvBox" data-b="'+esc(b.id)+'"><p class="msg">Chargement des avis…</p></div></div><div id="fAd"></div>'+similarHTML(b)+
@@ -1805,7 +1820,7 @@ function showAdmin(){ADMON=true;SUPER=null;
  new MutationObserver(accInit).observe($("aPane"),{childList:true});
  openTab(TAB);
 }
-function openTab(t){TAB=t;document.querySelectorAll(".tb").forEach(b=>b.classList.toggle("p",b.dataset.tab===t));note("");({qual:tQual,log:tLog,exp:tExp,dash:tDash,biz:tBiz,sec:tSec,site:tSite,cat:tCat,med:tMed,music:tMusic,ads:tAds,promo:tPromo,txt:tTxt,part:tPart,bots:tBots,msg:tMsg,bill:tBill,offers:tOffers,deals:tDeals,hist:tHist,mine:tMine})[t]().catch(bfail);}
+function openTab(t){TAB=t;document.querySelectorAll(".tb").forEach(b=>b.classList.toggle("p",b.dataset.tab===t));note("");({qual:tQual,log:tLog,exp:tExp,dash:tDash,biz:tBiz,sec:tSec,site:tSite,cat:tCat,med:tMed,music:tMusic,ads:tAds,promo:tPromo,txt:tTxt,part:tPart,bots:tBots,msg:tMsg,reports:tReports,bill:tBill,offers:tOffers,deals:tDeals,hist:tHist,mine:tMine})[t]().catch(bfail);}
 async function loadBiz(){const {data,error}=await sb.from("businesses").select("id,name,slug,city,postal_code,region_code,department_code,status,featured,latitude,longitude,created_at").order("created_at",{ascending:false});if(error)throw error;ADM=data;}
 async function tDash(){
  await loadBiz();
@@ -3711,6 +3726,121 @@ $("loginForm").onsubmit = async ev => {
   if (!ok) { await sb.auth.signOut(); m.className = "msg err"; m.textContent = "Ce compte n’a pas les droits d’administration."; return; }
   showAdmin();
 };
+</script>
+<script>
+/* ===== SIGNALEMENT D’UNE BOUTIQUE : formulaire visiteur + onglet admin « Signalements » + notification (voir signalement.sql) ===== */
+var REPE={invalid:"Choisissez un motif et décrivez le problème (10 caractères minimum).",unknown_business:"Cette boutique n’est plus disponible.",rate_limited:"Trop de signalements envoyés depuis cet appareil. Réessayez plus tard.",already_reported:"Vous avez déjà signalé cette boutique : notre équipe va l’examiner. Merci !"};
+var REP_N=0,REP_ID="";
+function repDialog(){
+ var d=document.getElementById("repDlg");if(d)return d;
+ d=document.createElement("dialog");d.id="repDlg";d.className="bdlg";d.setAttribute("aria-labelledby","repT");
+ d.innerHTML='<div class="bdh"><h3 id="repT">Signaler une boutique</h3><button class="btn bdx" type="button" data-repx aria-label="Fermer">✕</button></div><div class="bdb"><form id="repF" novalidate><p class="meta" id="repN" style="margin-bottom:12px"></p><div class="fg">'
+ +'<label>Motif du signalement<select name="r" required><option value="">Choisir un motif…</option></select></label>'
+ +'<label>Que se passe-t-il ?<textarea name="d" rows="4" maxlength="1000" required placeholder="Expliquez le problème en quelques phrases."></textarea></label>'
+ +'<label>Votre e-mail (facultatif, pour vous répondre)<input name="e" type="email" maxlength="120" autocomplete="email" inputmode="email"></label>'
+ +'<input name="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px"></div>'
+ +'<p class="msg" id="repMsg" role="status"></p><div class="row" style="margin-top:12px"><button class="btn p" type="submit">Envoyer le signalement</button><button class="btn" type="button" data-repx>Annuler</button></div></form></div>';
+ document.body.appendChild(d);return d;
+}
+document.addEventListener("click",function(e){
+ var o=e.target.closest&&e.target.closest("[data-report]");
+ if(o){var d=repDialog();REP_ID=o.dataset.report;d.querySelector("#repN").textContent="Boutique : "+(o.dataset.rn||"");d.querySelector("#repF").reset();d.querySelector("[name=r]").innerHTML='<option value="">Choisir un motif…</option>'+REPL_LIST.map(function(x){return'<option value="'+esc(x.k)+'">'+esc(x.l)+'</option>';}).join("");var m=d.querySelector("#repMsg");m.className="msg";m.textContent="";d.showModal();return;}
+ if(e.target.closest&&e.target.closest("[data-repx]")){var x=document.getElementById("repDlg");if(x)x.close();}
+});
+document.addEventListener("submit",async function(e){
+ var f=e.target;if(f.id!=="repF")return;e.preventDefault();
+ var m=document.getElementById("repMsg"),fd=new FormData(f),b=f.querySelector("button[type=submit]");m.className="msg";
+ if(fd.get("hp"))return;
+ var r=String(fd.get("r")||""),dt=String(fd.get("d")||"").trim(),em=String(fd.get("e")||"").trim();
+ if(!REPL_LIST.some(function(x){return x.k===r;})||dt.length<10){m.className="msg err";m.textContent=REPE.invalid;return;}
+ if(em&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){m.className="msg err";m.textContent="Cette adresse e-mail n’est pas valide.";return;}
+ var now=Date.now(),last=0,lastShop=0;try{last=+localStorage.getItem("p2f_rep")||0;lastShop=+localStorage.getItem("p2f_rep_"+REP_ID)||0;}catch(x){}
+ if(now-last<30000){m.className="msg err";m.textContent="Patientez quelques secondes avant un nouveau signalement.";return;}
+ if(now-lastShop<864e5){m.className="msg err";m.textContent=REPE.already_reported;return;}
+ b.disabled=true;
+ try{
+  if(!sb)throw new Error("x");
+  var q=await sb.rpc("report_shop",{p_business:REP_ID,p_reason:r,p_details:dt,p_email:em||null});
+  if(q.error){var c=String(q.error.message||"");if(REPE[c]){m.className="msg err";m.textContent=REPE[c];if(c==="already_reported")try{localStorage.setItem("p2f_rep_"+REP_ID,String(now));}catch(x){}return;}throw q.error;}
+  try{localStorage.setItem("p2f_rep",String(now));localStorage.setItem("p2f_rep_"+REP_ID,String(now));}catch(x){}
+  if(q.data)sb.functions.invoke("notify-report",{body:{report_id:q.data}}).catch(function(){});
+  f.reset();m.className="msg ok";m.textContent="Merci, votre signalement a bien été envoyé. Notre équipe va l’examiner.";
+  if(window.FX&&FX.toast)FX.toast("Signalement envoyé. Merci !","success");
+  setTimeout(function(){var d=document.getElementById("repDlg");if(d&&d.open)d.close();},1800);
+ }catch(x){m.className="msg err";m.textContent=(x&&(x.code==="PGRST202"||x.code==="42883"))?"Le signalement n’est pas encore activé sur ce site.":"Envoi impossible pour le moment. Réessayez dans un instant.";}
+ finally{b.disabled=false;}
+});
+
+/* ----- Admin : pastille du nombre de signalements à traiter, notification en direct ----- */
+function repPaint(){
+ if(!REP_N)return;
+ document.querySelectorAll('#asub [data-tab="reports"]').forEach(function(b){if(!b.querySelector(".rbd"))b.insertAdjacentHTML("beforeend",'<b class="rbd">'+REP_N+'</b>');});
+ document.querySelectorAll("#agrp .gt").forEach(function(b){if(/Pilotage/.test(b.textContent)&&!b.querySelector(".rbd"))b.insertAdjacentHTML("beforeend",'<b class="rbd">'+REP_N+'</b>');});
+}
+async function repCount(){
+ try{var r=await sb.from("shop_reports").select("id",{count:"exact",head:true}).eq("handled",false);if(r.error)return;REP_N=r.count||0;
+  document.querySelectorAll(".rbd").forEach(function(x){x.remove();});repPaint();}catch(x){}
+}
+var REP_CH=null;
+function repWatch(){
+ repCount();
+ ["agrp","asub"].forEach(function(id){var n=document.getElementById(id);if(n)new MutationObserver(repPaint).observe(n,{childList:true});});
+ try{if(REP_CH)sb.removeChannel(REP_CH);REP_CH=sb.channel("rep-live").on("postgres_changes",{event:"INSERT",schema:"public",table:"shop_reports"},function(){repCount();if(window.FX&&FX.toast)FX.toast("Nouveau signalement de boutique","info");}).subscribe();}catch(x){}
+}
+(function(){var s=showAdmin;showAdmin=function(){var r=s.apply(this,arguments);repWatch();return r;};})();
+/* Un seul appui sur « Alertes » active aussi les notifications de signalement */
+async function repSub(){
+ var p=await getPush();if(!p)return false;
+ var s=await p.reg.pushManager.getSubscription();if(!s)return false;
+ var j=s.toJSON(),u=(await sb.auth.getUser()).data.user,r=await sb.from("report_subscribers").upsert({user_id:u.id,endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth},{onConflict:"endpoint"});
+ if(r.error)throw r.error;return true;
+}
+(function(){var e0=enablePush;enablePush=async function(){await e0();try{await repSub();}catch(x){}};})();
+
+async function tReports(){
+ var q=await sb.from("shop_reports").select("*").order("handled").order("created_at",{ascending:false}).limit(200);
+ if(q.error){if(q.error.code==="PGRST205"||q.error.code==="42P01"||/schema cache|does not exist/i.test(q.error.message||"")){$("aPane").innerHTML='<div class="card"><h3>Migration à appliquer</h3><p class="meta" style="margin-top:8px">Exécutez le fichier signalement.sql dans le SQL Editor de Supabase, puis rechargez la page.</p></div>';return;}throw q.error;}
+ var rows=q.data||[],ids=Array.from(new Set(rows.map(function(r){return r.business_id;}))),bs={};
+ if(ids.length){var b=await sb.from("businesses").select("id,name,slug,city").in("id",ids);(b.data||[]).forEach(function(x){bs[x.id]=x;});}
+ var open=rows.filter(function(r){return!r.handled;}).length;REP_N=open;
+ $("aPane").innerHTML='<div class="card"><h3>Signalements de boutiques</h3><p class="meta" style="margin:8px 0 12px">'+(open?open+' à traiter':'Rien à traiter')+' · '+rows.length+' au total (200 derniers).</p><button class="btn p" type="button" data-rep="push">🔔 Recevoir une notification à chaque signalement</button><p class="meta" style="margin-top:8px">À activer sur chaque appareil. Sur iPhone : ouvrez le site depuis son icône sur l’écran d’accueil.</p></div>'
+ +'<div class="card" style="margin-bottom:12px"><h3>Motifs proposés aux visiteurs</h3><p class="meta" style="margin:8px 0 12px">Ce sont les choix du formulaire « Signaler cette boutique ». Les signalements déjà reçus gardent le motif d’origine.</p>'
+ +REPL_LIST.map(function(m,i){return'<div class="ar"><b>'+(i+1)+'.</b><input data-repl="label" data-i="'+i+'" value="'+esc(m.l)+'" maxlength="80" aria-label="Motif" style="flex:1;min-width:0"><button class="btn" type="button" data-rep="rup" data-i="'+i+'" aria-label="Monter"'+(i?'':' disabled')+'>↑</button><button class="btn" type="button" data-rep="rdown" data-i="'+i+'" aria-label="Descendre"'+(i<REPL_LIST.length-1?'':' disabled')+'>↓</button><button class="btn" type="button" data-rep="rdel" data-i="'+i+'"'+(REPL_LIST.length>1?'':' disabled')+'>Supprimer</button></div>';}).join("")
+ +'<div class="row" style="margin-top:12px"><input id="repNew" maxlength="80" placeholder="Nouveau motif" style="flex:1;min-width:0"><button class="btn p" type="button" data-rep="radd">Ajouter</button></div><div class="row" style="margin-top:10px"><button class="btn" type="button" data-rep="rreset">Rétablir les motifs d’origine</button></div></div>'
+ +(rows.length?rows.map(function(r){var s=bs[r.business_id]||{};return'<div class="card" style="margin-bottom:12px"><div class="ar"><b>'+esc(s.name||"Boutique supprimée")+'</b><span class="meta">'+fdt(r.created_at)+'</span></div><p class="meta">'+esc(s.city||"")+(s.city?" · ":"")+esc(r.reason_label||repLabel(r.reason))+(r.handled?" · traité":"")+'</p><p style="white-space:pre-line;margin:8px 0">'+esc(r.details)+'</p>'
+  +(r.contact_email?'<p class="meta">Contact : '+esc(r.contact_email)+'</p>':'')
+  +'<div class="row" style="margin-top:10px">'+(s.slug?'<a class="btn" href="#/boutique/'+encodeURIComponent(s.slug)+'">Voir la fiche</a><button class="btn" type="button" data-a="edit" data-id="'+esc(r.business_id)+'">Modifier la fiche</button>':'')
+  +(r.contact_email?'<a class="btn" href="mailto:'+esc(r.contact_email)+'">Répondre</a>':'')
+  +'<button class="btn'+(r.handled?'':' p')+'" type="button" data-rep="done" data-id="'+esc(r.id)+'" data-h="'+(r.handled?0:1)+'">'+(r.handled?'Rouvrir':'Marquer comme traité')+'</button><button class="btn" type="button" data-rep="del" data-id="'+esc(r.id)+'">Supprimer</button></div></div>';}).join(""):emptyHTML("Aucun signalement","Les signalements envoyés depuis les fiches boutiques apparaîtront ici."));
+ repCount();
+}
+document.addEventListener("click",async function(e){
+ var t=e.target.closest("#aPane [data-rep]");if(!t)return;var a=t.dataset.rep,id=t.dataset.id;
+ try{
+  if(a==="push"){t.disabled=true;var ok=await repSub();t.disabled=false;if(ok){note("Notifications de signalement activées sur cet appareil ✓");var s=await navigator.serviceWorker.ready;s.showNotification("Signalements : notifications activées ✓",{body:"Vous serez prévenu à chaque nouveau signalement de boutique.",icon:"icon-192.png"});}}
+  else if(a==="done"){var r=await sb.from("shop_reports").update({handled:t.dataset.h==="1",handled_at:t.dataset.h==="1"?new Date().toISOString():null}).eq("id",id);if(r.error)throw r.error;tReports();}
+  else if(a==="del"){if(!confirm("Supprimer ce signalement ?"))return;var d=await sb.from("shop_reports").delete().eq("id",id);if(d.error)throw d.error;tReports();}
+ }catch(x){if(t.isConnected)t.disabled=false;note(x.message||"Erreur",1);}
+});
+
+async function repSaveReasons(l,msg){
+ var v=JSON.stringify(l),r=await sb.from("site_settings").upsert([{key:"report_reasons",value:v,updated_at:new Date().toISOString()}]);if(r.error)throw r.error;
+ applySettings({report_reasons:v});try{audit("update","site_settings",null,"motifs de signalement");}catch(x){}if(msg)note(msg);
+}
+document.addEventListener("click",async function(e){
+ var t=e.target.closest("#aPane [data-rep]");if(!t)return;var a=t.dataset.rep,i=+t.dataset.i,l=REPL_LIST.map(function(x){return{k:x.k,l:x.l};});
+ try{
+  if(a==="radd"){var v=($("repNew").value||"").trim().slice(0,80);if(!v)return note("Écrivez le nom du nouveau motif.",1);l.push({k:"m"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),l:v});await repSaveReasons(l,"Motif ajouté.");tReports();}
+  else if(a==="rdel"){if(l.length<2)return note("Gardez au moins un motif.",1);if(!confirm("Supprimer ce motif ? Les signalements déjà reçus le conservent."))return;l.splice(i,1);await repSaveReasons(l,"Motif supprimé.");tReports();}
+  else if(a==="rup"||a==="rdown"){var j=a==="rup"?i-1:i+1;if(j<0||j>=l.length)return;var x=l[i];l[i]=l[j];l[j]=x;await repSaveReasons(l);tReports();}
+  else if(a==="rreset"){if(!confirm("Rétablir la liste des motifs d’origine ?"))return;await repSaveReasons(REP_DEF.map(function(x){return{k:x[0],l:x[1]};}),"Motifs d’origine rétablis.");tReports();}
+ }catch(x){note(x.message||"Erreur",1);}
+});
+document.addEventListener("change",async function(e){
+ var t=e.target;if(!t.dataset||t.dataset.repl!=="label")return;
+ var i=+t.dataset.i,v=t.value.trim().slice(0,80);if(!v){t.value=REPL_LIST[i].l;return note("Un motif ne peut pas être vide.",1);}
+ try{var l=REPL_LIST.map(function(x){return{k:x.k,l:x.l};});l[i].l=v;await repSaveReasons(l,"Motif enregistré.");}catch(x){note(x.message||"Erreur",1);}
+});
 </script>
 </body>
 </html>
