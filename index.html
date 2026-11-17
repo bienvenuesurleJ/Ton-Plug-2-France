@@ -3803,7 +3803,9 @@ async function tReports(){
  var rows=q.data||[],ids=Array.from(new Set(rows.map(function(r){return r.business_id;}))),bs={};
  if(ids.length){var b=await sb.from("businesses").select("id,name,slug,city").in("id",ids);(b.data||[]).forEach(function(x){bs[x.id]=x;});}
  var open=rows.filter(function(r){return!r.handled;}).length;REP_N=open;
+ var vp=null;try{var vq=await sb.from("site_settings").select("value").eq("key","vapid_public").maybeSingle();vp=vq.data&&vq.data.value;}catch(x){}
  $("aPane").innerHTML='<div class="card"><h3>Signalements de boutiques</h3><p class="meta" style="margin:8px 0 12px">'+(open?open+' à traiter':'Rien à traiter')+' · '+rows.length+' au total (200 derniers).</p><button class="btn p" type="button" data-rep="push">🔔 Recevoir une notification à chaque signalement</button><p class="meta" style="margin-top:8px">À activer sur chaque appareil. Sur iPhone : ouvrez le site depuis son icône sur l’écran d’accueil.</p></div>'
+ +'<div class="card" style="margin-bottom:12px"><h3>Clés d’envoi des notifications</h3><p class="meta" style="margin:8px 0 12px">Clé publique enregistrée sur le site : <b>'+(vp?'oui':'non')+'</b>. Les notifications ont besoin d’une paire de clés : la publique est enregistrée automatiquement, la privée s’affiche une seule fois pour que vous la copiiez dans Supabase.</p><button class="btn" type="button" data-rep="vapid">🔑 Générer mes clés de notification</button><div id="repKeys"></div></div>'
  +'<div class="card" style="margin-bottom:12px"><h3>Motifs proposés aux visiteurs</h3><p class="meta" style="margin:8px 0 12px">Ce sont les choix du formulaire « Signaler cette boutique ». Les signalements déjà reçus gardent le motif d’origine.</p>'
  +REPL_LIST.map(function(m,i){return'<div class="ar"><b>'+(i+1)+'.</b><input data-repl="label" data-i="'+i+'" value="'+esc(m.l)+'" maxlength="80" aria-label="Motif" style="flex:1;min-width:0"><button class="btn" type="button" data-rep="rup" data-i="'+i+'" aria-label="Monter"'+(i?'':' disabled')+'>↑</button><button class="btn" type="button" data-rep="rdown" data-i="'+i+'" aria-label="Descendre"'+(i<REPL_LIST.length-1?'':' disabled')+'>↓</button><button class="btn" type="button" data-rep="rdel" data-i="'+i+'"'+(REPL_LIST.length>1?'':' disabled')+'>Supprimer</button></div>';}).join("")
  +'<div class="row" style="margin-top:12px"><input id="repNew" maxlength="80" placeholder="Nouveau motif" style="flex:1;min-width:0"><button class="btn p" type="button" data-rep="radd">Ajouter</button></div><div class="row" style="margin-top:10px"><button class="btn" type="button" data-rep="rreset">Rétablir les motifs d’origine</button></div></div>'
@@ -3819,6 +3821,23 @@ document.addEventListener("click",async function(e){
  try{
   if(a==="push"){t.disabled=true;var ok=await repSub();t.disabled=false;if(ok){note("Notifications de signalement activées sur cet appareil ✓");var s=await navigator.serviceWorker.ready;s.showNotification("Signalements : notifications activées ✓",{body:"Vous serez prévenu à chaque nouveau signalement de boutique.",icon:"icon-192.png"});}}
   else if(a==="done"){var r=await sb.from("shop_reports").update({handled:t.dataset.h==="1",handled_at:t.dataset.h==="1"?new Date().toISOString():null}).eq("id",id);if(r.error)throw r.error;tReports();}
+  else if(a==="vapid"){
+   if(!(window.crypto&&crypto.subtle))return note("Ce navigateur ne peut pas générer les clés.",1);
+   if(!confirm("Créer une nouvelle paire de clés ? Elle remplace l’ancienne clé publique du site (si elle existe) : les appareils déjà activés devront réappuyer sur « Alertes »."))return;
+   t.disabled=true;
+   var kp=await crypto.subtle.generateKey({name:"ECDSA",namedCurve:"P-256"},true,["sign","verify"]);
+   var enc=function(u){var s="";for(var q=0;q<u.length;q++)s+=String.fromCharCode(u[q]);return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");};
+   var pub=enc(new Uint8Array(await crypto.subtle.exportKey("raw",kp.publicKey))),priv=(await crypto.subtle.exportKey("jwk",kp.privateKey)).d;
+   var sv=await sb.from("site_settings").upsert([{key:"vapid_public",value:pub,updated_at:new Date().toISOString()}]);if(sv.error)throw sv.error;
+   try{var rg=await navigator.serviceWorker.getRegistration();var os=rg&&await rg.pushManager.getSubscription();if(os)await os.unsubscribe();}catch(x){}
+   t.disabled=false;
+   var line=function(n,v){return'<p class="meta" style="margin:12px 0 4px"><b>'+n+'</b></p><input readonly value="'+esc(v)+'" onfocus="this.select()" style="width:100%"><div class="row" style="margin-top:6px"><button class="btn" type="button" data-rep="copy" data-v="'+esc(v)+'">Copier</button></div>';};
+   $("repKeys").innerHTML='<p class="msg ok" style="margin-top:12px">Clé publique enregistrée sur le site ✓</p><p class="meta">Dans Supabase › Edge Functions › Secrets, ajoutez ces trois secrets. <b>La clé privée ne sera plus jamais affichée</b> et n’est enregistrée nulle part ici : copiez-la maintenant.</p>'
+    +line("VAPID_PUBLIC_KEY",pub)+line("VAPID_PRIVATE_KEY",priv)+'<p class="meta" style="margin:12px 0 4px"><b>VAPID_SUBJECT</b> : écrivez <b>mailto:</b> suivi de votre adresse e-mail, sans espace (exemple : mailto:contact@monsite.fr).</p>'
+    +'<p class="meta" style="margin-top:12px">Ensuite, appuyez sur « Recevoir une notification… » ci-dessus pour réactiver cet appareil.</p>';
+   note("Clés créées.");
+  }
+  else if(a==="copy"){try{await navigator.clipboard.writeText(t.dataset.v);note("Copié ✓");}catch(x){note("Copie impossible : appuyez longuement sur le champ pour le copier.",1);}}
   else if(a==="del"){if(!confirm("Supprimer ce signalement ?"))return;var d=await sb.from("shop_reports").delete().eq("id",id);if(d.error)throw d.error;tReports();}
  }catch(x){if(t.isConnected)t.disabled=false;note(x.message||"Erreur",1);}
 });
