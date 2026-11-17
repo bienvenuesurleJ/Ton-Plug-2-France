@@ -744,6 +744,27 @@ dialog.bdlg form.wide{max-width:none}
 
 dialog.bdlg .fg label{min-width:0}
 dialog.bdlg .fg select,dialog.bdlg .fg input:not([type=checkbox]),dialog.bdlg .fg textarea{width:100%;max-width:100%}
+
+/* ===== Palette harmonisée : menthe = action principale, bleu = repères, liens et départements, violet = touche rare ===== */
+:root{--c1:#2fdfa3;--c2:#4f8cff;--c3:#8f7cff;--mut:#a5b1d2;--line:rgba(120,160,255,.24)}
+html[data-theme=light]{--surface-0:#f3f6fd;--surface-2:#e6ecfb;--mut:#3f4d6e;--line:rgba(31,79,214,.22)}
+.o1{background:radial-gradient(closest-side,color-mix(in srgb,var(--c2) 26%,transparent),transparent)}
+.o2{background:radial-gradient(closest-side,color-mix(in srgb,var(--c1) 18%,transparent),transparent)}
+.btn.p{background:linear-gradient(120deg,var(--c1),var(--c2))}
+.mapcard{background:radial-gradient(120% 90% at 50% 0%,color-mix(in srgb,var(--c2) 14%,transparent),transparent 70%),linear-gradient(rgba(var(--tint),.05) 1px,transparent 1px) 0 0/34px 34px,linear-gradient(90deg,rgba(var(--tint),.05) 1px,transparent 1px) 0 0/34px 34px,var(--surface-1)}
+#map .dp{fill:color-mix(in srgb,var(--c2) calc(8% + var(--i)*72%),var(--surface-1))}
+/* ===== Zoom de la carte ===== */
+.zoom .btn[data-z=in],.zoom .btn[data-z=out]{font-size:1.6rem;font-weight:700;line-height:1;touch-action:manipulation}
+.zoom .btn[aria-disabled=true]{opacity:.45}
+/* ===== Bouton son ===== */
+#musicBtn[hidden]{display:none}
+#musicBtn .mute{display:none}
+#musicBtn[aria-pressed=false] .son{display:none}
+#musicBtn[aria-pressed=false] .mute{display:block}
+#musicBtn.live{color:var(--c1t)}
+#musicBtn.live svg path:last-child{animation:musw 1.6s ease-in-out infinite}
+@keyframes musw{50%{opacity:.35}}
+@media(prefers-reduced-motion:reduce){#musicBtn.live svg path:last-child{animation:none}}
 </style>
 </head>
 <body>
@@ -755,7 +776,7 @@ dialog.bdlg .fg select,dialog.bdlg .fg input:not([type=checkbox]),dialog.bdlg .f
 <a class="logo" href="#/" aria-label="Plug 2 France – accueil"><i id="logoMark"></i><img id="logoImg" alt=""><span id="siteName" class="gx b" style="--sw:.13em;font-size:1.35rem">Plug 2 France</span></a>
 <nav id="nav" aria-label="Navigation principale">
 <a href="#/" data-v="home">Accueil</a><a href="#/carte" data-v="carte">Carte</a><a href="#/boutiques" data-v="boutiques">Boutiques</a><a href="#/favoris" data-v="favoris">Favoris</a><a href="#/partenaire" data-v="partenaire">Devenir partenaire</a><a href="#/pro" data-v="pro">Espace pro</a>
-</nav><div class="hc"><button class="ibtn" id="themeBtn" type="button" aria-label="Passer en mode clair"><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button><button class="ibtn" id="animBtn" type="button" aria-label="Réglage des animations" aria-haspopup="true" aria-expanded="false" aria-controls="animMenu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 16v4M17 18h4"/></svg></button><div class="pm" id="animMenu" role="group" aria-label="Animations" hidden><p class="pt">Animations</p><button class="po" type="button" data-anim-set="full" aria-pressed="false">Complètes</button><button class="po" type="button" data-anim-set="reduced" aria-pressed="false">Réduites</button><button class="po" type="button" data-anim-set="none" aria-pressed="false">Aucune</button><p class="meta" id="animNote" hidden>Votre appareil demande moins de mouvement : « complètes » est appliqué en « réduites ».</p></div></div></div></header>
+</nav><div class="hc"><button class="ibtn" id="musicBtn" type="button" aria-label="Couper la musique" aria-pressed="true" hidden><svg class="son" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg><svg class="mute" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M22 9l-6 6M16 9l6 6"/></svg></button><button class="ibtn" id="themeBtn" type="button" aria-label="Passer en mode clair"><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button><button class="ibtn" id="animBtn" type="button" aria-label="Réglage des animations" aria-haspopup="true" aria-expanded="false" aria-controls="animMenu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 16v4M17 18h4"/></svg></button><div class="pm" id="animMenu" role="group" aria-label="Animations" hidden><p class="pt">Animations</p><button class="po" type="button" data-anim-set="full" aria-pressed="false">Complètes</button><button class="po" type="button" data-anim-set="reduced" aria-pressed="false">Réduites</button><button class="po" type="button" data-anim-set="none" aria-pressed="false">Aucune</button><p class="meta" id="animNote" hidden>Votre appareil demande moins de mouvement : « complètes » est appliqué en « réduites ».</p></div></div></div></header>
 
 <main>
 <section class="view" id="v-home"><div class="wrap hero">
@@ -775,7 +796,7 @@ dialog.bdlg .fg select,dialog.bdlg .fg input:not([type=checkbox]),dialog.bdlg .f
 </div>
 <div class="wrap about" data-reveal="up"><div class="card"><h2>À quoi sert Plug 2 France ?</h2><p>Plug 2 France est l’annuaire national des boutiques physiques. Notre but : vous permettre de trouver en quelques secondes une boutique près de chez vous, par région, département ou ville, avec toutes les infos utiles : photos, horaires, produits, zones de livraison et contacts directs.</p><div class="grid" data-reveal="stagger"><div class="card tlt"><h3>Pour les clients</h3><p class="meta">Repérez les boutiques sur la carte, contactez-les ou lancez l’itinéraire en un clic.</p></div><div class="card tlt"><h3>Pour les boutiques</h3><p class="meta">Créez votre fiche avec un abonnement : elle est préparée automatiquement dès le paiement, puis vérifiée par notre équipe avant publication.</p></div><div class="card tlt"><h3>Des fiches contrôlées</h3><p class="meta">Chaque boutique est validée avant d’apparaître : uniquement des commerces physiques spécialisés.</p></div></div><a class="btn p" href="#/partenaire">Référencer ma boutique</a></div></div>
 <div class="wrap" id="sections"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div></section>
-<section class="view" id="v-carte"><div class="wrap page"><h2 data-set="map_title">Carte de France</h2><p class="meta" data-set="map_intro" style="max-width:60ch;margin-bottom:12px">Touchez une région pour voir ses départements, puis ses boutiques.</p><div id="zoneMode"><div class="head" id="crumb"></div><div class="mbar" id="mapBar" role="group" aria-label="Filtres de la carte"><button class="btn chip" type="button" data-mf="open" aria-pressed="false" data-hx="mf_open"></button><button class="btn chip" type="button" id="mfDel" data-mf="deliver" aria-pressed="false" aria-expanded="false" data-hx="mf_deliver"></button><span class="mz" id="mfZ" hidden><input id="mfZip" type="text" maxlength="60" autocomplete="off"><button class="btn chip" type="button" data-mf="zipok" data-hx="mf_ok"></button></span><select id="mfCat"></select><button class="btn chip" type="button" data-mf="part" aria-pressed="false" data-hx="mf_part"></button><p class="mcount" id="mapCount" role="status" aria-live="polite"></p></div><div class="card mapcard" id="mapCard" data-loop><div class="mapsh" aria-hidden="true"></div><p class="msg" id="mapMsg">Chargement de la carte…</p><svg id="map" role="group" tabindex="0" aria-label="Carte interactive de la France : régions puis départements"></svg><div class="zoom" id="zoomBox"><button class="btn" data-z="0" aria-label="Recentrer">⟲</button><button class="btn" data-z="loc" aria-label="Ma position">◎</button></div><div class="mini" id="mini" hidden></div><button class="btn fsb" id="fsBtn" type="button" aria-pressed="false"></button><div class="tip" id="tip"></div><div class="zh" id="zhint" role="status"></div><div class="leg" id="mapLeg"></div></div><h3 class="sub" id="zTitle"></h3><div id="zoneList"></div><div id="mapShops"></div></div></div></section>
+<section class="view" id="v-carte"><div class="wrap page"><h2 data-set="map_title">Carte de France</h2><p class="meta" data-set="map_intro" style="max-width:60ch;margin-bottom:12px">Touchez une région pour voir ses départements, puis ses boutiques.</p><div id="zoneMode"><div class="head" id="crumb"></div><div class="mbar" id="mapBar" role="group" aria-label="Filtres de la carte"><button class="btn chip" type="button" data-mf="open" aria-pressed="false" data-hx="mf_open"></button><button class="btn chip" type="button" id="mfDel" data-mf="deliver" aria-pressed="false" aria-expanded="false" data-hx="mf_deliver"></button><span class="mz" id="mfZ" hidden><input id="mfZip" type="text" maxlength="60" autocomplete="off"><button class="btn chip" type="button" data-mf="zipok" data-hx="mf_ok"></button></span><select id="mfCat"></select><button class="btn chip" type="button" data-mf="part" aria-pressed="false" data-hx="mf_part"></button><p class="mcount" id="mapCount" role="status" aria-live="polite"></p></div><div class="card mapcard" id="mapCard" data-loop><div class="mapsh" aria-hidden="true"></div><p class="msg" id="mapMsg">Chargement de la carte…</p><svg id="map" role="group" tabindex="0" aria-label="Carte interactive de la France : régions puis départements"></svg><div class="zoom" id="zoomBox"><button class="btn" data-z="in" type="button" aria-label="Zoom avant">+</button><button class="btn" data-z="out" type="button" aria-label="Zoom arrière">−</button><button class="btn" data-z="0" aria-label="Recentrer">⟲</button><button class="btn" data-z="loc" aria-label="Ma position">◎</button></div><div class="mini" id="mini" hidden></div><button class="btn fsb" id="fsBtn" type="button" aria-pressed="false"></button><div class="tip" id="tip"></div><div class="zh" id="zhint" role="status"></div><div class="leg" id="mapLeg"></div></div><h3 class="sub" id="zTitle"></h3><div id="zoneList"></div><div id="mapShops"></div></div></div></section>
 <section class="view" id="v-boutiques"><div class="wrap page"><h2 data-set="list_title">Boutiques</h2><div class="fbar" id="fbar"></div><div class="head" id="listHead"></div><div id="list"></div></div></section>
 <section class="view" id="v-partenaire"><div class="wrap page">
 <div class="phero" id="pHero"><h2 data-set="partner_title">Devenir partenaire</h2>
@@ -983,6 +1004,116 @@ var FX=(function(){
 })();
 </script>
 <script>
+/* ===== MUSIQUE : lecteur du site (côté visiteur) + onglet « Musique » de l’admin ===== */
+var MUS=(function(){
+ var d=document,LS=function(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){}return null;},
+ a=new Audio(),list=[],sig="",i=0,on=LS("p2f_music")!=="0",adminOn=true,vol=.4,armed=false,held=false,fails=0,fade=0;
+ a.preload="auto";
+ function btn(){return d.getElementById("musicBtn");}
+ function paint(){var b=btn();if(!b)return;b.hidden=!(list.length&&adminOn);b.setAttribute("aria-pressed",String(on));b.setAttribute("aria-label",on?"Couper la musique":"Activer la musique");b.classList.toggle("live",on&&!a.paused);}
+ function ramp(){clearInterval(fade);a.volume=0;var n=0;fade=setInterval(function(){n++;a.volume=Math.min(vol,vol*n/12);if(n>=12)clearInterval(fade);},120);}
+ function load(n){i=n%list.length;a.src=list[i].u;a.loop=list.length===1;}
+ function play(){
+  if(!on||!adminOn||held||!list.length||d.hidden)return;
+  if(!a.src)load(i);
+  var p;try{p=a.play();}catch(e){return;}
+  if(p&&p.then)p.then(function(){fails=0;if(!fade||a.volume===0)ramp();paint();}).catch(function(err){if(err&&err.name==="NotAllowedError")arm();paint();});
+ }
+ /* Les navigateurs bloquent le son avant un premier geste : la musique démarre au premier toucher, clic ou touche */
+ function go(e){if(e&&e.target&&e.target.closest&&e.target.closest("#musicBtn"))return;disarm();play();}
+ var EV=["pointerup","touchend","click","keydown"];
+ function arm(){if(armed)return;armed=true;EV.forEach(function(n){addEventListener(n,go,true);});}
+ function disarm(){armed=false;EV.forEach(function(n){removeEventListener(n,go,true);});}
+ a.addEventListener("ended",function(){load(i+1);play();});
+ a.addEventListener("play",paint);a.addEventListener("pause",paint);
+ a.addEventListener("error",function(){if(++fails<=list.length&&list.length>1){load(i+1);play();}});
+ d.addEventListener("visibilitychange",function(){if(d.hidden)a.pause();else play();});
+ function parse(v){try{var x=JSON.parse(v);return Array.isArray(x)?x.filter(function(m){return m&&typeof m.u==="string"&&/^https:\/\//.test(m.u);}):[];}catch(e){return[];}}
+ function cfg(s){
+  if(!s)return;
+  if("music_enabled" in s)adminOn=s.music_enabled!=="0";
+  if("music_volume" in s&&s.music_volume!==""&&!isNaN(+s.music_volume)){vol=Math.min(1,Math.max(0,+s.music_volume/100));if(!a.paused&&!(fade&&a.volume<vol))a.volume=vol;}
+  if("music_playlist" in s){var l=parse(s.music_playlist),g=JSON.stringify(l.map(function(m){return m.u;}));if(g!==sig){sig=g;list=l;i=0;a.pause();a.removeAttribute("src");if(list.length){load(0);}}}
+  if(!adminOn)a.pause();
+  paint();play();
+ }
+ d.addEventListener("click",function(e){
+  if(!e.target.closest||!e.target.closest("#musicBtn"))return;
+  if(on&&a.paused&&!held){play();return;}   /* musique bloquée par le navigateur : ce toucher la démarre */
+  on=!on;LS("p2f_music",on?"1":"0");
+  if(on)play();else{a.pause();}
+  paint();
+ });
+ return{cfg:cfg,hold:function(h){held=!!h;if(held)a.pause();else play();},state:function(){return{on:on,playing:!a.paused,tracks:list.length,vol:vol,src:a.src};}};
+})();
+
+/* ----- Admin : onglet Musique (liste enregistrée dans site_settings, fichiers dans le bucket « site-media », dossier music/) ----- */
+var MA={list:[],on:true,vol:40,pv:null,pvI:-1};
+function musParse(v){try{var x=JSON.parse(v);return Array.isArray(x)?x.filter(m=>m&&typeof m.u==="string"):[];}catch(e){return[];}}
+async function tMusic(){
+ const {data,error}=await sb.from("site_settings").select("key,value");if(error)throw error;
+ const v=Object.fromEntries((data||[]).map(r=>[r.key,r.value]));
+ MA.list=musParse(v.music_playlist);MA.on=v.music_enabled!=="0";MA.vol=(v.music_volume===undefined||v.music_volume===""||isNaN(+v.music_volume))?40:Math.round(+v.music_volume);
+ musDraw();
+}
+function musDraw(){
+ const L=MA.list;
+ $("aPane").innerHTML='<div class="card"><h3>Musique du site</h3><p class="meta" style="margin-bottom:12px">La playlist se lance toute seule à l’ouverture du site dès le premier toucher du visiteur (les navigateurs interdisent le son avant). Le visiteur peut la couper avec le petit logo son en haut de l’écran ; son choix est mémorisé sur son appareil.</p>'
+ +'<div class="fg"><label style="grid-auto-flow:column;align-items:center;justify-content:start"><input type="checkbox" data-mus="on"'+(MA.on?' checked':'')+'> Musique activée sur le site</label>'
+ +'<label>Volume : <b id="musVn">'+MA.vol+'</b> %<input type="range" min="0" max="100" value="'+MA.vol+'" data-mus="vol"></label></div></div>'
+ +'<div class="card"><h3>Ajouter une musique</h3><div class="fg"><label>Titre (facultatif)<input id="musT" maxlength="80" placeholder="Ex. Ambiance Plug 2 France"></label>'
+ +'<label>Fichier audio (mp3, m4a, ogg, wav · 20 Mo maximum)<input id="musF" type="file" accept="audio/*,.mp3,.m4a,.ogg,.wav" data-mus="file"></label></div>'
+ +'<p class="meta" style="margin:12px 0 6px">Ou collez le lien direct d’un fichier audio (https) :</p><div class="row"><input id="musU" placeholder="https://…/musique.mp3" style="flex:1;min-width:0"><button class="btn" type="button" data-mus="url">Ajouter le lien</button></div></div>'
+ +'<div class="card"><h3>Playlist ('+L.length+')</h3>'+(L.length?L.map((m,k)=>'<div class="ar"><b>'+(k+1)+'.</b><input data-mus="title" data-i="'+k+'" value="'+esc(m.t||"")+'" maxlength="80" aria-label="Titre" style="flex:1;min-width:0"><button class="btn" type="button" data-mus="play" data-i="'+k+'" aria-label="Écouter">'+(MA.pvI===k?"■":"▶")+'</button><button class="btn" type="button" data-mus="up" data-i="'+k+'" aria-label="Monter"'+(k?'':' disabled')+'>↑</button><button class="btn" type="button" data-mus="down" data-i="'+k+'" aria-label="Descendre"'+(k<L.length-1?'':' disabled')+'>↓</button><button class="btn" type="button" data-mus="del" data-i="'+k+'">Supprimer</button></div>').join(""):emptyHTML("Aucune musique","Ajoutez un fichier ou un lien ci-dessus."))+'</div>';
+}
+async function musSave(msg){
+ const ts=new Date().toISOString(),rows=[{key:"music_playlist",value:JSON.stringify(MA.list),updated_at:ts},{key:"music_enabled",value:MA.on?"1":"0",updated_at:ts},{key:"music_volume",value:String(MA.vol),updated_at:ts}];
+ const r=await sb.from("site_settings").upsert(rows);if(r.error)throw r.error;
+ applySettings(Object.fromEntries(rows.map(x=>[x.key,x.value])));audit("update","site_settings",null,"musique");if(msg)note(msg);
+}
+function musStopPv(){if(MA.pv){MA.pv.pause();MA.pv=null;}MA.pvI=-1;MUS.hold(false);}
+document.addEventListener("click",async e=>{
+ const t=e.target.closest("#aPane [data-mus]");if(!t||t.tagName==="INPUT")return;
+ const a=t.dataset.mus,k=+t.dataset.i;
+ try{
+  if(a==="url"){
+   const u=($("musU").value||"").trim().replace(/^http:/i,"https:");if(!/^https:\/\/\S+$/i.test(u))return note("Collez un lien https complet vers un fichier audio.",1);
+   MA.list.push({id:crypto.randomUUID(),t:($("musT").value||"").trim()||decodeURIComponent(u.split("/").pop().split("?")[0]).replace(/\.\w+$/,"")||"Musique",u});await musSave("Musique ajoutée.");musDraw();
+  }else if(a==="play"){
+   const was=MA.pvI===k;musStopPv();if(was){musDraw();return;}
+   MA.pv=new Audio(MA.list[k].u);MA.pvI=k;MUS.hold(true);MA.pv.addEventListener("ended",()=>{musStopPv();musDraw();});MA.pv.addEventListener("error",()=>{musStopPv();musDraw();note("Ce fichier ne peut pas être lu.",1);});MA.pv.play().catch(()=>{});musDraw();
+  }else if(a==="up"||a==="down"){
+   const j=a==="up"?k-1:k+1;if(j<0||j>=MA.list.length)return;musStopPv();[MA.list[k],MA.list[j]]=[MA.list[j],MA.list[k]];await musSave();musDraw();
+  }else if(a==="del"){
+   if(!confirm("Supprimer cette musique ?"))return;musStopPv();const m=MA.list.splice(k,1)[0];
+   if(m&&m.p){try{await sb.storage.from("site-media").remove([m.p]);}catch(x){}}
+   await musSave("Musique supprimée.");musDraw();
+  }
+ }catch(x){note(x.message||"Erreur",1);}
+});
+document.addEventListener("change",async e=>{
+ const t=e.target.closest&&e.target.closest("#aPane [data-mus]");if(!t)return;const a=t.dataset.mus;
+ try{
+  if(a==="on"){MA.on=t.checked;await musSave(MA.on?"Musique activée.":"Musique désactivée.");}
+  else if(a==="vol"){MA.vol=+t.value;$("musVn").textContent=MA.vol;await musSave();}
+  else if(a==="title"){MA.list[+t.dataset.i].t=t.value.trim();await musSave("Titre enregistré.");}
+  else if(a==="file"){
+   const f=t.files[0];if(!f)return;
+   if(!(/^audio\//.test(f.type)||/\.(mp3|m4a|aac|ogg|wav|flac)$/i.test(f.name)))return note("Choisissez un fichier audio (mp3, m4a, ogg, wav).",1);
+   if(f.size>20*1024*1024)return note("Fichier trop lourd : 20 Mo maximum.",1);
+   note("Envoi en cours…");
+   const ext=(f.name.split(".").pop()||"mp3").toLowerCase().replace(/[^a-z0-9]/g,""),p="music/"+crypto.randomUUID()+"."+ext;
+   const r=await sb.storage.from("site-media").upload(p,f,{contentType:f.type||"audio/mpeg"});
+   if(r.error)return note("Envoi refusé ("+(r.error.message||"erreur")+"). Exécutez musique.sql dans Supabase puis réessayez.",1);
+   MA.list.push({id:crypto.randomUUID(),t:($("musT").value||"").trim()||f.name.replace(/\.\w+$/,""),u:sb.storage.from("site-media").getPublicUrl(p).data.publicUrl,p});
+   await musSave("Musique enregistrée.");musDraw();
+  }
+ }catch(x){note(x.message||"Erreur",1);}
+});
+document.addEventListener("input",e=>{const t=e.target;if(t.dataset&&t.dataset.mus==="vol"&&$("musVn"))$("musVn").textContent=t.value;});
+addEventListener("hashchange",()=>{if(MA.pv)musStopPv();});
+</script>
+<script>
 // ===== CONFIGURATION : remplacez par les valeurs de votre projet (clé "anon" uniquement, jamais service_role) =====
 const SUPABASE_URL = "https://seypdmcwyeafwlvyyszh.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_FrWhnLMme-oTBNEhfECwpg_AT7u0g0l";
@@ -1010,7 +1141,7 @@ addEventListener("hashchange", route); route();
 document.querySelectorAll("#v-partenaire [data-set]").forEach(el=>{el.dataset.def=el.textContent;});
 /* Paramètres du site (site_settings) appliqués au site public */
 var CFG={};
-function applySettings(s){FX.defaults(s);setTimeout(gfx);Object.assign(CFG,s);applyHX();try{if("logo_url" in s)localStorage.setItem("p2f_logo",safe(s.logo_url)||"");if("site_name" in s)localStorage.setItem("p2f_name",s.site_name||"");}catch(e){}
+function applySettings(s){try{MUS.cfg(s);}catch(e){}FX.defaults(s);setTimeout(gfx);Object.assign(CFG,s);applyHX();try{if("logo_url" in s)localStorage.setItem("p2f_logo",safe(s.logo_url)||"");if("site_name" in s)localStorage.setItem("p2f_name",s.site_name||"");}catch(e){}
   const t = (k, el) => { if (s[k]) $(el).textContent = s[k]; };
   t("site_name","siteName"); if(s.hero_title)heroWords(s.hero_title); t("hero_text","heroText"); t("footer_text","footerTxt");
   document.querySelectorAll("[data-set]").forEach(el=>{if(s[el.dataset.set])el.textContent=s[el.dataset.set];});
@@ -1328,6 +1459,46 @@ function renderZone(){
  document.addEventListener("click",e=>{const t=e.target.closest("#v-carte [data-pick]");if(t)pick(t.dataset.pick,t.dataset.dep);});
  addEventListener("resize",()=>{if(GEO)setVB();});
 })();
+
+/* ---- Zoom / dézoom : boutons + et −, pincement à deux doigts, Ctrl + molette (molette seule en plein écran), touches + et − ---- */
+(function(){
+ const s=$("map"),zb=$("zoomBox");let zt=null,zte=0;
+ const MINW=()=>VB0[2]/90,MAXW=()=>VB0[2];
+ const clampC=v=>{const cx=Math.min(VB0[0]+VB0[2],Math.max(VB0[0],v[0]+v[2]/2)),cy=Math.min(VB0[1]+VB0[3],Math.max(VB0[1],v[1]+v[3]/2));return[cx-v[2]/2,cy-v[3]/2,v[2],v[3]];};
+ /* Calcule la nouvelle vue : f > 1 zoome, f < 1 dézoome ; (ax, ay) = point de la carte qui reste immobile à l’écran */
+ function next(base,f,ax,ay){
+  const w0=base[2],h0=base[3],w=Math.min(MAXW(),Math.max(MINW(),w0/f)),k=w/w0;
+  if(ax==null){ax=base[0]+w0/2;ay=base[1]+h0/2;}
+  if(w>=MAXW()*.999)return VB0.slice();
+  return clampC([ax-(ax-base[0])*k,ay-(ay-base[1])*k,w,h0*k]);
+ }
+ function pt(x,y){const m=s.getScreenCTM();if(!m)return null;const q=new DOMPoint(x,y).matrixTransform(m.inverse());return[q.x,q.y];}
+ function state(){const z=VB0[2]/VB[2];zb.querySelectorAll("[data-z=in],[data-z=out]").forEach(b=>b.setAttribute("aria-disabled",String(b.dataset.z==="in"?z>=89:z<=1.001)));}
+ const _sv=setVB;setVB=function(){_sv();state();};
+ function step(f){if(!GEO)return;const base=(zt&&performance.now()<zte)?zt:VB.slice();zt=next(base,f);zte=performance.now()+260;fly(zt,220);}
+ zb.addEventListener("click",e=>{const b=e.target.closest("[data-z=in],[data-z=out]");if(b)step(b.dataset.z==="in"?1.7:1/1.7);});
+ /* Ctrl + molette (ou pincement du pavé tactile) ; en plein écran, la molette seule zoome */
+ s.addEventListener("wheel",e=>{
+  if(!GEO||!(e.ctrlKey||$("mapCard").classList.contains("fs")))return;
+  e.preventDefault();TW++;zt=null;const a=pt(e.clientX,e.clientY);if(!a)return;
+  VB=next(VB,Math.exp(-e.deltaY*(e.ctrlKey?.004:.003)),a[0],a[1]);setVB();
+ },{passive:false});
+ /* Pincement à deux doigts (déplace aussi la carte avec le milieu des doigts) */
+ let d0=0,m0=null;
+ const dist=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY),mid=t=>[(t[0].clientX+t[1].clientX)/2,(t[0].clientY+t[1].clientY)/2];
+ s.addEventListener("touchstart",e=>{if(e.touches.length===2){TW++;zt=null;d0=dist(e.touches);m0=mid(e.touches);}},{passive:true});
+ s.addEventListener("touchmove",e=>{
+  if(e.touches.length!==2||!d0||!GEO)return;
+  if(e.cancelable)e.preventDefault();
+  const d=dist(e.touches),m=mid(e.touches),a=pt(m0[0],m0[1]);if(!a||!d)return;
+  const old=VB[2];VB=next(VB,d/d0,a[0],a[1]);
+  const Kn=K*old/VB[2];if(Kn>0){VB[0]-=(m[0]-m0[0])/Kn;VB[1]-=(m[1]-m0[1])/Kn;}
+  d0=d;m0=m;setVB();
+ },{passive:false});
+ ["touchend","touchcancel"].forEach(n=>s.addEventListener(n,e=>{if(e.touches.length<2)d0=0;}));
+ s.addEventListener("keydown",e=>{if(e.key==="+"||e.key==="="){e.preventDefault();step(1.7);}else if(e.key==="-"||e.key==="_"){e.preventDefault();step(1/1.7);}});
+ state();
+})();
 /* ---- Boutiques sur la carte de France : elles apparaissent à mesure qu’on zoome ---- */
 var GC={},GQ=0;try{GC=JSON.parse(localStorage.getItem("p2f_gc")||"{}");}catch(e){}
 const pos=b=>{if(validGeo(b))return[PX(+b.longitude),PY(+b.latitude)];const c=GC[b.id];if(c)return[PX(c[0]),PY(c[1])];const d=GEO&&GEO.dep.find(z=>z.code===b.department_code);if(!d)return null;let h=0;for(const ch of String(b.id))h=(h*31+ch.charCodeAt(0))|0;return[d.L[0]+(h%9-4)*2.2,d.L[1]+((h>>4)%9-4)*2.2];};
@@ -1430,7 +1601,7 @@ const AG=[["pil","📊","Pilotage",[["dash","Tableau de bord"],["log","Journal"]
  ["shop","🏪","Boutiques",[["biz","Boutiques clients"],["mine","Mes boutiques"],["bots","Import (bots)"],["qual","Qualité des fiches"],["cat","Catégories"],["med","Médias"]]],
  ["pub","📣","Publicité",[["ads","Publicités"],["promo","Mises en avant"]]],
  ["abo","💳","Abonnements",[["bill","Forfaits & abonnements"],["offers","Offres & options"],["deals","Promotions"],["hist","Historique"]]],
- ["site","🎨","Site",[["sec","Accueil"],["site","Site & identité"],["txt","Textes & pages"],["part","Page partenaire"]]]],AL={};
+ ["site","🎨","Site",[["sec","Accueil"],["site","Site & identité"],["txt","Textes & pages"],["part","Page partenaire"],["music","Musique"]]]],AL={};
 function drawNav(){
  const g=AG.find(x=>x[3].some(y=>y[0]===TAB))||AG[0],sb2=g[3].find(y=>y[0]===TAB)||g[3][0];AL[g[0]]=sb2[0];
  $("agrp").innerHTML=AG.map(x=>'<button class="btn gt'+(x===g?' p':'')+'" data-tab="'+(AL[x[0]]||x[3][0][0])+'"><i>'+x[1]+'</i>'+x[2]+'</button>').join("")+'<button class="btn gt" data-a="push"><i>🔔</i>Alertes</button><button class="btn gt" data-a="out"><i>↩︎</i>Quitter</button>';
@@ -1618,7 +1789,7 @@ document.addEventListener("submit",async e=>{const f=e.target;if(f.id==="p2zf"){
 /* ===== Phase 5 : administration ===== */
 var ADM=[],IM=[],CB="",SE=[],CAT=[],TAB="biz";
 const ST={pending:"En attente",published:"Publiée",unpublished:"Dépubliée"};
-const SITE=[["site_name","Nom du site"],["hero_title","Titre principal"],["hero_text","Texte de présentation","ta"],["footer_text","Texte du pied de page","ta"],["color_primary","Couleur verte","color","#2ee6a6"],["color_secondary","Couleur bleue","color","#4f8cff"],["color_accent","Couleur violette","color","#9b6bff"],["theme_default","Thème par défaut","opt","auto",[["auto","Automatique (suit l’appareil)"],["dark","Sombre"],["light","Clair"]]],["animations_default","Animations par défaut","opt","full",[["full","Complètes"],["reduced","Réduites"],["none","Aucune"]]],["chat_welcome","Messagerie : message d’accueil","ta","Écrivez votre message, la réponse apparaîtra ici."],["chat_bot_function","Messagerie : nom de la fonction Edge de l’assistant automatique (vide = aucun)"]];
+const SITE=[["site_name","Nom du site"],["hero_title","Titre principal"],["hero_text","Texte de présentation","ta"],["footer_text","Texte du pied de page","ta"],["color_primary","Couleur verte","color","#2fdfa3"],["color_secondary","Couleur bleue","color","#4f8cff"],["color_accent","Couleur violette","color","#8f7cff"],["theme_default","Thème par défaut","opt","auto",[["auto","Automatique (suit l’appareil)"],["dark","Sombre"],["light","Clair"]]],["animations_default","Animations par défaut","opt","full",[["full","Complètes"],["reduced","Réduites"],["none","Aucune"]]],["chat_welcome","Messagerie : message d’accueil","ta","Écrivez votre message, la réponse apparaîtra ici."],["chat_bot_function","Messagerie : nom de la fonction Edge de l’assistant automatique (vide = aucun)"]];
 const SEL=(n,l,v,o)=>'<label>'+l+'<select name="'+n+'">'+o.map(x=>'<option value="'+x[0]+'"'+(x[0]===v?' selected':'')+'>'+x[1]+'</option>').join("")+'</select></label>';
 const slug=s=>norm(s).replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 const opt=(a,v)=>a.map(x=>'<option value="'+esc(x[0])+'"'+(x[0]===v?' selected':'')+'>'+esc(x[1])+'</option>').join("");
@@ -1634,7 +1805,7 @@ function showAdmin(){ADMON=true;SUPER=null;
  new MutationObserver(accInit).observe($("aPane"),{childList:true});
  openTab(TAB);
 }
-function openTab(t){TAB=t;document.querySelectorAll(".tb").forEach(b=>b.classList.toggle("p",b.dataset.tab===t));note("");({qual:tQual,log:tLog,exp:tExp,dash:tDash,biz:tBiz,sec:tSec,site:tSite,cat:tCat,med:tMed,ads:tAds,promo:tPromo,txt:tTxt,part:tPart,bots:tBots,msg:tMsg,bill:tBill,offers:tOffers,deals:tDeals,hist:tHist,mine:tMine})[t]().catch(bfail);}
+function openTab(t){TAB=t;document.querySelectorAll(".tb").forEach(b=>b.classList.toggle("p",b.dataset.tab===t));note("");({qual:tQual,log:tLog,exp:tExp,dash:tDash,biz:tBiz,sec:tSec,site:tSite,cat:tCat,med:tMed,music:tMusic,ads:tAds,promo:tPromo,txt:tTxt,part:tPart,bots:tBots,msg:tMsg,bill:tBill,offers:tOffers,deals:tDeals,hist:tHist,mine:tMine})[t]().catch(bfail);}
 async function loadBiz(){const {data,error}=await sb.from("businesses").select("id,name,slug,city,postal_code,region_code,department_code,status,featured,latitude,longitude,created_at").order("created_at",{ascending:false});if(error)throw error;ADM=data;}
 async function tDash(){
  await loadBiz();
